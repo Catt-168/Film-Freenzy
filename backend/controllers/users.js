@@ -1,5 +1,6 @@
 const User = require("../models/user");
 const Rental = require("../models/rental");
+const bcrypt = require("bcryptjs");
 
 exports.getAllUsers = async (req, res) => {
   try {
@@ -28,12 +29,15 @@ exports.createUser = async (req, res) => {
     password: req.body.password,
     isAdmin: req.body.isAdmin,
   });
+
   try {
     const oldUser = await User.findOne({ email: req.body.email });
     if (oldUser)
       return res
         .status(409)
         .json({ message: "User with same idenity exists!" });
+    const salt = await bcrypt.genSalt(10);
+    userSchema.password = await bcrypt.hash(req.body.password, salt);
     const user = await userSchema.save();
     const token = user.generateAuthToken();
     res.status(201).json({ user, token });
