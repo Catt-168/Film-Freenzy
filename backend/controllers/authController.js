@@ -1,4 +1,5 @@
 const User = require("../models/user");
+const bcrypt = require("bcryptjs");
 
 exports.Login = async (req, res) => {
   const { email, password } = req.body;
@@ -6,7 +7,7 @@ exports.Login = async (req, res) => {
   if (!user)
     return res.status(400).json({ message: "Invalid email or password." });
 
-  const validPassword = user.password === password;
+  const validPassword = bcrypt.compare(password, user.password);
   if (!validPassword)
     return res.status(400).json({ message: "Invalid email or password." });
 

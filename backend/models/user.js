@@ -19,7 +19,7 @@ const userSchema = new Schema({
   password: {
     type: String,
     minlength: 3,
-    maxlength: 20,
+    maxlength: 1024,
     required: true,
   },
   isAdmin: {
