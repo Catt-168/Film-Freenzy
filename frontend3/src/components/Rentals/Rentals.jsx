@@ -15,6 +15,7 @@ export default function Rentals() {
       const { data } = await restClient.get(
         `${SERVER}/rentals?customerId=${user._id}`
       );
+      console.log("DATA", data);
       if (data.message) return setRentals([]);
 
       setRentals(data);
@@ -26,6 +27,7 @@ export default function Rentals() {
   useEffect(() => {
     getRentals();
   }, []);
+
   let tableHeaders = rentals.length !== 0 ? Object.keys(rentals[0]) : [];
 
   tableHeaders[3] = "Expired Date";

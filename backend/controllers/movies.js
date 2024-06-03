@@ -6,10 +6,19 @@ const Rental = require("../models/rental");
 
 exports.getAllMovies = async (req, res) => {
   try {
-    const movies = await Movie.find({}, "-__v");
-    // const images = await Image.find();
+    const { pageSize, page } = req.query;
+    const skip = (page - 1) * pageSize;
+    const totalItems = await Movie.countDocuments();
+    const movies = await Movie.find({}, "-__v").limit(pageSize).skip(skip);
+    const totalPages =
+      totalItems % 10 === 0 ? totalItems / 10 : totalItems / 10 + 1;
 
-    res.status(200).json(movies);
+    const metaData = {
+      currentPage: parseInt(page),
+      totalPages: parseInt(totalPages),
+    };
+
+    res.status(200).json({ movies, metaData });
   } catch (e) {
     res.status(500).json({ message: e.message });
   }
