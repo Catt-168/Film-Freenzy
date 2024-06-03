@@ -37,7 +37,8 @@ export default function MoviesList() {
         sx={{
           display: "flex",
           gap: 3,
-          marginTop: 10,
+          marginTop: 5,
+          flexWrap: "wrap",
         }}
       >
         {movies.map((item) => (

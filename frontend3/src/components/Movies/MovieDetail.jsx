@@ -12,6 +12,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { SERVER } from "../../constants";
 import restClient from "../../helpers/restClient";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import {
   capitalizeFirstLetter,
   formatReadableDate,
@@ -191,10 +192,23 @@ export default function MovieDetail() {
                 />
               ))}
             </Box>
+            <Button
+              variant="contained"
+              startIcon={<PlayArrowIcon />}
+              sx={{ mb: 2 }}
+              onClick={() =>
+                window.open(
+                  "https://www.youtube.com/watch?v=iH6FdW39Hag&ab_channel=RottenTomatoesClassicTrailers"
+                )
+              }
+            >
+              Watch Trailer
+            </Button>
+            <Typography variant="h6">Overview</Typography>
             <Typography
               variant="body1"
               color="text.secondary"
-              sx={{ textAlign: "left", marginBottom: 3 }}
+              sx={{ textAlign: "left", marginBottom: 2 }}
             >
               {movie.description}
             </Typography>
