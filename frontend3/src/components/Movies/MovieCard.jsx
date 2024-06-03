@@ -7,19 +7,76 @@ import {
   Chip,
   Rating,
   Typography,
+  filledInputClasses,
 } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import { capitalizeFirstLetterinSentence } from "../../helpers/textHelper";
+import StarIcon from "@mui/icons-material/Star";
 
 export default function MovieCard({ item, handleClick }) {
+  const [isVisible, setIsVisible] = useState(false);
   return (
-    <Card sx={{ height: 750, maxWidth: 300 }} key={item._id}>
+    <Box
+      onMouseEnter={() => setIsVisible(true)}
+      onMouseLeave={() => setIsVisible(false)}
+      onClick={() => handleClick(item._id)}
+      sx={{
+        position: "relative",
+      }}
+    >
       <CardMedia
         component="img"
         image={item.image.name}
-        sx={{ height: 400, objectFit: "contain", width: "100%" }}
+        sx={{
+          height: 350,
+          objectFit: "cover",
+          width: 200,
+          border: "3px solid blue",
+          transition: "transform 0.2s ease-in-out",
+          "&:hover": {
+            transform: "scale(1.05)",
+            cursor: "pointer",
+          },
+        }}
       />
-      <CardContent>
+      <Box
+        style={{
+          margin: 0,
+          position: "relative",
+          top: -60,
+          background:
+            "linear-gradient(0deg,rgba(29,29,29,.7) 0,rgba(29,29,29,.7) 70%,rgba(29,29,29,0) 100%)",
+          // visibility: isVisible ? "" : "hidden",
+        }}
+      >
+        <Box sx={{ position: "relative", top: -10 }}>
+          {item.genre.map((g, index) => (
+            <Chip
+              label={g.name}
+              key={g._id}
+              color="primary"
+              size="small"
+              sx={{ display: index > 1 ? "none" : "", mr: 1 }}
+            />
+          ))}
+        </Box>
+        <Typography
+          variant="body2"
+          component="div"
+          sx={{
+            fontWeight: 600,
+            color: "white",
+            alignSelf: "center",
+            height: 35,
+            mb: 2,
+          }}
+        >
+          {item.title.slice(0, 20)}
+          {item.title.length > 20 ? "..." : ""}
+        </Typography>
+      </Box>
+      <Box></Box>
+      {/* <CardContent>
         {item.genre.map((g) => (
           <Chip
             label={g.name}
@@ -52,12 +109,6 @@ export default function MovieCard({ item, handleClick }) {
             alignItems: "flex-start",
           }}
         >
-          {/* <Typography variant="body2" sx={{ fontWeight: 600 }} gutterBottom>
-                Duration: {item.length} minutes
-              </Typography>
-              <Typography variant="body2" sx={{ fontWeight: 600 }} gutterBottom>
-                Released Date: {formatReadableDate(item.releasedYear)}
-              </Typography> */}
           <Typography variant="body2" sx={{ fontWeight: 600 }} gutterBottom>
             Rating:
             <Rating
@@ -68,9 +119,7 @@ export default function MovieCard({ item, handleClick }) {
               sx={{ position: "absolute" }}
             />
           </Typography>
-          {/* <Typography variant="body2" sx={{ fontWeight: 600 }} gutterBottom>
-                Stock: {item.numberInStock}
-              </Typography> */}
+
           <Typography variant="body2" sx={{ fontWeight: 600 }} gutterBottom>
             Fee: {item.dailyRentalRate}$ per Day
           </Typography>
@@ -82,7 +131,7 @@ export default function MovieCard({ item, handleClick }) {
         >
           Go To Details
         </Button>
-      </CardContent>
-    </Card>
+      </CardContent> */}
+    </Box>
   );
 }
