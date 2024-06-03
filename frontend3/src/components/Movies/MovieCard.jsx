@@ -22,6 +22,8 @@ export default function MovieCard({ item, handleClick }) {
       onClick={() => handleClick(item._id)}
       sx={{
         position: "relative",
+        width: 180,
+        mt: -10,
       }}
     >
       <CardMedia
@@ -40,10 +42,10 @@ export default function MovieCard({ item, handleClick }) {
         }}
       />
       <Box
-        style={{
-          margin: 0,
+        sx={{
           position: "relative",
           top: -60,
+          mr: -3,
           background:
             "linear-gradient(0deg,rgba(29,29,29,.7) 0,rgba(29,29,29,.7) 70%,rgba(29,29,29,0) 100%)",
           // visibility: isVisible ? "" : "hidden",

@@ -15,7 +15,7 @@ export default function AdminMovies() {
   async function getMovies() {
     try {
       const { data } = await restClient.get(`${SERVER}/movies`);
-      setMovies(data);
+      setMovies(data.movies);
     } catch (e) {
       console.log(e);
     }
