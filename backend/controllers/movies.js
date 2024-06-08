@@ -6,13 +6,52 @@ const Rental = require("../models/rental");
 
 exports.getAllMovies = async (req, res) => {
   try {
-    const { pageSize, page } = req.query;
+    const {
+      pageSize,
+      page,
+      genre,
+      language,
+      rating,
+      yearStart,
+      yearEnd,
+      title,
+    } = req.query;
     const skip = (page - 1) * pageSize;
-    const totalItems = await Movie.countDocuments();
-    const movies = await Movie.find({}, "-__v").limit(pageSize).skip(skip);
+
+    let movies = [];
+    let query = {};
+
+    if (title.length !== 0) {
+      query.title = new RegExp(title, "i");
+    }
+
+    if (genre.length !== 0 && genre !== "All") {
+      const filteredGenre = await Genre.findOne({ name: genre }, "-__v");
+      query.genre = filteredGenre;
+    }
+    if (language.length !== 0 && language !== "All") {
+      const filteredLangauge = await Language.findOne({ language }, "-__v");
+      query.language = filteredLangauge;
+    }
+    if (rating.length !== 0 && rating !== "All") {
+      query.rating = parseInt(rating);
+    }
+    if (yearStart.length !== 0 && yearStart !== "All") {
+      if (yearEnd.length !== 0) {
+        query.releasedYear = {
+          $gte: parseInt(yearStart),
+          $lte: parseInt(yearEnd),
+        };
+      } else {
+        query.releasedYear = parseInt(yearStart);
+      }
+    }
+
+    movies = await Movie.find(query, "-__v").limit(pageSize).skip(skip);
+
+    const totalItems = await Movie.countDocuments(query);
     const totalPages =
       totalItems % 10 === 0 ? totalItems / 10 : totalItems / 10 + 1;
-
     const metaData = {
       currentPage: parseInt(page),
       totalPages: parseInt(totalPages),
