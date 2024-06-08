@@ -1,4 +1,12 @@
-import { Pagination } from "@mui/material";
+import {
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Pagination,
+  Select,
+  TextField,
+} from "@mui/material";
 import Box from "@mui/material/Box";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -7,8 +15,25 @@ import restClient from "../../helpers/restClient";
 import AdminNavigation from "../Navigation/AdminNavigation";
 import UserNavigation from "../Navigation/UserNavigation";
 import MovieCard from "./MovieCard";
+import { capitalizeFirstLetter } from "../../helpers/textHelper";
 
 const PAGE_SIZE = 10;
+const FILTER_CATEGORIES = ["genre", "rating", "year", "language"];
+const FILTER_YEAR = [
+  { id: 0, title: "All", value: "All", till: "" },
+  { id: 1, title: "2024", value: "2024", till: "" },
+  { id: 2, title: "2023", value: "2023", till: "" },
+  { id: 3, title: "2022", value: "2022", till: "" },
+  { id: 4, title: "2021", value: "2021", till: "" },
+  { id: 5, title: "2020", value: "2020", till: "" },
+  { id: 6, title: "2010-2019", value: "2010", till: "2019" },
+  { id: 7, title: "2000-2009", value: "2000", till: "2009" },
+  { id: 8, title: "1990-1999", value: "1990", till: "1999" },
+  { id: 9, title: "1980-1989", value: "1980", till: "1989" },
+];
+const FILTER_RATING = ["All", 0, 1, 2, 3, 4, 5];
+const FILTER_GENRE = { _id: "1", name: "All" };
+const FILTER_LANGUAGE = { _id: "1", language: "All" };
 
 export default function MoviesList() {
   const [movies, setMovies] = useState([]);
@@ -18,12 +43,55 @@ export default function MoviesList() {
   const user = JSON.parse(localStorage.getItem("user"));
   const navigate = useNavigate();
 
+  const [searchText, setSearchText] = useState("");
+  const [categories, setCategories] = useState({
+    genre: [],
+    language: [],
+  });
+  const [filter, setFilter] = useState({
+    genre: "",
+    rating: "",
+    year: {
+      value: "",
+      till: "",
+    },
+    language: "",
+  });
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+
+    if (name !== "year") return setFilter({ ...filter, [name]: value });
+
+    if (name === "year") {
+      const filter_year = FILTER_YEAR.find((item) => item.value === value);
+      setFilter({
+        ...filter,
+        year: { value: filter_year.value, till: filter_year.till },
+      });
+    }
+  };
+
+  async function getFilterCategories() {
+    const { data } = await restClient.get(`${SERVER}/genres`);
+    const response = await restClient.get(`${SERVER}/languages`);
+    console.log(data[0]);
+    setCategories({
+      ...categories,
+      genre: [FILTER_GENRE, ...data],
+      language: [FILTER_LANGUAGE, ...response.data],
+    });
+
+    // console.log(unique);
+  }
+
   async function getMovies(page) {
     try {
       const { data } = await restClient.get(
-        `${SERVER}/movies?pageSize=${PAGE_SIZE}&page=${page}`
+        `${SERVER}/movies?pageSize=${PAGE_SIZE}&page=${page}&genre=${filter.genre}&language=${filter.language}&rating=${filter.rating}&yearStart=${filter.year.value}&yearEnd=${filter.year.till}&title=${searchText}`
       );
       setMovies(data.movies);
+      setPage(1);
       setMetaData(data.metaData);
     } catch (e) {
       console.warn(e);
@@ -32,6 +100,7 @@ export default function MoviesList() {
 
   useEffect(() => {
     getMovies(page);
+    getFilterCategories();
   }, []);
 
   async function handleClick(id) {
@@ -43,16 +112,99 @@ export default function MoviesList() {
     getMovies(value);
   }
 
+  async function handleFilter() {
+    getMovies();
+  }
+
+  function generateMenuItems(category) {
+    if (category === "genre")
+      return categories?.genre?.map((genre) => (
+        <MenuItem value={genre.name} key={genre._id}>
+          {genre.name}
+        </MenuItem>
+      ));
+
+    if (category === "rating")
+      return FILTER_RATING?.map((rating) => (
+        <MenuItem value={rating} key={rating}>
+          {rating}
+        </MenuItem>
+      ));
+
+    if (category === "year")
+      return FILTER_YEAR.map((year) => (
+        <MenuItem value={year.value} key={year.id}>
+          {year.title}
+        </MenuItem>
+      ));
+
+    if (category === "language")
+      return categories?.language?.map((language) => (
+        <MenuItem value={language.language} key={language._id}>
+          {language.language}
+        </MenuItem>
+      ));
+  }
+
+  const isDisabledSearch =
+    searchText.length === 0 &&
+    filter.genre.length === 0 &&
+    filter.language.length === 0 &&
+    filter.rating.length === 0 &&
+    filter.year.value.length === 0;
+
   return (
     <Box>
       {user.isAdmin ? <AdminNavigation /> : <UserNavigation />}
-
+      <Box sx={{ marginTop: 5 }}>
+        <TextField
+          id="outlined-basic"
+          label="Search Movies"
+          variant="outlined"
+          sx={{ width: "84%" }}
+          value={searchText}
+          onChange={(e) => {
+            setSearchText(e.target.value);
+          }}
+        />
+      </Box>
+      <Box sx={{ display: "flex", ml: 18, mt: 3, gap: 5 }}>
+        {FILTER_CATEGORIES.map((category) => (
+          <FormControl>
+            <InputLabel id="demo-simple-select-label">
+              {capitalizeFirstLetter(category)}
+            </InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={
+                category === "year" ? filter[category].value : filter[category]
+              }
+              label={category}
+              onChange={handleChange}
+              name={category}
+              sx={{ width: 180 }}
+            >
+              {generateMenuItems(category)}
+            </Select>
+          </FormControl>
+        ))}
+        <Button
+          variant="contained"
+          size="large"
+          sx={{ width: 140 }}
+          onClick={handleFilter}
+          disabled={isDisabledSearch}
+        >
+          Search
+        </Button>
+      </Box>
       <Box
         sx={{
           display: "flex",
           gap: 5,
-          marginTop: 20,
           flexWrap: "wrap",
+          marginTop: 13,
           flexGrow: 5,
           justifyContent: "flex-start",
           alignItems: "center",
