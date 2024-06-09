@@ -5,10 +5,11 @@ import Snackbar from "@mui/material/Snackbar";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { SERVER } from "../constants";
 
 import { useNavigate } from "react-router-dom";
+import { EMAIL_REGEX } from "../helpers/constants";
 import { localStorageSetter } from "../helpers/localstorage";
 import restClient from "../helpers/restClient";
 import TextInput from "./Input/TextInput";
@@ -101,15 +102,18 @@ function Login({ onChangeLogin }) {
     email: "",
     password: "",
   });
+  const [error, setError] = useState({ email: "", password: "" });
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const handleSubmit = async () => {
     try {
       const { data } = await axios.post(SERVER, user);
       localStorageSetter(data.token, data.user);
       navigate(data.user.isAdmin ? "/admin/movies" : "/movies");
     } catch (e) {
-      console.log(e);
+      setError({
+        email: e.response.data.message,
+        password: e.response.data.message,
+      });
     }
   };
 
@@ -118,8 +122,30 @@ function Login({ onChangeLogin }) {
     setUser({ ...user, [name]: value });
   }
 
+  function handleInputValid() {
+    const { email, password } = user;
+    let error = { email: "", password: "" };
+    if (email.length === 0) {
+      error.email = "Enter Email Address";
+    }
+    if (password.length === 0) error.password = "Enter Password";
+    return { emailError: error.email, passwordError: error.password };
+  }
+
+  function validateForm(event) {
+    event.preventDefault();
+    const { emailError, passwordError } = handleInputValid();
+    if (emailError.length !== 0 || passwordError.length !== 0)
+      return setError({ email: emailError, password: passwordError });
+
+    const isValidEmail = EMAIL_REGEX.test(user.email);
+    if (!isValidEmail)
+      return setError({ ...error, email: "Please Enter Valid Email Address" });
+    handleSubmit();
+  }
+
   return (
-    <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+    <Box component="form" onSubmit={validateForm} sx={{ mt: 1 }} noValidate>
       <TextField
         margin="normal"
         required
@@ -130,6 +156,8 @@ function Login({ onChangeLogin }) {
         autoComplete="email"
         value={user.email}
         onChange={handleChange}
+        error={error?.email?.length !== 0}
+        helperText={error.email}
       />
       <TextField
         margin="normal"
@@ -141,8 +169,9 @@ function Login({ onChangeLogin }) {
         id="password"
         value={user.password}
         onChange={handleChange}
+        error={error?.password?.length !== 0}
+        helperText={error.password}
       />
-
       <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
         Login
       </Button>

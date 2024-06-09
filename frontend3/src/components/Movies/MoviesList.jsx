@@ -75,14 +75,12 @@ export default function MoviesList() {
   async function getFilterCategories() {
     const { data } = await restClient.get(`${SERVER}/genres`);
     const response = await restClient.get(`${SERVER}/languages`);
-    console.log(data[0]);
+
     setCategories({
       ...categories,
       genre: [FILTER_GENRE, ...data],
       language: [FILTER_LANGUAGE, ...response.data],
     });
-
-    // console.log(unique);
   }
 
   async function getMovies(page) {
@@ -91,7 +89,6 @@ export default function MoviesList() {
         `${SERVER}/movies?pageSize=${PAGE_SIZE}&page=${page}&genre=${filter.genre}&language=${filter.language}&rating=${filter.rating}&yearStart=${filter.year.value}&yearEnd=${filter.year.till}&title=${searchText}`
       );
       setMovies(data.movies);
-      setPage(1);
       setMetaData(data.metaData);
     } catch (e) {
       console.warn(e);
@@ -114,6 +111,7 @@ export default function MoviesList() {
 
   async function handleFilter() {
     getMovies();
+    setPage(1);
   }
 
   function generateMenuItems(category) {
@@ -170,7 +168,7 @@ export default function MoviesList() {
       </Box>
       <Box sx={{ display: "flex", ml: 18, mt: 3, gap: 5 }}>
         {FILTER_CATEGORIES.map((category) => (
-          <FormControl>
+          <FormControl key={category}>
             <InputLabel id="demo-simple-select-label">
               {capitalizeFirstLetter(category)}
             </InputLabel>
