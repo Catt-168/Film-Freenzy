@@ -23,7 +23,8 @@ export default function AdminUsers() {
   }, []);
   const tableHeaders = users.length !== 0 ? Object.keys(users[0]) : [];
   tableHeaders[4] = "Is Admin";
-  tableHeaders[5] = "Action";
+  tableHeaders[5] = "DOB";
+  tableHeaders[6] = "Action";
   return (
     <Box>
       {user.isAdmin ? <AdminNavigation /> : <UserNavigation />}

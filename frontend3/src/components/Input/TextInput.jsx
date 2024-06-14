@@ -2,7 +2,15 @@ import { TextField } from "@mui/material";
 import React from "react";
 
 export default function TextInput(props) {
-  const { id, label, value, onChange, type = "text" } = props;
+  const {
+    id,
+    label,
+    value,
+    onChange,
+    type = "text",
+    error,
+    helperText,
+  } = props;
   return (
     <TextField
       type={type}
@@ -15,6 +23,8 @@ export default function TextInput(props) {
       autoComplete={id}
       value={value}
       onChange={onChange}
+      error={error}
+      helperText={helperText}
     />
   );
 }

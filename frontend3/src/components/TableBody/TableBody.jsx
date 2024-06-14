@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { SERVER } from "../../constants";
 import restClient from "../../helpers/restClient";
 import { formatReadableDate } from "../../helpers/textHelper";
+import dayjs from "dayjs";
 
 export default function CustomTableBody({ items, type }) {
   let table = null;
@@ -39,7 +40,7 @@ function UserTableBody({ items }) {
       console.log(e);
     }
   }
-
+  // console.log(new Date(items[3].dob).toLocaleDateString("en-GB"));
   return (
     <TableBody>
       {items.map((row, index) => (
@@ -53,6 +54,7 @@ function UserTableBody({ items }) {
           <TableCell>{row.email}</TableCell>
           <TableCell>{row.password}</TableCell>
           <TableCell>{row.isAdmin ? "true" : "false"}</TableCell>{" "}
+          <TableCell>{new Date(row.dob).toLocaleDateString("en-GB")}</TableCell>
           <TableCell>
             <Button
               color="error"

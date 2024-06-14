@@ -28,6 +28,7 @@ exports.createUser = async (req, res) => {
     email: req.body.email,
     password: req.body.password,
     isAdmin: req.body.isAdmin,
+    dob: req.body.dob,
   });
 
   try {
