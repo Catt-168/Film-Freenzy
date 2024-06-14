@@ -18,8 +18,12 @@ const userSchema = new Schema({
   },
   password: {
     type: String,
-    minlength: 3,
+    minlength: 8,
     maxlength: 1024,
+    required: true,
+  },
+  dob: {
+    type: Date,
     required: true,
   },
   isAdmin: {

@@ -5,13 +5,17 @@ import Snackbar from "@mui/material/Snackbar";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { SERVER } from "../constants";
 
 import { useNavigate } from "react-router-dom";
+import { EMAIL_REGEX, PASSWORD_REGEX } from "../helpers/constants";
 import { localStorageSetter } from "../helpers/localstorage";
 import restClient from "../helpers/restClient";
 import TextInput from "./Input/TextInput";
+import DateInput from "./Input/DateInput";
+import dayjs from "dayjs";
+import PasswordInput from "./Input/PassowrdInput";
 
 function SingUp({ onChangeSignup }) {
   const navigate = useNavigate();
@@ -19,31 +23,39 @@ function SingUp({ onChangeSignup }) {
     name: "",
     email: "",
     password: "",
+    dob: dayjs("2022-04-17"),
   });
   const [snackState, setSnackState] = useState({
     open: false,
     vertical: "top",
     horizontal: "center",
   });
+  const [error, setError] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+  const [showPassword, setShowPassword] = useState(false);
   const { vertical, horizontal, open } = snackState;
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    try {
-      const { data } = await restClient.post(`${SERVER}/users`, user);
-      localStorageSetter(data.token, data.user);
 
-      setSnackState({ ...snackState, open: true });
-      setUser({
-        name: "",
-        email: "",
-        password: "",
-      });
-      setTimeout(() => {
-        navigate("/movies");
-      }, 1000);
-    } catch (e) {
-      console.log(e);
-    }
+  const handleSubmit = async () => {
+    console.log("YESSS, SUBMIT");
+    // try {
+    //   const { data } = await restClient.post(`${SERVER}/users`, user);
+    //   localStorageSetter(data.token, data.user);
+
+    //   setSnackState({ ...snackState, open: true });
+    //   setUser({
+    //     name: "",
+    //     email: "",
+    //     password: "",
+    //   });
+    //   setTimeout(() => {
+    //     navigate("/movies");
+    //   }, 1000);
+    // } catch (e) {
+    //   console.log(e.response.data);
+    // }
   };
 
   function handleChange(e) {
@@ -51,28 +63,111 @@ function SingUp({ onChangeSignup }) {
     setUser({ ...user, [name]: value });
   }
 
+  function handleInputEmpty() {
+    const { email, password, name } = user;
+    let error = { email: "", password: "", name: "" };
+    if (name.length === 0) {
+      error.name = "Enter Username";
+    }
+    if (email.length === 0) {
+      error.email = "Enter Email Address";
+    }
+    if (password.length === 0) error.password = "Enter Password";
+    return {
+      emailError: error.email,
+      passwordError: error.password,
+      usernameError: error.name,
+    };
+  }
+
+  function validateForm(event) {
+    event.preventDefault();
+    const { emailError, passwordError, usernameError } = handleInputEmpty();
+
+    const isUserNameErrorEmpty = usernameError.length === 0;
+    const isPasswordErrorEmpty = passwordError.length === 0;
+    const isEmailErrorEmpty = emailError.length === 0;
+
+    const isValidEmail = EMAIL_REGEX.test(user.email) && isEmailErrorEmpty;
+    const isValidPassword =
+      PASSWORD_REGEX.test(user.password) && isPasswordErrorEmpty;
+    const isValidUsername = user.name.length >= 5 && isUserNameErrorEmpty;
+
+    const isErrorClear = isValidEmail && isValidPassword && isValidUsername;
+
+    console.log("SAD", PASSWORD_REGEX.test(user.password), user.password);
+    if (isErrorClear) setError({});
+    let inputError = {};
+
+    if (isValidUsername) inputError.name = "";
+    else {
+      inputError.name = isUserNameErrorEmpty
+        ? "Username must be at least 5 characters"
+        : usernameError;
+    }
+
+    if (isValidEmail) inputError.email = "";
+    else {
+      inputError.email = isEmailErrorEmpty
+        ? "Please Enter Valid Email Address"
+        : emailError;
+    }
+
+    if (isValidPassword) inputError.password = "";
+    else {
+      inputError.password = isPasswordErrorEmpty
+        ? user.password.length < 8
+          ? "Password must be 8 characters at least"
+          : "Password must include at least one uppercase letter, one lowercase letter, one number and one special character"
+        : passwordError;
+    }
+
+    if (isErrorClear) handleSubmit();
+    setError(inputError);
+  }
+
+  function handleShowPassword() {
+    setShowPassword((prev) => !prev);
+  }
+  function handleMouseDownPassword(event) {
+    event.preventDefault();
+  }
+
+  const d = new Date(user.dob).toLocaleDateString("en-GB");
   return (
-    <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+    <Box component="form" onSubmit={validateForm} noValidate sx={{ mt: 1 }}>
       <TextInput
         id="name"
         label="Username"
         value={user.name}
         onChange={handleChange}
+        error={error.name.length !== 0}
+        helperText={error?.name}
       />
+      <DateInput value={user.dob} onChange={handleChange} />
+
       <TextInput
         type="email"
         id="email"
         label="Email Address"
         value={user.email}
         onChange={handleChange}
+        error={error.email.length !== 0}
+        helperText={error?.email}
       />
-      <TextInput
+      <PasswordInput
         type="password"
         id="password"
         label="Password"
         value={user.password}
         onChange={handleChange}
+        error={error.password.length !== 0}
+        helperText={error?.password}
+        showPassword={showPassword}
+        onShow={handleShowPassword}
+        onMouseDown={handleMouseDownPassword}
       />
+
       <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
         Sign Up
       </Button>
@@ -97,19 +192,23 @@ function SingUp({ onChangeSignup }) {
 
 function Login({ onChangeLogin }) {
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
   const [user, setUser] = useState({
     email: "",
     password: "",
   });
+  const [error, setError] = useState({ email: "", password: "" });
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const handleSubmit = async () => {
     try {
       const { data } = await axios.post(SERVER, user);
       localStorageSetter(data.token, data.user);
       navigate(data.user.isAdmin ? "/admin/movies" : "/movies");
     } catch (e) {
-      console.log(e);
+      setError({
+        email: e.response.data.message,
+        password: e.response.data.message,
+      });
     }
   };
 
@@ -118,29 +217,56 @@ function Login({ onChangeLogin }) {
     setUser({ ...user, [name]: value });
   }
 
+  function handleInputValid() {
+    const { email, password } = user;
+    let error = { email: "", password: "" };
+    if (email.length === 0) {
+      error.email = "Enter Email Address";
+    }
+    if (password.length === 0) error.password = "Enter Password";
+    return { emailError: error.email, passwordError: error.password };
+  }
+
+  function validateForm(event) {
+    event.preventDefault();
+    const { emailError, passwordError } = handleInputValid();
+    if (emailError.length !== 0 || passwordError.length !== 0)
+      return setError({ email: emailError, password: passwordError });
+
+    const isValidEmail = EMAIL_REGEX.test(user.email);
+    if (!isValidEmail)
+      return setError({ ...error, email: "Please Enter Valid Email Address" });
+    handleSubmit();
+  }
+
+  function handleShowPassword() {
+    setShowPassword((prev) => !prev);
+  }
+  function handleMouseDownPassword(event) {
+    event.preventDefault();
+  }
+
   return (
-    <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-      <TextField
-        margin="normal"
-        required
-        fullWidth
+    <Box component="form" onSubmit={validateForm} sx={{ mt: 1 }} noValidate>
+      <TextInput
         id="email"
         label="Email Address"
-        name="email"
-        autoComplete="email"
         value={user.email}
         onChange={handleChange}
+        error={error?.email?.length !== 0}
+        helperText={error.email}
       />
-      <TextField
-        margin="normal"
-        required
-        fullWidth
-        name="password"
-        label="Password"
+      <PasswordInput
         type="password"
         id="password"
+        label="Password"
         value={user.password}
         onChange={handleChange}
+        error={error?.password?.length !== 0}
+        helperText={error.password}
+        showPassword={showPassword}
+        onShow={handleShowPassword}
+        onMouseDown={handleMouseDownPassword}
       />
 
       <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
@@ -157,6 +283,7 @@ function Login({ onChangeLogin }) {
     </Box>
   );
 }
+
 export default function Authenticate() {
   const [isLogin, setIsLogin] = useState(true);
 

@@ -9,12 +9,12 @@ exports.getAllMovies = async (req, res) => {
     const {
       pageSize,
       page,
-      genre,
-      language,
-      rating,
-      yearStart,
-      yearEnd,
-      title,
+      genre = "",
+      language = "",
+      rating = "",
+      yearStart = "",
+      yearEnd = "",
+      title = "",
     } = req.query;
     const skip = (page - 1) * pageSize;
 
