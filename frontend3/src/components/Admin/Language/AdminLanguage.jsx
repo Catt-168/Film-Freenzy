@@ -26,13 +26,13 @@ export default function AdminLanguage() {
   const tableHeaders = languages.length !== 0 ? Object.keys(languages[0]) : [];
   tableHeaders[2] = "Action";
   return (
-    <Box>
+    <Box sx={{ display: "flex" }}>
       {user.isAdmin ? <AdminNavigation /> : <UserNavigation />}
-      <Box sx={{ mt: 4 }}>
+      <Box sx={{ mt: 7, flexGrow: 1 }}>
         <Button
           variant="contained"
           onClick={() => navigate(`/admin/languages/create`)}
-          sx={{ marginBottom: 3, position: "relative", marginLeft: "92%" }}
+          sx={{ marginBottom: 3, mr: "100%" }}
         >
           Create
         </Button>

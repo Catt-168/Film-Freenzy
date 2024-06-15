@@ -26,9 +26,9 @@ export default function AdminRentals() {
   tableHeaders[5] = "Subscribed Date";
   tableHeaders[6] = "Movie Daily Rental Rate";
   return (
-    <Box>
+    <Box sx={{ display: "flex" }}>
       <AdminNavigation />
-      <Box mt={5}>
+      <Box mt={7} flexGrow={1}>
         {rentals.length !== 0 ? (
           <CustomTable
             tableHeaders={tableHeaders}

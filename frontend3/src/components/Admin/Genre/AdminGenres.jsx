@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-
 import { SERVER } from "../../../constants";
 import restClient from "../../../helpers/restClient";
 import CustomTable from "../CustomTable";
@@ -15,7 +14,6 @@ export default function AdminGeners() {
 
   async function getUsers() {
     const { data } = await restClient.get(`${SERVER}/genres`);
-
     setGenres(data);
   }
 
@@ -25,13 +23,13 @@ export default function AdminGeners() {
   const tableHeaders = genres.length !== 0 ? Object.keys(genres[0]) : [];
   tableHeaders[2] = "Action";
   return (
-    <Box>
+    <Box sx={{ display: "flex" }}>
       {user.isAdmin ? <AdminNavigation /> : <UserNavigation />}
-      <Box sx={{ mt: 4 }}>
+      <Box sx={{ mt: 7, flexGrow: 1 }}>
         <Button
           variant="contained"
           onClick={() => navigate(`/admin/genres/create`)}
-          sx={{ marginBottom: 3, position: "relative", marginLeft: "92%" }}
+          sx={{ marginBottom: 3, mr: "100%" }}
         >
           Create
         </Button>

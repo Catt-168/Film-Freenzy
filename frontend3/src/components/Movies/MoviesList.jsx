@@ -166,7 +166,7 @@ export default function MoviesList() {
           }}
         />
       </Box>
-      <Box sx={{ display: "flex", ml: 18, mt: 3, gap: 5 }}>
+      <Box sx={{ display: "flex", ml: "8%", mt: 3, gap: 5 }}>
         {FILTER_CATEGORIES.map((category) => (
           <FormControl key={category}>
             <InputLabel id="demo-simple-select-label">
@@ -192,7 +192,6 @@ export default function MoviesList() {
           size="large"
           sx={{ width: 140 }}
           onClick={handleFilter}
-          disabled={isDisabledSearch}
         >
           Search
         </Button>
