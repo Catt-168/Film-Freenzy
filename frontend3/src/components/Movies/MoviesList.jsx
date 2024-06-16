@@ -110,6 +110,14 @@ export default function MoviesList() {
   }
 
   async function handleFilter() {
+    const isDisabledSearch =
+      searchText.length === 0 &&
+      filter.genre.length === 0 &&
+      filter.language.length === 0 &&
+      filter.rating.length === 0 &&
+      filter.year.value.length === 0;
+
+    if (isDisabledSearch) return;
     getMovies();
     setPage(1);
   }
@@ -143,13 +151,6 @@ export default function MoviesList() {
         </MenuItem>
       ));
   }
-
-  const isDisabledSearch =
-    searchText.length === 0 &&
-    filter.genre.length === 0 &&
-    filter.language.length === 0 &&
-    filter.rating.length === 0 &&
-    filter.year.value.length === 0;
 
   return (
     <Box>
