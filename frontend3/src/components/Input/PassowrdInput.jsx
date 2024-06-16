@@ -4,7 +4,6 @@ import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import TextField from "@mui/material/TextField";
 import * as React from "react";
-import AccountCircle from "@mui/icons-material/AccountCircle";
 
 export default function PasswordInput(props) {
   const {
