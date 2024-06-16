@@ -6,6 +6,7 @@ import {
   Pagination,
   Select,
   TextField,
+  Typography,
 } from "@mui/material";
 import Box from "@mui/material/Box";
 import React, { useEffect, useState } from "react";
@@ -83,10 +84,18 @@ export default function MoviesList() {
     });
   }
 
-  async function getMovies(page) {
+  async function getMovies(
+    page,
+    searchText,
+    genre,
+    rating,
+    yearStart,
+    yearEnd,
+    language
+  ) {
     try {
       const { data } = await restClient.get(
-        `${SERVER}/movies?pageSize=${PAGE_SIZE}&page=${page}&genre=${filter.genre}&language=${filter.language}&rating=${filter.rating}&yearStart=${filter.year.value}&yearEnd=${filter.year.till}&title=${searchText}`
+        `${SERVER}/movies?pageSize=${PAGE_SIZE}&page=${page}&genre=${genre}&language=${language}&rating=${rating}&yearStart=${yearStart}&yearEnd=${yearEnd}&title=${searchText}`
       );
       setMovies(data.movies);
       setMetaData(data.metaData);
@@ -96,7 +105,7 @@ export default function MoviesList() {
   }
 
   useEffect(() => {
-    getMovies(page);
+    getMovies(page, searchText, "", "", "", "", "");
     getFilterCategories();
   }, []);
 
@@ -105,11 +114,41 @@ export default function MoviesList() {
   }
 
   async function handlePaginate(e, value) {
+    const { genre, rating, year, language } = filter;
     setPage(value);
-    getMovies(value);
+    getMovies(
+      value,
+      searchText,
+      genre,
+      rating,
+      year.value,
+      year.till,
+      language
+    );
   }
 
-  async function handleFilter() {
+  function handleFilter() {
+    const { genre, rating, year, language } = filter;
+    const isDisabledSearch =
+      searchText.length === 0 &&
+      filter.genre.length === 0 &&
+      filter.language.length === 0 &&
+      filter.rating.length === 0 &&
+      filter.year.value.length === 0;
+
+    getMovies(
+      isDisabledSearch ? page : 1,
+      searchText,
+      genre,
+      rating,
+      year.value,
+      year.till,
+      language
+    );
+    if (!isDisabledSearch) setPage(1);
+  }
+
+  function handleReset() {
     const isDisabledSearch =
       searchText.length === 0 &&
       filter.genre.length === 0 &&
@@ -118,8 +157,18 @@ export default function MoviesList() {
       filter.year.value.length === 0;
 
     if (isDisabledSearch) return;
-    getMovies();
-    setPage(1);
+    setSearchText("");
+    setFilter({
+      genre: "",
+      rating: "",
+      year: {
+        value: "",
+        till: "",
+      },
+      language: "",
+    });
+    getMovies(page, "", "", "", "", "", "");
+    // setPage(1);
   }
 
   function generateMenuItems(category) {
@@ -151,6 +200,8 @@ export default function MoviesList() {
         </MenuItem>
       ));
   }
+
+  const isMoviesEmpty = movies.length === 0;
 
   return (
     <Box>
@@ -196,6 +247,15 @@ export default function MoviesList() {
         >
           Search
         </Button>
+        <Button
+          variant="contained"
+          size="large"
+          sx={{ width: 140 }}
+          onClick={handleReset}
+          color="error"
+        >
+          Reset
+        </Button>
       </Box>
       <Box
         sx={{
@@ -210,11 +270,22 @@ export default function MoviesList() {
           ml: "8%",
         }}
       >
-        {movies.map((item) => (
-          <MovieCard item={item} handleClick={handleClick} key={item._id} />
-        ))}
+        {isMoviesEmpty ? (
+          <Typography variant="h3" sx={{ textAlign: "center", width: "100%" }}>
+            Sorry, No Movies!
+          </Typography>
+        ) : (
+          movies.map((item) => (
+            <MovieCard item={item} handleClick={handleClick} key={item._id} />
+          ))
+        )}
       </Box>
-      <Box sx={{ display: "flex", justifyContent: "center" }}>
+      <Box
+        sx={{
+          display: isMoviesEmpty ? "none" : "flex",
+          justifyContent: "center",
+        }}
+      >
         <Pagination
           page={page}
           count={metaData.totalPages}
