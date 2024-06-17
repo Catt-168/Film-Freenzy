@@ -39,23 +39,25 @@ function SingUp({ onChangeSignup }) {
   const { vertical, horizontal, open } = snackState;
 
   const handleSubmit = async () => {
-    console.log("YESSS, SUBMIT");
-    // try {
-    //   const { data } = await restClient.post(`${SERVER}/users`, user);
-    //   localStorageSetter(data.token, data.user);
-
-    //   setSnackState({ ...snackState, open: true });
-    //   setUser({
-    //     name: "",
-    //     email: "",
-    //     password: "",
-    //   });
-    //   setTimeout(() => {
-    //     navigate("/movies");
-    //   }, 1000);
-    // } catch (e) {
-    //   console.log(e.response.data);
-    // }
+    try {
+      const { data } = await restClient.post(`${SERVER}/users`, user);
+      localStorageSetter(data.token, data.user);
+      setSnackState({ ...snackState, open: true });
+      setUser({
+        name: "",
+        email: "",
+        password: "",
+      });
+      setTimeout(() => {
+        navigate("/movies");
+      }, 1000);
+    } catch (e) {
+      setError({
+        name: "",
+        password: "",
+        email: e.response.data.message,
+      });
+    }
   };
 
   function handleChange(e) {
@@ -95,7 +97,6 @@ function SingUp({ onChangeSignup }) {
 
     const isErrorClear = isValidEmail && isValidPassword && isValidUsername;
 
-    console.log("SAD", PASSWORD_REGEX.test(user.password), user.password);
     if (isErrorClear) setError({});
     let inputError = {};
 
@@ -122,8 +123,13 @@ function SingUp({ onChangeSignup }) {
         : passwordError;
     }
 
-    if (isErrorClear) handleSubmit();
-    setError(inputError);
+    if (!isErrorClear) return setError(inputError);
+    handleSubmit();
+    setError({
+      name: "",
+      email: "",
+      password: "",
+    });
   }
 
   function handleShowPassword() {
@@ -133,7 +139,6 @@ function SingUp({ onChangeSignup }) {
     event.preventDefault();
   }
 
-  const d = new Date(user.dob).toLocaleDateString("en-GB");
   return (
     <Box component="form" onSubmit={validateForm} noValidate sx={{ mt: 1 }}>
       <TextInput
@@ -141,7 +146,7 @@ function SingUp({ onChangeSignup }) {
         label="Username"
         value={user.name}
         onChange={handleChange}
-        error={error.name.length !== 0}
+        error={error?.name?.length !== 0}
         helperText={error?.name}
       />
       <DateInput value={user.dob} onChange={handleChange} />
@@ -152,7 +157,7 @@ function SingUp({ onChangeSignup }) {
         label="Email Address"
         value={user.email}
         onChange={handleChange}
-        error={error.email.length !== 0}
+        error={error?.email?.length !== 0}
         helperText={error?.email}
       />
       <PasswordInput
@@ -161,7 +166,7 @@ function SingUp({ onChangeSignup }) {
         label="Password"
         value={user.password}
         onChange={handleChange}
-        error={error.password.length !== 0}
+        error={error?.password?.length !== 0}
         helperText={error?.password}
         showPassword={showPassword}
         onShow={handleShowPassword}
