@@ -36,7 +36,7 @@ exports.createUser = async (req, res) => {
     if (oldUser)
       return res
         .status(409)
-        .json({ message: "User with same idenity exists!" });
+        .json({ message: "Another User with same idenity exists!" });
     const salt = await bcrypt.genSalt(10);
     userSchema.password = await bcrypt.hash(req.body.password, salt);
     const user = await userSchema.save();
