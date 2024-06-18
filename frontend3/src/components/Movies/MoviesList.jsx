@@ -105,17 +105,38 @@ export default function MoviesList() {
   }
 
   useEffect(() => {
-    getMovies(page, searchText, "", "", "", "", "");
+    const filteredValues = localStorage.getItem("filter");
+    const currentPage = localStorage.getItem("page");
+    const pagination = !currentPage ? page : parseInt(currentPage);
+    const storageSearchText = localStorage.getItem("search");
+    const currentSearchText = !storageSearchText ? "" : storageSearchText;
+    setPage(pagination);
+    setSearchText(currentSearchText);
     getFilterCategories();
+
+    if (!!filteredValues) {
+      setFilter(JSON.parse(filteredValues));
+      getMovies(
+        pagination,
+        currentSearchText,
+        JSON.parse(filteredValues).genre,
+        JSON.parse(filteredValues).rating,
+        JSON.parse(filteredValues).year.value,
+        JSON.parse(filteredValues).year.till,
+        JSON.parse(filteredValues).language
+      );
+    } else getMovies(pagination, currentSearchText, "", "", "", "", "");
   }, []);
 
   async function handleClick(id) {
+    localStorage.setItem("page", page);
     navigate(`/movies/${id}`, { state: { id } });
   }
 
   async function handlePaginate(e, value) {
     const { genre, rating, year, language } = filter;
     setPage(value);
+    localStorage.setItem("page", value);
     getMovies(
       value,
       searchText,
@@ -135,6 +156,13 @@ export default function MoviesList() {
       filter.language.length === 0 &&
       filter.rating.length === 0 &&
       filter.year.value.length === 0;
+
+    if (!isDisabledSearch) {
+      localStorage.setItem("search", searchText);
+      localStorage.setItem("page", page);
+      localStorage.setItem("oldPage", page);
+      localStorage.setItem("filter", JSON.stringify(filter));
+    }
 
     getMovies(
       isDisabledSearch ? page : 1,
@@ -157,6 +185,28 @@ export default function MoviesList() {
       filter.year.value.length === 0;
 
     if (isDisabledSearch) return;
+    resetValues();
+    // setPage(1);
+  }
+
+  function removeFromStorage() {
+    localStorage.removeItem("oldPage");
+    localStorage.removeItem("search");
+    localStorage.removeItem("filter");
+  }
+
+  function fetchFromCurrentPagination() {
+    const currentPage = localStorage.getItem("page");
+    const oldPage = localStorage.getItem("oldPage");
+    !!oldPage && localStorage.setItem("page", parseInt(oldPage));
+    return !!oldPage
+      ? parseInt(oldPage)
+      : !currentPage
+      ? page
+      : parseInt(currentPage);
+  }
+  function resetValues() {
+    const pagination = fetchFromCurrentPagination();
     setSearchText("");
     setFilter({
       genre: "",
@@ -167,8 +217,9 @@ export default function MoviesList() {
       },
       language: "",
     });
-    getMovies(page, "", "", "", "", "", "");
-    // setPage(1);
+    setPage(pagination);
+    getMovies(pagination, "", "", "", "", "", "");
+    removeFromStorage();
   }
 
   function generateMenuItems(category) {
@@ -201,10 +252,24 @@ export default function MoviesList() {
       ));
   }
 
+  const handleKeyDown = (event) => {
+    const isDisabledSearch =
+      searchText.length === 0 &&
+      filter.genre.length === 0 &&
+      filter.language.length === 0 &&
+      filter.rating.length === 0 &&
+      filter.year.value.length === 0;
+
+    if (event.key === "Enter") {
+      if (isDisabledSearch) return resetValues();
+      handleFilter();
+    }
+  };
+
   const isMoviesEmpty = movies.length === 0;
 
   return (
-    <Box>
+    <Box onKeyDown={handleKeyDown}>
       {user.isAdmin ? <AdminNavigation /> : <UserNavigation />}
       <Box sx={{ marginTop: 5 }}>
         <TextField
@@ -257,6 +322,7 @@ export default function MoviesList() {
           Reset
         </Button>
       </Box>
+
       <Box
         sx={{
           display: "flex",

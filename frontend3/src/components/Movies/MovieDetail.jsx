@@ -52,7 +52,7 @@ export default function MovieDetail() {
       setRentDate(movie.rentalDate);
       setIsUpdate(true);
     } catch (e) {
-      console.log(e);
+      console.log("SIMPLE NO RENTAL");
     }
   }
 

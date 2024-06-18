@@ -18,7 +18,6 @@ const drawerWidth = 240;
 const navItems = ["movies", "rentals", "edit", "logout"];
 
 function UserNavigation(props) {
-  const { window, children } = props;
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
 
@@ -28,8 +27,10 @@ function UserNavigation(props) {
 
   const handleNavigate = (item) => {
     if (item !== "logout") return navigate(`/${item}`);
+
     localStorage.removeItem("jwtToken");
     localStorage.removeItem("user");
+    localStorage.removeItem("page");
     navigate("/login");
   };
   return (
@@ -68,8 +69,6 @@ function UserNavigation(props) {
           </Box>
         </Toolbar>
       </AppBar>
-
-      {children}
     </Box>
   );
 }
