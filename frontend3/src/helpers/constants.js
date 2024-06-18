@@ -5,3 +5,10 @@ export const EMAIL_REGEX =
 // one lowercase letter, one number and one special character:
 export const PASSWORD_REGEX =
   /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
+
+export const STATUS_TYPE = Object.freeze({
+  idle: "idle",
+  loading: "loading",
+  success: "success",
+  error: "error",
+});
