@@ -8,6 +8,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -17,6 +18,7 @@ import AdminNavigation from "../Navigation/AdminNavigation";
 import UserNavigation from "../Navigation/UserNavigation";
 import MovieCard from "./MovieCard";
 import { capitalizeFirstLetter } from "../../helpers/textHelper";
+import { STATUS_TYPE } from "../../helpers/constants";
 
 const PAGE_SIZE = 10;
 const FILTER_CATEGORIES = ["genre", "rating", "year", "language"];
@@ -40,7 +42,7 @@ export default function MoviesList() {
   const [movies, setMovies] = useState([]);
   const [page, setPage] = useState(1);
   const [metaData, setMetaData] = useState({});
-
+  const [status, setStatus] = useState(STATUS_TYPE.idle);
   const user = JSON.parse(localStorage.getItem("user"));
   const navigate = useNavigate();
 
@@ -93,14 +95,17 @@ export default function MoviesList() {
     yearEnd,
     language
   ) {
+    setStatus(STATUS_TYPE.loading);
     try {
       const { data } = await restClient.get(
         `${SERVER}/movies?pageSize=${PAGE_SIZE}&page=${page}&genre=${genre}&language=${language}&rating=${rating}&yearStart=${yearStart}&yearEnd=${yearEnd}&title=${searchText}`
       );
       setMovies(data.movies);
       setMetaData(data.metaData);
+      setStatus(STATUS_TYPE.success);
     } catch (e) {
       console.warn(e);
+      setStatus(STATUS_TYPE.error);
     }
   }
 
@@ -148,6 +153,16 @@ export default function MoviesList() {
     );
   }
 
+  function filterSaveStorage(isDisabledSearch) {
+    const oldPagination = localStorage.getItem("oldPage");
+    if (!isDisabledSearch) {
+      localStorage.setItem("search", searchText);
+      localStorage.setItem("page", page);
+      !oldPagination && localStorage.setItem("oldPage", page); // if old pagination exist, don't update
+      localStorage.setItem("filter", JSON.stringify(filter));
+    }
+  }
+
   function handleFilter() {
     const { genre, rating, year, language } = filter;
     const isDisabledSearch =
@@ -157,12 +172,7 @@ export default function MoviesList() {
       filter.rating.length === 0 &&
       filter.year.value.length === 0;
 
-    if (!isDisabledSearch) {
-      localStorage.setItem("search", searchText);
-      localStorage.setItem("page", page);
-      localStorage.setItem("oldPage", page);
-      localStorage.setItem("filter", JSON.stringify(filter));
-    }
+    filterSaveStorage(isDisabledSearch);
 
     getMovies(
       isDisabledSearch ? page : 1,
@@ -266,6 +276,8 @@ export default function MoviesList() {
     }
   };
 
+  const isLoading = status === STATUS_TYPE.loading;
+  const isSuccess = status === STATUS_TYPE.success;
   const isMoviesEmpty = movies.length === 0;
 
   return (
@@ -298,7 +310,7 @@ export default function MoviesList() {
               label={category}
               onChange={handleChange}
               name={category}
-              sx={{ width: 180 }}
+              sx={{ width: 150 }}
             >
               {generateMenuItems(category)}
             </Select>
@@ -307,7 +319,7 @@ export default function MoviesList() {
         <Button
           variant="contained"
           size="large"
-          sx={{ width: 140 }}
+          sx={{ width: 132 }}
           onClick={handleFilter}
         >
           Search
@@ -315,14 +327,13 @@ export default function MoviesList() {
         <Button
           variant="contained"
           size="large"
-          sx={{ width: 140 }}
+          sx={{ width: 132 }}
           onClick={handleReset}
           color="error"
         >
           Reset
         </Button>
       </Box>
-
       <Box
         sx={{
           display: "flex",
@@ -336,7 +347,18 @@ export default function MoviesList() {
           ml: "8%",
         }}
       >
-        {isMoviesEmpty ? (
+        {isLoading ? (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "flex-start",
+              width: "100%",
+            }}
+          >
+            <CircularProgress />
+          </Box>
+        ) : isMoviesEmpty ? (
           <Typography variant="h3" sx={{ textAlign: "center", width: "100%" }}>
             Sorry, No Movies!
           </Typography>
@@ -348,7 +370,7 @@ export default function MoviesList() {
       </Box>
       <Box
         sx={{
-          display: isMoviesEmpty ? "none" : "flex",
+          display: isMoviesEmpty || isLoading ? "none" : "flex",
           justifyContent: "center",
         }}
       >
