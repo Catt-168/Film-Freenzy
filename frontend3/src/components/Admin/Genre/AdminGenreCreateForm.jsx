@@ -8,6 +8,7 @@ import restClient from "../../../helpers/restClient";
 import TextInput from "../../Input/TextInput";
 import AdminNavigation from "../../Navigation/AdminNavigation";
 import UserNavigation from "../../Navigation/UserNavigation";
+import GenericButton from "../../Core/GenericButton";
 
 export default function AdminGenreCreateForm() {
   const [genre, setGenre] = useState("");
@@ -86,9 +87,7 @@ export default function AdminGenreCreateForm() {
           onChange={(e) => setGenre((prev) => e.target.value)}
         />
 
-        <Button variant="contained" size="medium" type="submit">
-          {id ? "Update" : "Create"}
-        </Button>
+        <GenericButton type="submit" text={id ? "Update" : "Create"} />
       </Box>
     </Box>
   );

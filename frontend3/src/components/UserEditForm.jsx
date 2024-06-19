@@ -1,11 +1,11 @@
-import { Box, Button, Container, TextField, Typography } from "@mui/material";
+import { Box, Container, TextField, Typography } from "@mui/material";
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { SERVER } from "../constants";
+import restClient from "../helpers/restClient";
+import GenericButton from "./Core/GenericButton";
 import AdminNavigation from "./Navigation/AdminNavigation";
 import UserNavigation from "./Navigation/UserNavigation";
-import { useNavigate } from "react-router-dom";
-import restClient from "../helpers/restClient";
-import { SERVER } from "../constants";
-import { localStorageSetter } from "../helpers/localstorage";
 
 export default function UserEditForm() {
   const localUser = JSON.parse(localStorage.getItem("user"));
@@ -83,14 +83,13 @@ export default function UserEditForm() {
               onChange={handleChange}
             />
 
-            <Button
-              type="submit"
+            <GenericButton
               fullWidth
+              type="submit"
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
-            >
-              Edit
-            </Button>
+              text="Edit"
+            />
           </Box>
         </Box>
       </Container>

@@ -24,9 +24,10 @@ import { styled, useTheme } from "@mui/material/styles";
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import { capitalizeFirstLetter } from "../../helpers/textHelper";
+import { Colors } from "../../helpers/constants";
 
 const drawerWidth = 240;
-const navItems = ["users", "movies", "genres", "languages", "rentals"];
+const navItems = ["movies", "users", "genres", "languages", "rentals"];
 
 const openedMixin = (theme) => ({
   width: drawerWidth,
@@ -99,9 +100,12 @@ export default function VariantDrawer() {
     localStorage.getItem("navigation") === "true"
   );
   const navigate = useNavigate();
+  const activeTab = JSON.parse(localStorage.getItem("active")) || 0;
 
   const handleNavigate = (item) => {
     if (item !== "logout") return navigate(`/admin/${item}`);
+
+    localStorage.removeItem("active");
     localStorage.removeItem("jwtToken");
     localStorage.removeItem("user");
     localStorage.removeItem("navigation");
@@ -118,29 +122,30 @@ export default function VariantDrawer() {
     localStorage.setItem("navigation", String(false));
   };
 
-  console.log("navigation", open);
-
-  function generateIcons(item) {
+  function generateIcons(item, index) {
+    const sxProp = {
+      color: activeTab === index ? Colors.primary : "",
+    };
     switch (item) {
       case "users":
-        return <PersonIcon />;
+        return <PersonIcon sx={sxProp} />;
       case "movies":
-        return <MovieIcon />;
+        return <MovieIcon sx={sxProp} />;
       case "genres":
-        return <RedditIcon />;
+        return <RedditIcon sx={sxProp} />;
       case "languages":
-        return <LanguageIcon />;
+        return <LanguageIcon sx={sxProp} />;
       case "rentals":
-        return <MovieFilterIcon />;
+        return <MovieFilterIcon sx={sxProp} />;
       case "logout":
-        return <LogoutIcon />;
+        return <LogoutIcon sx={sxProp} />;
     }
   }
 
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <AppBar position="fixed" open={open}>
+      <AppBar position="fixed" open={open} sx={{ background: Colors.primary }}>
         <Toolbar>
           <IconButton
             color="inherit"
@@ -162,13 +167,13 @@ export default function VariantDrawer() {
       </AppBar>
       <Drawer variant="permanent" open={open}>
         <DrawerHeader
-          sx={{ background: theme.direction === "rtl" ? "" : "#1976d2" }}
+          sx={{ background: theme.direction === "rtl" ? "" : Colors.primary }}
         >
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === "rtl" ? (
               <ChevronRightIcon />
             ) : (
-              <ChevronLeftIcon sx={{ color: "#fff" }} />
+              <ChevronLeftIcon sx={{ color: Colors.textWhite }} />
             )}
           </IconButton>
         </DrawerHeader>
@@ -178,11 +183,22 @@ export default function VariantDrawer() {
             <ListItem
               key={item}
               disablePadding
-              onClick={() => handleNavigate(item)}
+              onClick={() => {
+                localStorage.setItem("active", index);
+                handleNavigate(item);
+              }}
             >
               <ListItemButton>
-                <ListItemIcon>{generateIcons(item)}</ListItemIcon>
-                <ListItemText primary={capitalizeFirstLetter(item)} />
+                <ListItemIcon>{generateIcons(item, index)}</ListItemIcon>
+                <ListItemText
+                  primary={capitalizeFirstLetter(item)}
+                  primaryTypographyProps={{
+                    fontWeight: activeTab === index ? "bold" : "",
+                  }}
+                  sx={{
+                    color: activeTab === index ? Colors.primary : "",
+                  }}
+                />
               </ListItemButton>
             </ListItem>
           ))}

@@ -1,5 +1,4 @@
 import {
-  Button,
   FormControl,
   InputLabel,
   MenuItem,
@@ -8,17 +7,19 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
+import CircularProgress from "@mui/material/CircularProgress";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SERVER } from "../../constants";
+import { STATUS_TYPE } from "../../helpers/constants";
 import restClient from "../../helpers/restClient";
+import { capitalizeFirstLetter } from "../../helpers/textHelper";
+import GenericButton from "../Core/GenericButton";
 import AdminNavigation from "../Navigation/AdminNavigation";
 import UserNavigation from "../Navigation/UserNavigation";
 import MovieCard from "./MovieCard";
-import { capitalizeFirstLetter } from "../../helpers/textHelper";
-import { STATUS_TYPE } from "../../helpers/constants";
+import LoadingSpinner from "../Core/LoadingSpinner";
 
 const PAGE_SIZE = 10;
 const FILTER_CATEGORIES = ["genre", "rating", "year", "language"];
@@ -115,14 +116,16 @@ export default function MoviesList() {
     const pagination = !currentPage ? page : parseInt(currentPage);
     const storageSearchText = localStorage.getItem("search");
     const currentSearchText = !storageSearchText ? "" : storageSearchText;
-    setPage(pagination);
+    // setPage(pagination);
     setSearchText(currentSearchText);
     getFilterCategories();
+
+    const isDisableFilterValues = !filteredValues;
 
     if (!!filteredValues) {
       setFilter(JSON.parse(filteredValues));
       getMovies(
-        pagination,
+        isDisableFilterValues ? pagination : 1,
         currentSearchText,
         JSON.parse(filteredValues).genre,
         JSON.parse(filteredValues).rating,
@@ -316,23 +319,18 @@ export default function MoviesList() {
             </Select>
           </FormControl>
         ))}
-        <Button
-          variant="contained"
-          size="large"
-          sx={{ width: 132 }}
+
+        <GenericButton
           onClick={handleFilter}
-        >
-          Search
-        </Button>
-        <Button
-          variant="contained"
-          size="large"
+          sx={{ width: 132 }}
+          text={"Search"}
+        />
+        <GenericButton
           sx={{ width: 132 }}
           onClick={handleReset}
-          color="error"
-        >
-          Reset
-        </Button>
+          text={"Reset"}
+          isError={true}
+        />
       </Box>
       <Box
         sx={{
@@ -356,7 +354,7 @@ export default function MoviesList() {
               width: "100%",
             }}
           >
-            <CircularProgress />
+            <LoadingSpinner />
           </Box>
         ) : isMoviesEmpty ? (
           <Typography variant="h3" sx={{ textAlign: "center", width: "100%" }}>
@@ -378,8 +376,8 @@ export default function MoviesList() {
           page={page}
           count={metaData.totalPages}
           onChange={handlePaginate}
-          color="primary"
           shape="rounded"
+          color={"BlueSapphire"}
         />
       </Box>
     </Box>

@@ -6,6 +6,7 @@ import { Box, Button } from "@mui/material";
 import AdminNavigation from "../../Navigation/AdminNavigation";
 import UserNavigation from "../../Navigation/UserNavigation";
 import { useNavigate } from "react-router-dom";
+import GenericButton from "../../Core/GenericButton";
 
 export default function AdminGeners() {
   const [genres, setGenres] = useState([]);
@@ -26,13 +27,11 @@ export default function AdminGeners() {
     <Box sx={{ display: "flex" }}>
       {user.isAdmin ? <AdminNavigation /> : <UserNavigation />}
       <Box sx={{ mt: 7, flexGrow: 1 }}>
-        <Button
-          variant="contained"
+        <GenericButton
           onClick={() => navigate(`/admin/genres/create`)}
           sx={{ marginBottom: 3, mr: "100%" }}
-        >
-          Create
-        </Button>
+          text={"Create"}
+        />
         <CustomTable tableHeaders={tableHeaders} items={genres} type="genres" />
       </Box>
     </Box>

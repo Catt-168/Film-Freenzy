@@ -1,22 +1,13 @@
-import {
-  Chip,
-  Paper,
-  Rating,
-  Snackbar,
-  TextField,
-  Typography,
-} from "@mui/material";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import { Paper, Rating, Snackbar, TextField, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { SERVER } from "../../constants";
 import restClient from "../../helpers/restClient";
-import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import {
-  capitalizeFirstLetter,
-  formatReadableDate,
-} from "../../helpers/textHelper";
+import { capitalizeFirstLetter } from "../../helpers/textHelper";
+import GenericButton from "../Core/GenericButton";
+import GenericChip from "../Core/GenericChip";
 import AdminNavigation from "../Navigation/AdminNavigation";
 import UserNavigation from "../Navigation/UserNavigation";
 
@@ -148,14 +139,13 @@ export default function MovieDetail() {
               src={`../../../public/${movie.image.name}`}
               alt="Movie Image"
             />
-            <Button
-              variant="contained"
+
+            <GenericButton
               sx={{ mt: 1 }}
               onClick={handleRent}
               disabled={movie.numberInStock === 0 && !isUpdate}
-            >
-              {isUpdate ? "Update Rent Date" : "Rent"}
-            </Button>
+              text={isUpdate ? "Update Rent Date" : "Rent"}
+            />
             <TextField
               type={"number"}
               margin="normal"
@@ -183,17 +173,11 @@ export default function MovieDetail() {
             </Typography>
             <Box mb={3}>
               {movie.genre.map((g) => (
-                <Chip
-                  label={g.name}
-                  sx={{ mr: 1 }}
-                  key={g._id}
-                  color="success"
-                  variant="filled"
-                />
+                <GenericChip label={g.name} sx={{ mr: 1 }} key={g._id} />
               ))}
             </Box>
-            <Button
-              variant="contained"
+
+            <GenericButton
               startIcon={<PlayArrowIcon />}
               sx={{ mb: 2 }}
               onClick={() =>
@@ -201,9 +185,8 @@ export default function MovieDetail() {
                   "https://www.youtube.com/watch?v=iH6FdW39Hag&ab_channel=RottenTomatoesClassicTrailers"
                 )
               }
-            >
-              Watch Trailer
-            </Button>
+              text="Watch Trailer"
+            />
             <Typography variant="h6">Overview</Typography>
             <Typography
               variant="body1"
@@ -237,12 +220,10 @@ export default function MovieDetail() {
             <Typography variant="body2" sx={{ fontWeight: 600 }} gutterBottom>
               Language:
               {movie.language.map((g) => (
-                <Chip
+                <GenericChip
                   label={capitalizeFirstLetter(g.language)}
                   sx={{ ml: 1 }}
                   key={g._id}
-                  color="warning"
-                  variant="filled"
                 />
               ))}
             </Typography>
