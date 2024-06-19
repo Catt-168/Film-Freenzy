@@ -12,3 +12,12 @@ export const STATUS_TYPE = Object.freeze({
   success: "success",
   error: "error",
 });
+
+export const Colors = {
+  primary: "#126180",
+  background: "#fff",
+  textWhite: "#fff",
+  textBlack: "#000000DE",
+  darkPrimary: "#0f506a",
+  red: "#D32F2F",
+};

@@ -1,33 +1,23 @@
-import MenuIcon from "@mui/icons-material/Menu";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Divider from "@mui/material/Divider";
-import Drawer from "@mui/material/Drawer";
-import IconButton from "@mui/material/IconButton";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemText from "@mui/material/ListItemText";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
+import { Colors } from "../../helpers/constants";
 
-const drawerWidth = 240;
 const navItems = ["movies", "rentals", "edit", "logout"];
 
-function UserNavigation(props) {
+function UserNavigation() {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
-
-  const handleDrawerToggle = () => {
-    setMobileOpen((prevState) => !prevState);
-  };
+  const activeTab = JSON.parse(localStorage.getItem("active")) || 0;
 
   const handleNavigate = (item) => {
     if (item !== "logout") return navigate(`/${item}`);
 
+    localStorage.removeItem("active");
     localStorage.removeItem("jwtToken");
     localStorage.removeItem("user");
     localStorage.removeItem("page");
@@ -35,17 +25,8 @@ function UserNavigation(props) {
   };
   return (
     <Box sx={{ display: "flex" }}>
-      <AppBar component="nav">
+      <AppBar component="nav" sx={{ background: Colors.primary }}>
         <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            edge="start"
-            onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: "none" } }}
-          >
-            <MenuIcon />
-          </IconButton>
           <Typography
             variant="h6"
             component="div"
@@ -57,11 +38,17 @@ function UserNavigation(props) {
             </span>
           </Typography>
           <Box sx={{ display: { xs: "none", sm: "block" } }}>
-            {navItems.map((item) => (
+            {navItems.map((item, index) => (
               <Button
                 key={item}
-                sx={{ color: "#fff" }}
-                onClick={() => handleNavigate(item)}
+                sx={{
+                  color: "#fff",
+                  fontWeight: activeTab === index ? "bold" : "",
+                }}
+                onClick={() => {
+                  localStorage.setItem("active", index);
+                  handleNavigate(item);
+                }}
               >
                 {item}
               </Button>

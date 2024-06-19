@@ -10,6 +10,8 @@ import restClient from "../../helpers/restClient";
 import TextInput from "../Input/TextInput";
 import AdminNavigation from "../Navigation/AdminNavigation";
 import UserNavigation from "../Navigation/UserNavigation";
+import GenericButton from "../Core/GenericButton";
+import { Colors } from "../../helpers/constants";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -134,7 +136,7 @@ export default function MovieCreateForm() {
       alert("Please Fill all the values");
     }
   }
-  console.log(fData.language);
+
   useEffect(() => {
     setStatus((prev) => "loading");
     fetchGenre();
@@ -184,7 +186,12 @@ export default function MovieCreateForm() {
           variant="contained"
           tabIndex={-1}
           startIcon={<CloudUploadIcon />}
-          sx={{ mb: 2, mt: 2 }}
+          sx={{
+            mb: 2,
+            mt: 2,
+            background: Colors.primary,
+            "&:hover": { background: Colors.darkPrimary },
+          }}
         >
           {fData.file ? fData.file.name : "Upload Image"}
           <VisuallyHiddenInput
@@ -315,9 +322,10 @@ export default function MovieCreateForm() {
             ))}
           </Select>
         </Box>
-        <Button variant="contained" size="medium" type="submit">
+        {/* <Button variant="contained" size="medium" type="submit">
           Submit
-        </Button>
+        </Button> */}
+        <GenericButton type="submit" text="Submit" />
       </Box>
     </Box>
   );

@@ -1,17 +1,6 @@
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  CardMedia,
-  Chip,
-  Rating,
-  Typography,
-  filledInputClasses,
-} from "@mui/material";
+import { Box, CardMedia, Typography } from "@mui/material";
 import React, { useState } from "react";
-import { capitalizeFirstLetterinSentence } from "../../helpers/textHelper";
-import StarIcon from "@mui/icons-material/Star";
+import GenericChip from "../Core/GenericChip";
 
 export default function MovieCard({ item, handleClick }) {
   const [isVisible, setIsVisible] = useState(false);
@@ -33,7 +22,7 @@ export default function MovieCard({ item, handleClick }) {
           height: 350,
           objectFit: "cover",
           width: 200,
-          border: "3px solid blue",
+          border: "3px solid #126180",
           transition: "transform 0.2s ease-in-out",
           "&:hover": {
             transform: "scale(1.05)",
@@ -53,7 +42,7 @@ export default function MovieCard({ item, handleClick }) {
       >
         <Box sx={{ position: "relative", top: -10 }}>
           {item.genre.map((g, index) => (
-            <Chip
+            <GenericChip
               label={g.name}
               key={g._id}
               color="primary"

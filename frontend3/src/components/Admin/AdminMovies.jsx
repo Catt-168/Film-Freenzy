@@ -1,12 +1,13 @@
-import { Box, Button } from "@mui/material";
+import { Box } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { SERVER } from "../../constants";
 import restClient from "../../helpers/restClient";
-import CustomTable from "./CustomTable";
+import GenericButton from "../Core/GenericButton";
 import AdminNavigation from "../Navigation/AdminNavigation";
 import UserNavigation from "../Navigation/UserNavigation";
-import { useNavigate } from "react-router-dom";
-import { styled, useTheme } from "@mui/material/styles";
+import CustomTable from "./CustomTable";
 
 export default function AdminMovies() {
   const [movies, setMovies] = useState([]);
@@ -41,13 +42,11 @@ export default function AdminMovies() {
       {user.isAdmin ? <AdminNavigation /> : <UserNavigation />}
 
       <Box sx={{ mt: 7 }}>
-        <Button
-          variant="contained"
+        <GenericButton
           onClick={() => navigate(`/admin/movies/create`)}
           sx={{ marginBottom: 3, mr: "100%" }}
-        >
-          Create
-        </Button>
+          text={"Create"}
+        />
         {movies.length !== 0 ? (
           <Box>
             <CustomTable

@@ -1,21 +1,20 @@
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Snackbar from "@mui/material/Snackbar";
-import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
 import { useState } from "react";
 import { SERVER } from "../constants";
 
+import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
-import { EMAIL_REGEX, PASSWORD_REGEX } from "../helpers/constants";
+import { Colors, EMAIL_REGEX, PASSWORD_REGEX } from "../helpers/constants";
 import { localStorageSetter } from "../helpers/localstorage";
 import restClient from "../helpers/restClient";
-import TextInput from "./Input/TextInput";
+import GenericButton from "./Core/GenericButton";
 import DateInput from "./Input/DateInput";
-import dayjs from "dayjs";
 import PasswordInput from "./Input/PassowrdInput";
+import TextInput from "./Input/TextInput";
 
 function SingUp({ onChangeSignup }) {
   const navigate = useNavigate();
@@ -172,14 +171,16 @@ function SingUp({ onChangeSignup }) {
         onShow={handleShowPassword}
         onMouseDown={handleMouseDownPassword}
       />
-
-      <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
-        Sign Up
-      </Button>
+      <GenericButton
+        type="submit"
+        fullWidth
+        sx={{ mt: 3, mb: 2 }}
+        text={"Sign Up"}
+      />
       <Typography
         fontSize={18}
         sx={{ mr: -28, mt: 2, cursor: "pointer" }}
-        color="blue"
+        color={Colors.primary}
         onClick={() => onChangeSignup()}
       >
         Already Have an account! Login
@@ -274,13 +275,16 @@ function Login({ onChangeLogin }) {
         onMouseDown={handleMouseDownPassword}
       />
 
-      <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
-        Login
-      </Button>
+      <GenericButton
+        type="submit"
+        fullWidth
+        sx={{ mt: 3, mb: 2 }}
+        text={"Login"}
+      />
       <Typography
         fontSize={18}
         sx={{ mr: -50, mt: 2, cursor: "pointer" }}
-        color="blue"
+        color={Colors.primary}
         onClick={() => onChangeLogin()}
       >
         SignUp

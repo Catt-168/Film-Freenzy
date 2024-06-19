@@ -6,6 +6,7 @@ import AdminNavigation from "../../Navigation/AdminNavigation";
 import UserNavigation from "../../Navigation/UserNavigation";
 import { useNavigate } from "react-router-dom";
 import CustomTable from "../CustomTable";
+import GenericButton from "../../Core/GenericButton";
 
 export default function AdminLanguage() {
   const [languages, setLanguages] = useState([]);
@@ -29,13 +30,11 @@ export default function AdminLanguage() {
     <Box sx={{ display: "flex" }}>
       {user.isAdmin ? <AdminNavigation /> : <UserNavigation />}
       <Box sx={{ mt: 7, flexGrow: 1 }}>
-        <Button
-          variant="contained"
+        <GenericButton
           onClick={() => navigate(`/admin/languages/create`)}
           sx={{ marginBottom: 3, mr: "100%" }}
-        >
-          Create
-        </Button>
+          text={"Create"}
+        />
         <CustomTable
           tableHeaders={tableHeaders}
           items={languages}
