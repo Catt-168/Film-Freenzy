@@ -10,6 +10,7 @@ import GenericButton from "../Core/GenericButton";
 import GenericChip from "../Core/GenericChip";
 import AdminNavigation from "../Navigation/AdminNavigation";
 import UserNavigation from "../Navigation/UserNavigation";
+import LoadingSpinner from "../Core/LoadingSpinner";
 
 export default function MovieDetail() {
   const { id } = useParams();
@@ -19,6 +20,7 @@ export default function MovieDetail() {
   const [rentId, setRentId] = useState(null);
   const [isUpdate, setIsUpdate] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [disabled, setDisabled] = useState(false);
   const user = JSON.parse(localStorage.getItem("user"));
 
   async function getMovieDetails() {
@@ -60,6 +62,7 @@ export default function MovieDetail() {
       rentalDate: rentDate,
     };
     if (rentDate <= 0) return alert("Please lend a day at least!");
+    setDisabled(true);
     try {
       const { data } = await restClient.post(`${SERVER}/rentals`, reqBody);
       setMovie({ ...movie, rentalDate: data.rental.rentalDate });
@@ -67,6 +70,9 @@ export default function MovieDetail() {
       setTimeout(() => {
         window.location.reload();
       }, 1000);
+      setTimeout(() => {
+        setDisabled(false);
+      }, 1500);
     } catch (e) {
       console.log(e);
     }
@@ -77,12 +83,16 @@ export default function MovieDetail() {
       rentalDate: rentDate,
       dailyRentalRate: movie.dailyRentalRate,
     };
+    setDisabled(true);
     try {
       await restClient.put(`${SERVER}/rentals?id=${rentId}`, reqBody);
       setOpenSnackbar(true);
       setTimeout(() => {
         window.location.reload();
       }, 1000);
+      setTimeout(() => {
+        setDisabled(false);
+      }, 1500);
     } catch (e) {
       console.log(e.message);
     }
@@ -95,6 +105,7 @@ export default function MovieDetail() {
   const isLoading = status === "loading";
   const isSuccess = status === "success";
   const isIdle = status === "idle";
+  const isDisabled = disabled;
 
   if (isIdle) return <p>Please Wait! Server is Loading</p>;
   if (isLoading) return <p>Loading</p>;
@@ -143,8 +154,16 @@ export default function MovieDetail() {
             <GenericButton
               sx={{ mt: 1 }}
               onClick={handleRent}
-              disabled={movie.numberInStock === 0 && !isUpdate}
-              text={isUpdate ? "Update Rent Date" : "Rent"}
+              disabled={(movie.numberInStock === 0 && !isUpdate) || isDisabled}
+              text={
+                isDisabled ? (
+                  <LoadingSpinner size={25} />
+                ) : isUpdate ? (
+                  "Update Rent Date"
+                ) : (
+                  "Rent"
+                )
+              }
             />
             <TextField
               type={"number"}
