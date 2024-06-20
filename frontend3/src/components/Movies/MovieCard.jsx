@@ -19,6 +19,8 @@ export default function MovieCard({ item, handleClick }) {
         component="img"
         image={item.image.name}
         sx={{
+          borderRadius: 2,
+
           height: 350,
           objectFit: "cover",
           width: 200,
@@ -32,6 +34,7 @@ export default function MovieCard({ item, handleClick }) {
       />
       <Box
         sx={{
+          borderRadius: 2,
           position: "relative",
           top: -60,
           mr: -3,
