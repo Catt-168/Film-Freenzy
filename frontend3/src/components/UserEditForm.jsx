@@ -25,7 +25,7 @@ export default function UserEditForm() {
       );
 
       localStorage.setItem("user", JSON.stringify(data));
-      navigate("/edit");
+      navigate("/movies");
     } catch (e) {
       console.log(e);
     }
