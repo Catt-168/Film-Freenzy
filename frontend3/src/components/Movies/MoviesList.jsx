@@ -286,7 +286,7 @@ export default function MoviesList() {
   return (
     <Box onKeyDown={handleKeyDown}>
       {user.isAdmin ? <AdminNavigation /> : <UserNavigation />}
-      <Box sx={{ marginTop: 5 }}>
+      {/* <Box sx={{ marginTop: 5 }}>
         <TextField
           id="outlined-basic"
           label="Search Movies"
@@ -297,8 +297,20 @@ export default function MoviesList() {
             setSearchText(e.target.value);
           }}
         />
-      </Box>
-      <Box sx={{ display: "flex", ml: "8%", mt: 3, gap: 5 }}>
+      </Box> */}
+      <Box sx={{ display: "flex", ml: "8%",  marginTop: 6, gap: 5 }}>
+
+        <TextField
+            id="outlined-basic"
+            label="Search Movies"
+            variant="outlined"
+            sx={{ width: 180 }}
+            value={searchText}
+            onChange={(e) => {
+              setSearchText(e.target.value);
+            }}
+        />
+
         {FILTER_CATEGORIES.map((category) => (
           <FormControl key={category}>
             <InputLabel id="demo-simple-select-label">

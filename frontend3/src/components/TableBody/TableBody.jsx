@@ -3,8 +3,6 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { SERVER } from "../../constants";
 import restClient from "../../helpers/restClient";
-import { formatReadableDate } from "../../helpers/textHelper";
-import dayjs from "dayjs";
 
 export default function CustomTableBody({ items, type }) {
   let table = null;
@@ -72,6 +70,7 @@ function UserTableBody({ items }) {
 }
 
 function MoviesTableBody({ items }) {
+
   function genrerateGenres(genres) {
     const genre = genres.map((item) => item.name);
     return genre.join(",");
@@ -81,6 +80,14 @@ function MoviesTableBody({ items }) {
     const language = languages.map((item) => item.language);
     return language.join(",");
   }
+
+  function trimText(text, maxLength) {
+    if (text.length <= maxLength) {
+      return text;
+    }
+    return text.substring(0, maxLength) + ' .....';
+  }
+
   async function handleDelete(id) {
     try {
       await restClient.delete(`${SERVER}/movies/${id}`);
@@ -104,15 +111,15 @@ function MoviesTableBody({ items }) {
           >
             {row._id}
           </TableCell>
-          <TableCell size="large" align="left">
+          <TableCell size="large" align="left" sx={{ fontWeight: 'bold' }}>
             <Link to={`/admin/movies/${row._id}`}>{row.title}</Link>
           </TableCell>
-          <TableCell>{row.description}</TableCell>
-          <TableCell align="left">
+          <TableCell>{trimText(row.description, 70)}</TableCell> {/* Trim description */}
+          <TableCell>
             <img
               src={`/${row.image.name}`}
               alt={"hi"}
-              style={{ width: "50%", height: "30%" }}
+              style={{ width: "30%", height: "30%" }}
             />
           </TableCell>
           <TableCell>{genrerateGenres(row.genre)}</TableCell>
