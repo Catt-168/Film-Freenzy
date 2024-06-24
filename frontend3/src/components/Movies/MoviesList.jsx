@@ -12,7 +12,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SERVER } from "../../constants";
-import { STATUS_TYPE } from "../../helpers/constants";
+import { Colors, STATUS_TYPE } from "../../helpers/constants";
 import restClient from "../../helpers/restClient";
 import { capitalizeFirstLetter } from "../../helpers/textHelper";
 import GenericButton from "../Core/GenericButton";
@@ -20,6 +20,9 @@ import AdminNavigation from "../Navigation/AdminNavigation";
 import UserNavigation from "../Navigation/UserNavigation";
 import MovieCard from "./MovieCard";
 import LoadingSpinner from "../Core/LoadingSpinner";
+import ReplayIcon from "@mui/icons-material/Replay";
+import SearchIcon from "@mui/icons-material/Search";
+import TextInput from "../Input/TextInput";
 
 const PAGE_SIZE = 10;
 const FILTER_CATEGORIES = ["genre", "rating", "year", "language"];
@@ -298,17 +301,16 @@ export default function MoviesList() {
           }}
         />
       </Box> */}
-      <Box sx={{ display: "flex", ml: "8%",  marginTop: 6, gap: 5 }}>
-
+      <Box sx={{ display: "flex", ml: "8%", marginTop: 6, gap: 4.7 }}>
         <TextField
-            id="outlined-basic"
-            label="Search Movies"
-            variant="outlined"
-            sx={{ width: 180 }}
-            value={searchText}
-            onChange={(e) => {
-              setSearchText(e.target.value);
-            }}
+          id="outlined-basic"
+          label="Search Movies..."
+          variant="outlined"
+          sx={{ width: 208 }}
+          value={searchText}
+          onChange={(e) => {
+            setSearchText(e.target.value);
+          }}
         />
 
         {FILTER_CATEGORIES.map((category) => (
@@ -325,24 +327,46 @@ export default function MoviesList() {
               label={category}
               onChange={handleChange}
               name={category}
-              sx={{ width: 150 }}
+              sx={{ width: 130, height: 55 }}
             >
               {generateMenuItems(category)}
             </Select>
           </FormControl>
         ))}
-
-        <GenericButton
-          onClick={handleFilter}
-          sx={{ width: 132 }}
-          text={"Search"}
-        />
-        <GenericButton
-          sx={{ width: 132 }}
-          onClick={handleReset}
-          text={"Reset"}
-          isError={true}
-        />
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "flex-start",
+            alignItems: "center",
+            gap: 2,
+            ml: 3.2,
+          }}
+        >
+          <GenericButton
+            onClick={handleFilter}
+            sx={{ width: 10, height: 50 }}
+            text={<SearchIcon size={60} />}
+          />
+          <GenericButton
+            hoverColor={Colors.yellow}
+            sx={{
+              width: 10,
+              height: 50,
+              background: Colors.yellow,
+            }}
+            onClick={handleReset}
+            text={
+              <ReplayIcon
+                size={60}
+                color={"BlueSapphire"}
+                sx={{
+                  padding: "10",
+                }}
+              />
+            }
+            isError={true}
+          />
+        </Box>
       </Box>
       <Box
         sx={{

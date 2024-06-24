@@ -9,6 +9,7 @@ const theme = createTheme({
     BlueSapphire: {
       main: Colors.primary,
       contrastText: "#fff",
+      yellow: Colors.yellow,
     },
   },
 });

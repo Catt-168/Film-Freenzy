@@ -20,4 +20,5 @@ export const Colors = {
   textBlack: "#000000DE",
   darkPrimary: "#0f506a",
   red: "#D32F2F",
+  yellow: "#FFB703",
 };

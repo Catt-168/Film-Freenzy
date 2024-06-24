@@ -14,6 +14,7 @@ import { Colors } from "../../helpers/constants";
  * @param {string} size Button size
  * @param {boolean} disabled Disabled Button
  * @param {string} type Form button type="submit"
+ * @param {string} hoverColor Button hover background
  * @returns {JSX.Element} A button element
  *
  */
@@ -29,7 +30,17 @@ export default function GenericButton(props) {
     size = "medium",
     disabled = false,
     type = "",
+    hoverColor = null,
   } = props;
+
+  const backgroundColor = sx.background
+    ? sx.background
+    : isError
+    ? Colors.red
+    : Colors.primary;
+
+  const hoverBgColor = hoverColor ? hoverColor : Colors.darkPrimary;
+
   return (
     <Button
       startIcon={startIcon}
@@ -41,9 +52,9 @@ export default function GenericButton(props) {
       sx={[
         sx,
         {
-          background: isError ? Colors.red : Colors.primary,
+          background: backgroundColor,
           "&:hover": {
-            background: Colors.darkPrimary,
+            background: hoverBgColor,
           },
         },
       ]}
