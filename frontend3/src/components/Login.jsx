@@ -23,6 +23,7 @@ function SingUp({ onChangeSignup }) {
     email: "",
     password: "",
     dob: dayjs("2022-04-17"),
+    confirmPassword: "",
   });
   const [snackState, setSnackState] = useState({
     open: false,
@@ -33,6 +34,7 @@ function SingUp({ onChangeSignup }) {
     name: "",
     email: "",
     password: "",
+    confirmPassword: "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const { vertical, horizontal, open } = snackState;
@@ -65,8 +67,8 @@ function SingUp({ onChangeSignup }) {
   }
 
   function handleInputEmpty() {
-    const { email, password, name } = user;
-    let error = { email: "", password: "", name: "" };
+    const { email, password, name, confirmPassword } = user;
+    let error = { email: "", password: "", name: "", confirmPassword: "" };
     if (name.length === 0) {
       error.name = "Enter Username";
     }
@@ -74,27 +76,38 @@ function SingUp({ onChangeSignup }) {
       error.email = "Enter Email Address";
     }
     if (password.length === 0) error.password = "Enter Password";
+    if (confirmPassword.length === 0)
+      error.confirmPassword = "Enter Password Again";
+    // if (password !== confirmPassword) error.password = "Password must be same";
     return {
       emailError: error.email,
       passwordError: error.password,
       usernameError: error.name,
+      confirmPasswordError: error.confirmPassword,
     };
   }
 
   function validateForm(event) {
     event.preventDefault();
-    const { emailError, passwordError, usernameError } = handleInputEmpty();
+    const { emailError, passwordError, usernameError, confirmPasswordError } =
+      handleInputEmpty();
 
     const isUserNameErrorEmpty = usernameError.length === 0;
     const isPasswordErrorEmpty = passwordError.length === 0;
     const isEmailErrorEmpty = emailError.length === 0;
-
+    const isConfirmPasswordErrorEmpty = confirmPasswordError.length === 0;
+    const isValidConfirmPassword =
+      isConfirmPasswordErrorEmpty && user.password === user.confirmPassword;
     const isValidEmail = EMAIL_REGEX.test(user.email) && isEmailErrorEmpty;
     const isValidPassword =
       PASSWORD_REGEX.test(user.password) && isPasswordErrorEmpty;
     const isValidUsername = user.name.length >= 5 && isUserNameErrorEmpty;
 
-    const isErrorClear = isValidEmail && isValidPassword && isValidUsername;
+    const isErrorClear =
+      isValidEmail &&
+      isValidPassword &&
+      isValidUsername &&
+      isValidConfirmPassword;
 
     if (isErrorClear) setError({});
     let inputError = {};
@@ -119,15 +132,25 @@ function SingUp({ onChangeSignup }) {
         ? user.password.length < 8
           ? "Password must be 8 characters at least"
           : "Password must include at least one uppercase letter, one lowercase letter, one number and one special character"
+        : user.password !== user.confirmPassword
+        ? "Passwords do not match"
         : passwordError;
     }
 
+    if (isValidConfirmPassword) inputError.confirmPassword = "";
+    else {
+      inputError.confirmPassword =
+        user.password !== user.confirmPassword
+          ? "Passwords do not match"
+          : passwordError;
+    }
     if (!isErrorClear) return setError(inputError);
     handleSubmit();
     setError({
       name: "",
       email: "",
       password: "",
+      confirmPassword: "",
     });
   }
 
@@ -167,6 +190,18 @@ function SingUp({ onChangeSignup }) {
         onChange={handleChange}
         error={error?.password?.length !== 0}
         helperText={error?.password}
+        showPassword={showPassword}
+        onShow={handleShowPassword}
+        onMouseDown={handleMouseDownPassword}
+      />
+      <PasswordInput
+        type="confirmPassword"
+        id="confirmPassword"
+        label="Confirm Password"
+        value={user.confirmPassword}
+        onChange={handleChange}
+        error={error?.confirmPassword?.length !== 0}
+        helperText={error?.confirmPassword}
         showPassword={showPassword}
         onShow={handleShowPassword}
         onMouseDown={handleMouseDownPassword}
