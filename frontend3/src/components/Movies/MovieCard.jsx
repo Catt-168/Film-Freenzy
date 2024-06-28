@@ -20,7 +20,6 @@ export default function MovieCard({ item, handleClick }) {
         image={item.image.name}
         sx={{
           borderRadius: 2,
-
           height: 350,
           objectFit: "cover",
           width: 200,
@@ -40,7 +39,6 @@ export default function MovieCard({ item, handleClick }) {
           mr: -3,
           background:
             "linear-gradient(0deg,rgba(29,29,29,.7) 0,rgba(29,29,29,.7) 70%,rgba(29,29,29,0) 100%)",
-          // visibility: isVisible ? "" : "hidden",
         }}
       >
         <Box sx={{ position: "relative", top: -10 }}>

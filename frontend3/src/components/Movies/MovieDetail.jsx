@@ -2,7 +2,7 @@ import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import { Paper, Rating, Snackbar, TextField, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { redirect, useNavigate, useParams } from "react-router-dom";
 import { SERVER } from "../../constants";
 import restClient from "../../helpers/restClient";
 import { capitalizeFirstLetter } from "../../helpers/textHelper";
@@ -11,6 +11,7 @@ import GenericChip from "../Core/GenericChip";
 import AdminNavigation from "../Navigation/AdminNavigation";
 import UserNavigation from "../Navigation/UserNavigation";
 import LoadingSpinner from "../Core/LoadingSpinner";
+import useAuth from "../hooks/useAuth";
 
 export default function MovieDetail() {
   const { id } = useParams();
@@ -19,9 +20,11 @@ export default function MovieDetail() {
   const [rentDate, setRentDate] = useState(1);
   const [rentId, setRentId] = useState(null);
   const [isUpdate, setIsUpdate] = useState(false);
+  const navigate = useNavigate();
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [disabled, setDisabled] = useState(false);
-  const user = JSON.parse(localStorage.getItem("user"));
+  // const user = JSON.parse(localStorage.getItem("user"));
+  const { isAuthenticated, user } = useAuth();
 
   async function getMovieDetails() {
     try {
@@ -99,6 +102,14 @@ export default function MovieDetail() {
   }
 
   async function handleRent() {
+    if (!isAuthenticated) {
+      alert("You need to login first!");
+      localStorage.setItem(
+        "prevUrl",
+        window.location.href.split("/").slice(-2).join("/")
+      );
+      return navigate("/login");
+    }
     isUpdate ? updateRent() : createRent();
   }
 
@@ -112,7 +123,7 @@ export default function MovieDetail() {
   if (isSuccess)
     return (
       <Box>
-        {user.isAdmin ? <AdminNavigation /> : <UserNavigation />}
+        {user?.isAdmin ? <AdminNavigation /> : <UserNavigation />}
         <Typography variant="h3" component="div" sx={{ mt: 5, mb: 1 }}>
           {/* {capitalizeFirstLetterinSentence(movie.title)} */}
           <Snackbar

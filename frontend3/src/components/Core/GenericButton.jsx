@@ -1,4 +1,4 @@
-import { Button } from "@mui/material";
+import { Button, Tooltip } from "@mui/material";
 import React from "react";
 import { Colors } from "../../helpers/constants";
 
@@ -15,6 +15,7 @@ import { Colors } from "../../helpers/constants";
  * @param {boolean} disabled Disabled Button
  * @param {string} type Form button type="submit"
  * @param {string} hoverColor Button hover background
+ * @param {string} tooltipTitle Tooltip Title
  * @returns {JSX.Element} A button element
  *
  */
@@ -31,6 +32,7 @@ export default function GenericButton(props) {
     disabled = false,
     type = "",
     hoverColor = null,
+    tooltipTitle = "",
   } = props;
 
   const backgroundColor = sx.background
@@ -42,25 +44,27 @@ export default function GenericButton(props) {
   const hoverBgColor = hoverColor ? hoverColor : Colors.darkPrimary;
 
   return (
-    <Button
-      startIcon={startIcon}
-      type={type}
-      fullWidth={fullWidth}
-      disabled={disabled}
-      variant="contained"
-      onClick={onClick}
-      sx={[
-        sx,
-        {
-          background: backgroundColor,
-          "&:hover": {
-            background: hoverBgColor,
+    <Tooltip title={tooltipTitle}>
+      <Button
+        startIcon={startIcon}
+        type={type}
+        fullWidth={fullWidth}
+        disabled={disabled}
+        variant="contained"
+        onClick={onClick}
+        sx={[
+          sx,
+          {
+            background: backgroundColor,
+            "&:hover": {
+              background: hoverBgColor,
+            },
           },
-        },
-      ]}
-      size={size}
-    >
-      {text}
-    </Button>
+        ]}
+        size={size}
+      >
+        {text}
+      </Button>
+    </Tooltip>
   );
 }

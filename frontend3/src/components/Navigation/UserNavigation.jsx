@@ -6,12 +6,14 @@ import Typography from "@mui/material/Typography";
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import { Colors } from "../../helpers/constants";
+import useAuth from "../hooks/useAuth";
 
 const navItems = ["movies", "rentals", "edit", "logout"];
 
 function UserNavigation() {
   const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem("user"));
+  // const user = JSON.parse(localStorage.getItem("user"));
+  const { isAuthenticated, user } = useAuth();
   const activeTab = JSON.parse(localStorage.getItem("active")) || 0;
 
   const handleNavigate = (item) => {
@@ -21,7 +23,8 @@ function UserNavigation() {
     localStorage.removeItem("jwtToken");
     localStorage.removeItem("user");
     localStorage.removeItem("page");
-    navigate("/login");
+    navigate(isAuthenticated ? "/movies" : "/login", { replace: true });
+    isAuthenticated ? window.location.reload() : null;
   };
   return (
     <Box sx={{ display: "flex" }}>
@@ -34,7 +37,7 @@ function UserNavigation() {
           >
             Hello Welcome To Diggie Movies!{" "}
             <span style={{ color: "#ffb703", fontWeight: "bold" }}>
-              {user.name}
+              {user?.name}
             </span>
           </Typography>
           <Box sx={{ display: { xs: "none", sm: "block" } }}>
@@ -44,13 +47,18 @@ function UserNavigation() {
                 sx={{
                   color: "#fff",
                   fontWeight: activeTab === index ? "bold" : "",
+                  display: !isAuthenticated
+                    ? item === "rentals" || item === "edit"
+                      ? "none"
+                      : ""
+                    : "",
                 }}
                 onClick={() => {
                   localStorage.setItem("active", index);
                   handleNavigate(item);
                 }}
               >
-                {item}
+                {item === "logout" ? (isAuthenticated ? item : "login") : item}
               </Button>
             ))}
           </Box>

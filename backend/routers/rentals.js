@@ -5,9 +5,14 @@ const deleteSingleRental = require("../middleware/deleteSingleRental");
 const validateObjectId = require("../middleware/validateObjectId");
 const router = express.Router();
 
-router.get("/:id", deleteSingleRental, rentalController.getRentalDetails);
+// router.get("/:id", deleteSingleRental, rentalController.getRentalDetails);
+// router.put("/", rentalController.updateRental);
+// router.get("/", deleteRental, rentalController.getRentals);
+// router.post("/", rentalController.createRental);
+
+router.get("/:id", rentalController.getRentalDetails);
 router.put("/", rentalController.updateRental);
-router.get("/", deleteRental, rentalController.getRentals);
+router.get("/", rentalController.getRentals);
 router.post("/", rentalController.createRental);
 
 module.exports = router;

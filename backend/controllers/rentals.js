@@ -7,19 +7,21 @@ exports.getRentals = async (req, res) => {
   let { movieId, customerId } = req.query;
   const movie = movieId ? new ObjectId(movieId) : null;
   const customer = customerId ? new ObjectId(customerId) : null;
+  let query = {};
   let filteredRental = [];
-  await Rental.find();
+
   if (!movie && !customer) {
     const rental = await Rental.find();
     if (!rental) res.status(404).json({ message: "No Rental Movies Exist" });
     return res.send(rental);
   }
   if (customer) {
-    filteredRental = await Rental.find({ "customer._id": customer }, "-__v");
+    query = { "customer._id": customer };
   } else if (movie) {
-    filteredRental = await Rental.find({ "movie._id": movie });
+    query = { "movie._id": movie };
   }
-
+  filteredRental = await Rental.find(query, "-__v");
+  console.log(filteredRental.length);
   return filteredRental.length > 0
     ? res.send(filteredRental)
     : res.json({ message: "No Rental Movies Exist" });

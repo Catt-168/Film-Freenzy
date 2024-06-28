@@ -7,6 +7,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import Tooltip from "@mui/material/Tooltip";
 import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
 import React, { useEffect, useState } from "react";
@@ -23,6 +24,7 @@ import LoadingSpinner from "../Core/LoadingSpinner";
 import ReplayIcon from "@mui/icons-material/Replay";
 import SearchIcon from "@mui/icons-material/Search";
 import TextInput from "../Input/TextInput";
+import useAuth from "../hooks/useAuth";
 
 const PAGE_SIZE = 10;
 const FILTER_CATEGORIES = ["genre", "rating", "year", "language"];
@@ -47,7 +49,7 @@ export default function MoviesList() {
   const [page, setPage] = useState(1);
   const [metaData, setMetaData] = useState({});
   const [status, setStatus] = useState(STATUS_TYPE.idle);
-  const user = JSON.parse(localStorage.getItem("user"));
+  const { isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
 
   const [searchText, setSearchText] = useState("");
@@ -108,7 +110,7 @@ export default function MoviesList() {
       setMetaData(data.metaData);
       setStatus(STATUS_TYPE.success);
     } catch (e) {
-      console.warn(e);
+      console.warn(e.response.data);
       setStatus(STATUS_TYPE.error);
     }
   }
@@ -119,7 +121,7 @@ export default function MoviesList() {
     const pagination = !currentPage ? page : parseInt(currentPage);
     const storageSearchText = localStorage.getItem("search");
     const currentSearchText = !storageSearchText ? "" : storageSearchText;
-    // setPage(pagination);
+    setPage(pagination);
     setSearchText(currentSearchText);
     getFilterCategories();
 
@@ -285,10 +287,10 @@ export default function MoviesList() {
   const isLoading = status === STATUS_TYPE.loading;
   const isSuccess = status === STATUS_TYPE.success;
   const isMoviesEmpty = movies.length === 0;
-
+  console.log(movies, page);
   return (
     <Box onKeyDown={handleKeyDown}>
-      {user.isAdmin ? <AdminNavigation /> : <UserNavigation />}
+      {user?.isAdmin ? <AdminNavigation /> : <UserNavigation />}
       {/* <Box sx={{ marginTop: 5 }}>
         <TextField
           id="outlined-basic"
@@ -346,7 +348,9 @@ export default function MoviesList() {
             onClick={handleFilter}
             sx={{ width: 10, height: 50 }}
             text={<SearchIcon size={60} />}
+            tooltipTitle="Filter"
           />
+
           <GenericButton
             hoverColor={Colors.yellow}
             sx={{
@@ -365,6 +369,7 @@ export default function MoviesList() {
               />
             }
             isError={true}
+            tooltipTitle="Reset"
           />
         </Box>
       </Box>

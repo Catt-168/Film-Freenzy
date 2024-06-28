@@ -49,14 +49,20 @@ function SingUp({ onChangeSignup }) {
         email: "",
         password: "",
       });
+      const prevUrl = localStorage.getItem("prevUrl") || "";
       setTimeout(() => {
-        navigate("/movies");
+        if (prevUrl.length !== 0) {
+          navigate(`../${prevUrl}`);
+          return localStorage.removeItem("prevUrl");
+        }
+        navigate(prevUrl.length !== 0 ? prevUrl : "/movies");
       }, 1000);
     } catch (e) {
       setError({
         name: "",
         password: "",
         email: e.response.data.message,
+        confirmPassword: "",
       });
     }
   };
@@ -160,7 +166,7 @@ function SingUp({ onChangeSignup }) {
   function handleMouseDownPassword(event) {
     event.preventDefault();
   }
-
+  console.log(error);
   return (
     <Box component="form" onSubmit={validateForm} noValidate sx={{ mt: 1 }}>
       <TextInput
@@ -233,6 +239,7 @@ function SingUp({ onChangeSignup }) {
 
 function Login({ onChangeLogin }) {
   const navigate = useNavigate();
+
   const [showPassword, setShowPassword] = useState(false);
   const [user, setUser] = useState({
     email: "",
@@ -244,6 +251,11 @@ function Login({ onChangeLogin }) {
     try {
       const { data } = await axios.post(SERVER, user);
       localStorageSetter(data.token, data.user);
+      const prevUrl = localStorage.getItem("prevUrl") || "";
+      if (prevUrl.length !== 0) {
+        navigate(`../${prevUrl}`);
+        return localStorage.removeItem("prevUrl");
+      }
       navigate(data.user.isAdmin ? "/admin/movies" : "/movies");
     } catch (e) {
       setError({
