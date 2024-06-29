@@ -23,8 +23,8 @@ export default function MovieDetail() {
   const navigate = useNavigate();
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [disabled, setDisabled] = useState(false);
-  // const user = JSON.parse(localStorage.getItem("user"));
-  const { isAuthenticated, user } = useAuth();
+  const user = JSON.parse(localStorage.getItem("user"));
+  const { isAuthenticated } = useAuth();
 
   async function getMovieDetails() {
     try {
@@ -37,6 +37,7 @@ export default function MovieDetail() {
   }
 
   async function getRental() {
+    console.log("GET", user._id);
     try {
       const { data } = await restClient.get(
         `${SERVER}/rentals?customerId=${user._id}`
