@@ -109,7 +109,7 @@ export default function VariantDrawer() {
     localStorage.removeItem("jwtToken");
     localStorage.removeItem("user");
     localStorage.removeItem("navigation");
-    navigate("/login");
+    navigate("/movies");
   };
 
   const handleDrawerOpen = () => {

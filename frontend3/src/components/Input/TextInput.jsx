@@ -10,6 +10,7 @@ export default function TextInput(props) {
     type = "text",
     error,
     helperText,
+    disabled = false,
   } = props;
   return (
     <TextField
@@ -25,6 +26,7 @@ export default function TextInput(props) {
       onChange={onChange}
       error={error}
       helperText={helperText}
+      disabled={disabled}
     />
   );
 }

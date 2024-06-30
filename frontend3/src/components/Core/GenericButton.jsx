@@ -22,7 +22,7 @@ import { Colors } from "../../helpers/constants";
 
 export default function GenericButton(props) {
   const {
-    sx,
+    sx = null,
     text,
     startIcon = null,
     fullWidth = false,
@@ -35,7 +35,7 @@ export default function GenericButton(props) {
     tooltipTitle = "",
   } = props;
 
-  const backgroundColor = sx.background
+  const backgroundColor = sx?.background
     ? sx.background
     : isError
     ? Colors.red

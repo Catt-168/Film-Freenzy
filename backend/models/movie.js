@@ -46,6 +46,18 @@ const movieSchema = new Schema({
   releasedYear: { type: Number, required: true },
   numberInStock: { type: Number, required: true, min: 0, max: 255 },
   dailyRentalRate: { type: Number, required: true, min: 0 },
+  actor: {
+    type: [
+      new Schema({
+        name: {
+          type: String,
+          required: true,
+          minlength: 5,
+          maxlength: 50,
+        },
+      }),
+    ],
+  },
 });
 
 module.exports = mongoose.model("Movie", movieSchema);
