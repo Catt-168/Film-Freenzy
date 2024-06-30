@@ -7,6 +7,7 @@ const rentalRouter = require("./routers/rentals");
 const genreRouter = require("./routers/genres");
 const authRouter = require("./routers/authRouter");
 const languageRouter = require("./routers/languages");
+const actorRouter = require("./routers/actors");
 
 require("./db");
 const app = express();
@@ -24,6 +25,7 @@ app.use("/users", usersRouter);
 app.use("/rentals", rentalRouter);
 app.use("/genres", genreRouter);
 app.use("/languages", languageRouter);
+app.use("/actors", actorRouter);
 app.use("/", authRouter);
 
 const start = async () => {

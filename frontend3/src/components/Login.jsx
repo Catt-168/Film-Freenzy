@@ -166,7 +166,6 @@ function SingUp({ onChangeSignup }) {
   function handleMouseDownPassword(event) {
     event.preventDefault();
   }
-  console.log(error);
   return (
     <Box component="form" onSubmit={validateForm} noValidate sx={{ mt: 1 }}>
       <TextInput

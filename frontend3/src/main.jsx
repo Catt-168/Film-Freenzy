@@ -11,6 +11,9 @@ const theme = createTheme({
       contrastText: "#fff",
       yellow: Colors.yellow,
     },
+    White: {
+      main: Colors.textWhite,
+    },
   },
 });
 

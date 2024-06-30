@@ -1,5 +1,19 @@
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import { Chip, MenuItem, Rating, Select, Typography } from "@mui/material";
+import {
+  Autocomplete,
+  Chip,
+  CircularProgress,
+  IconButton,
+  MenuItem,
+  Modal,
+  Rating,
+  Select,
+  TextField,
+  Tooltip,
+  Typography,
+} from "@mui/material";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import Snackbar from "@mui/material/Snackbar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { styled } from "@mui/material/styles";
@@ -11,7 +25,9 @@ import TextInput from "../Input/TextInput";
 import AdminNavigation from "../Navigation/AdminNavigation";
 import UserNavigation from "../Navigation/UserNavigation";
 import GenericButton from "../Core/GenericButton";
-import { Colors } from "../../helpers/constants";
+import { Colors, STATUS_TYPE } from "../../helpers/constants";
+import LoadingSpinner from "../Core/LoadingSpinner";
+import ActorCreateModal from "../Admin/Actor/ActorCreateModal";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -24,8 +40,30 @@ const VisuallyHiddenInput = styled("input")({
   whiteSpace: "nowrap",
   width: 1,
 });
+
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "#fff",
+  border: "2px solid",
+  borderColor: Colors.primary,
+  boxShadow: 24,
+  p: 4,
+  display: "flex",
+  flexDirection: "column",
+};
+
 export default function MovieCreateForm() {
   const user = JSON.parse(localStorage.getItem("user"));
+  const categories = [
+    { id: 1, name: "blog" },
+    { id: 2, name: "music" },
+    { id: 3, name: "video" },
+  ];
+  const [category, setCategory] = useState([]);
   const navigate = useNavigate();
   const [fData, setFData] = useState({
     title: "",
@@ -38,10 +76,32 @@ export default function MovieCreateForm() {
     file: null,
     numberInStock: 0,
     language: [],
+    actors: [],
   });
   const [status, setStatus] = useState("idle");
   const [genres, setGenres] = useState([]);
   const [languages, setLanguages] = useState([]);
+  const [actors, setActors] = useState([]);
+  const [open, setOpen] = useState(false); // actor modal
+  const [actor, setActor] = useState({
+    name: "",
+    file: null,
+  });
+  const [actorStatus, setActorStatus] = useState(STATUS_TYPE.idle);
+  const [state, setState] = useState({
+    openSnackBar: false,
+    vertical: "bottom",
+    horizontal: "right",
+  });
+  const { vertical, horizontal, openSnackBar } = state;
+
+  const handleOpenSnackBar = () => () => {
+    setState({ ...state, openSnackBar: true });
+  };
+
+  const handleCloseSnackBar = () => {
+    setState({ ...state, openSnackBar: false });
+  };
 
   function handleChange(e) {
     const { name, value, files } = e.target;
@@ -55,7 +115,7 @@ export default function MovieCreateForm() {
     const {
       target: { value },
     } = event;
-
+    console.log(value);
     setFData({
       ...fData,
       genres: typeof value === "string" ? value.split(",") : value,
@@ -95,6 +155,17 @@ export default function MovieCreateForm() {
     }
   }
 
+  async function fetchActors() {
+    try {
+      const { data } = await restClient.get(`${SERVER}/actors`);
+      setActors(data);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setStatus("success");
+    }
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
     const {
@@ -108,6 +179,7 @@ export default function MovieCreateForm() {
       length,
       numberInStock,
       language,
+      actors,
     } = fData;
 
     const form = new FormData();
@@ -125,7 +197,9 @@ export default function MovieCreateForm() {
     language?.forEach((g) => {
       form.append("language[]", g);
     });
-
+    actors?.forEach((actor) => {
+      form.append("actor[]", actor.name);
+    });
     try {
       await restClient.post(`${SERVER}/movies`, form, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -137,12 +211,56 @@ export default function MovieCreateForm() {
     }
   }
 
+  function handleClose() {
+    setActor({
+      name: "",
+      file: null,
+    });
+    setOpen((prev) => !prev);
+  }
+
+  function handleChangeActor(e) {
+    const { name, value, files } = e.target;
+    setActor({ ...actor, [name]: files ? files[0] : value });
+  }
+
+  async function handleCreateActor() {
+    setActorStatus(STATUS_TYPE.loading);
+
+    const { name, file } = actor;
+    const form = new FormData();
+
+    form.append("name", name);
+    form.append("file", file);
+
+    try {
+      await restClient.post(`${SERVER}/actors`, form, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      fetchActors();
+      setTimeout(() => {
+        setState({ ...state, openSnackBar: true });
+        setActor({
+          name: "",
+          file: null,
+        });
+        setActorStatus(STATUS_TYPE.success);
+      }, 1000);
+    } catch (e) {
+      console.log(e.response.data.message);
+      setActorStatus(STATUS_TYPE.error);
+    }
+  }
+
   useEffect(() => {
-    setStatus((prev) => "loading");
+    setStatus("loading");
     fetchGenre();
     fetchLanguages();
+    fetchActors();
   }, []);
 
+  const isActorStatusLoading = actorStatus === STATUS_TYPE.loading;
   return (
     <Box>
       {user.isAdmin ? <AdminNavigation /> : <UserNavigation />}
@@ -264,6 +382,7 @@ export default function MovieCreateForm() {
           <Typography variant="h6" gutterBottom mr={4}>
             Genre[s]
           </Typography>
+
           <Select
             fullWidth
             multiple
@@ -325,8 +444,134 @@ export default function MovieCreateForm() {
         {/* <Button variant="contained" size="medium" type="submit">
           Submit
         </Button> */}
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "flex-start",
+            alignItems: "center",
+            width: "100%",
+            gap: 4,
+            mt: 1,
+            mb: 2,
+          }}
+        >
+          <Typography variant="h6" gutterBottom>
+            Actor[s]
+          </Typography>
+          <Autocomplete
+            multiple
+            value={fData.actors}
+            sx={{ ml: 5.3, width: "80%" }}
+            onChange={(event, newValue) => {
+              setFData({ ...fData, actors: newValue });
+            }}
+            filterSelectedOptions
+            id="category-filter"
+            options={actors}
+            getOptionLabel={(option) => option?.name}
+            isOptionEqualToValue={(option, value) => {
+              if (option._id === value._id) return option._id === value._id;
+            }}
+            renderInput={(params) => (
+              <TextField {...params} label="Actors" placeholder="" />
+            )}
+          />
+          <Tooltip title="Add a Actor">
+            <IconButton
+              aria-label="Add"
+              color={"White"}
+              onClick={() => setOpen(true)}
+              sx={{
+                width: 40,
+                height: 40,
+                background: Colors.primary,
+                "&:hover": {
+                  background: Colors.darkPrimary,
+                },
+              }}
+            >
+              <PersonAddIcon />
+            </IconButton>
+          </Tooltip>
+
+          {/* <GenericButton
+            type={null}
+            startIcon={<PersonAddIcon />}
+            text="Actor"
+            size="lg"
+            sx={{ height: 53 }}
+          /> */}
+        </Box>
         <GenericButton type="submit" text="Submit" />
       </Box>
+      {/* <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Typography
+            component="h1"
+            variant="h5"
+            color={Colors.primary}
+            sx={{ textAlign: "center" }}
+          >
+            Actor Create Form
+          </Typography>
+          <TextInput
+            id="name"
+            label="Actor Name"
+            value={actor.name}
+            onChange={handleChangeActor}
+          />
+          <Button
+            component="label"
+            role={undefined}
+            fullWidth
+            variant="contained"
+            tabIndex={-1}
+            startIcon={<CloudUploadIcon />}
+            sx={{
+              mb: 2,
+              mt: 2,
+              background: Colors.primary,
+              "&:hover": { background: Colors.darkPrimary },
+            }}
+          >
+            {actor.file ? actor.file.name : "Upload Image (Optional)"}
+            <VisuallyHiddenInput
+              type="file"
+              id="file"
+              name="file"
+              onChange={handleChange}
+            />
+          </Button>
+          <GenericButton
+            text={
+              isActorStatusLoading ? (
+                <LoadingSpinner color={"White"} size={25} />
+              ) : (
+                "Save"
+              )
+            }
+            sx={{ width: "30%", ml: 13 }}
+            onClick={handleCreateActor}
+          />
+        </Box>
+      </Modal> */}
+      <ActorCreateModal
+        open={open}
+        onClose={handleClose}
+        onChangeActor={handleChangeActor}
+        onCreateActor={handleCreateActor}
+        actor={actor}
+        isLoading={isActorStatusLoading}
+        openSnackBar={openSnackBar}
+        closeSnackBar={handleCloseSnackBar}
+        vertical={vertical}
+        horizontal={horizontal}
+      />
     </Box>
   );
 }

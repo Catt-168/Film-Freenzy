@@ -78,7 +78,7 @@ export default function MovieDetail() {
         setDisabled(false);
       }, 1500);
     } catch (e) {
-      console.log(e);
+      console.log(e.response.data);
     }
   }
 

@@ -3,6 +3,7 @@ const Genre = require("../models/genre");
 const Image = require("../models/image");
 const Language = require("../models/language");
 const Rental = require("../models/rental");
+const Actor = require("../models/actor");
 
 exports.getAllMovies = async (req, res) => {
   try {
@@ -100,6 +101,11 @@ exports.createMovie = async (req, res) => {
     if (genre.length === 0)
       return res.status(401).json({ message: "Select at least one genre" });
 
+    const actor = await Actor.find({ name: req.body.actor });
+    if (actor.length === 0) {
+      return res.status(401).json({ message: "Select at least one actor" });
+    }
+
     const schema = new Movie({
       title,
       description,
@@ -111,6 +117,7 @@ exports.createMovie = async (req, res) => {
       dailyRentalRate,
       genre,
       image: imageData,
+      actor,
     });
     const movie = await schema.save();
     res.status(201).json(movie);
