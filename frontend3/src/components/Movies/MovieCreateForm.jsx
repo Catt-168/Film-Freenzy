@@ -472,31 +472,7 @@ export default function MovieCreateForm() {
           value={fData.dailyRentalRate}
           onChange={handleChange}
         />
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "flex-start",
-            alignItems: "center",
-            width: "100%",
-            gap: 6,
-          }}
-        >
-          <Typography variant="h6" gutterBottom>
-            Rating
-          </Typography>
-          <Rating
-            value={fData.rating}
-            defaultValue={1}
-            precision={0.5}
-            id="rating"
-            sx={{ mb: 1 }}
-            onChange={(event, newValue) => {
-              setFData((prev) => {
-                return { ...prev, rating: newValue };
-              });
-            }}
-          />
-        </Box>
+
         <Box
           sx={{
             display: "flex",
@@ -530,7 +506,7 @@ export default function MovieCreateForm() {
               />
             )}
           />
-          <Tooltip title="Add a Actor">
+          <Tooltip title="Add Genre">
             <IconButton
               aria-label="Add"
               color={"White"}
@@ -582,7 +558,7 @@ export default function MovieCreateForm() {
             )}
           />
 
-          <Tooltip title="Add a Actor">
+          <Tooltip title="Add Language">
             <IconButton
               aria-label="Add"
               color={"White"}
@@ -634,7 +610,7 @@ export default function MovieCreateForm() {
               />
             )}
           />
-          <Tooltip title="Add a Actor">
+          <Tooltip title="Add Actor">
             <IconButton
               aria-label="Add"
               color={"White"}
@@ -651,6 +627,31 @@ export default function MovieCreateForm() {
               <PersonAddIcon />
             </IconButton>
           </Tooltip>
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "flex-start",
+            alignItems: "center",
+            width: "100%",
+            gap: 6,
+          }}
+        >
+          <Typography variant="h6" gutterBottom>
+            Rating
+          </Typography>
+          <Rating
+            value={fData.rating}
+            defaultValue={1}
+            precision={0.5}
+            id="rating"
+            sx={{ mb: 1 }}
+            onChange={(event, newValue) => {
+              setFData((prev) => {
+                return { ...prev, rating: newValue };
+              });
+            }}
+          />
         </Box>
         <GenericButton type="submit" text="Submit" />
       </Box>
