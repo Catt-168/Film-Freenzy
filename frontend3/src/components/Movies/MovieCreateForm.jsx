@@ -1,5 +1,6 @@
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import {
+  Alert,
   Autocomplete,
   Chip,
   CircularProgress,
@@ -27,7 +28,10 @@ import UserNavigation from "../Navigation/UserNavigation";
 import GenericButton from "../Core/GenericButton";
 import { Colors, STATUS_TYPE } from "../../helpers/constants";
 import LoadingSpinner from "../Core/LoadingSpinner";
-import ActorCreateModal from "../Admin/Actor/ActorCreateModal";
+import ActorGenreLanguageCreateModal from "../Admin/Actor/ActorGenreLanguageCreateModal";
+import { capitalizeFirstLetter } from "../../helpers/textHelper";
+import RedditIcon from "@mui/icons-material/Reddit";
+import LanguageIcon from "@mui/icons-material/Language";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -56,6 +60,17 @@ const style = {
   flexDirection: "column",
 };
 
+const errorDefaultState = {
+  status: false,
+  message: "",
+};
+
+const modalDefaultState = {
+  genre: false,
+  language: false,
+  actor: false,
+};
+
 export default function MovieCreateForm() {
   const user = JSON.parse(localStorage.getItem("user"));
   const categories = [
@@ -82,16 +97,26 @@ export default function MovieCreateForm() {
   const [genres, setGenres] = useState([]);
   const [languages, setLanguages] = useState([]);
   const [actors, setActors] = useState([]);
-  const [open, setOpen] = useState(false); // actor modal
+
+  const [modalOpen, setModalOpen] = useState(modalDefaultState);
   const [actor, setActor] = useState({
     name: "",
     file: null,
   });
+  const [genre, setGenre] = useState({ name: "" });
+  const [language, setLanguage] = useState({ name: "" });
   const [actorStatus, setActorStatus] = useState(STATUS_TYPE.idle);
   const [state, setState] = useState({
     openSnackBar: false,
     vertical: "bottom",
     horizontal: "right",
+    message: "",
+  });
+  const [genreError, setGenreError] = useState({ status: false, message: "" });
+  const [actorError, setActorError] = useState({ status: false, message: "" });
+  const [languageError, setLanguageError] = useState({
+    status: false,
+    message: "",
   });
   const { vertical, horizontal, openSnackBar } = state;
 
@@ -108,28 +133,6 @@ export default function MovieCreateForm() {
     setFData({
       ...fData,
       [name]: files ? files[0] : value,
-    });
-  }
-
-  function handleChangeGenre(event) {
-    const {
-      target: { value },
-    } = event;
-    console.log(value);
-    setFData({
-      ...fData,
-      genres: typeof value === "string" ? value.split(",") : value,
-    });
-  }
-
-  function handleChangeLanguage(e) {
-    const {
-      target: { value },
-    } = e;
-
-    setFData({
-      ...fData,
-      language: typeof value === "string" ? value.split(",") : value,
     });
   }
 
@@ -187,7 +190,7 @@ export default function MovieCreateForm() {
     form.append("description", description);
     form.append("file", file);
     genres?.forEach((g) => {
-      form.append("genre[]", g);
+      form.append("genre[]", g.name);
     });
     form.append("rating", rating);
     form.append("releasedYear", releasedYear);
@@ -195,7 +198,7 @@ export default function MovieCreateForm() {
     form.append("length", length);
     form.append("numberInStock", numberInStock);
     language?.forEach((g) => {
-      form.append("language[]", g);
+      form.append("language[]", g.language);
     });
     actors?.forEach((actor) => {
       form.append("actor[]", actor.name);
@@ -216,12 +219,132 @@ export default function MovieCreateForm() {
       name: "",
       file: null,
     });
-    setOpen((prev) => !prev);
+    setGenre({ name: "" });
+    setLanguage({ name: "" });
+    setActorError(errorDefaultState);
+    setGenreError(errorDefaultState);
+    setLanguageError(errorDefaultState);
+    setModalOpen(modalDefaultState);
+  }
+
+  function hanldeOpenModal(key) {
+    setModalOpen((prev) => {
+      return { ...prev, [key]: true };
+    });
   }
 
   function handleChangeActor(e) {
     const { name, value, files } = e.target;
     setActor({ ...actor, [name]: files ? files[0] : value });
+  }
+
+  function handleChangeLanguage(e) {
+    const { name, value } = e.target;
+    setLanguage({ ...genre, [name]: value });
+  }
+
+  function handleChangeGenre(e) {
+    const { name, value } = e.target;
+    setGenre({ ...genre, [name]: value });
+  }
+
+  function handleSubmitLangauge() {
+    const { name } = language;
+
+    const isLanguageValid = name.length >= 4;
+
+    setLanguageError(
+      isLanguageValid
+        ? errorDefaultState
+        : { status: true, message: "Language must be at least 4 characters" }
+    );
+
+    if (!isLanguageValid) return;
+    handleCreateLanguage();
+  }
+
+  async function handleCreateLanguage() {
+    setActorStatus(STATUS_TYPE.loading);
+    try {
+      await restClient.post(`${SERVER}/languages`, {
+        language: language.name,
+      });
+      fetchLanguages();
+      setTimeout(() => {
+        setState({
+          ...state,
+          openSnackBar: true,
+          message: "Language Successfully Added!",
+        });
+        setLanguage({
+          name: "",
+        });
+        setModalOpen(modalDefaultState);
+        setActorStatus(STATUS_TYPE.success);
+      }, 1000);
+    } catch (e) {
+      setLanguageError({ status: true, message: e.response.data.message });
+      console.log(e);
+    }
+  }
+
+  function handleSubmitGenre() {
+    const { name } = genre;
+
+    const isGenreNameValid = name.length >= 3;
+
+    setGenreError(
+      isGenreNameValid
+        ? errorDefaultState
+        : { status: true, message: "Genre must be at least 3 characters" }
+    );
+
+    if (!isGenreNameValid) return;
+    handleCreateGenre();
+  }
+
+  async function handleCreateGenre() {
+    setActorStatus(STATUS_TYPE.loading);
+    try {
+      await restClient.post(`${SERVER}/genres`, {
+        name: genre.name,
+      });
+      fetchGenre();
+      setTimeout(() => {
+        setState({
+          ...state,
+          openSnackBar: true,
+          message: "Genre Successfully Added!",
+        });
+        setGenre({
+          name: "",
+        });
+        setModalOpen(modalDefaultState);
+        setActorStatus(STATUS_TYPE.success);
+      }, 1000);
+    } catch (e) {
+      setGenreError({ status: true, message: e.response.data.message });
+      console.log(e);
+    }
+  }
+
+  async function handleSubmitActor() {
+    const { name } = actor;
+
+    const isActorNameValid = name.length >= 3;
+
+    setActorError(
+      isActorNameValid
+        ? errorDefaultState
+        : {
+            status: true,
+            message: "Actor Name must be at least 3 characters",
+          }
+    );
+
+    if (!isActorNameValid) return;
+
+    handleCreateActor();
   }
 
   async function handleCreateActor() {
@@ -240,15 +363,20 @@ export default function MovieCreateForm() {
 
       fetchActors();
       setTimeout(() => {
-        setState({ ...state, openSnackBar: true });
+        setState({
+          ...state,
+          openSnackBar: true,
+          message: "Actor Successfully Added!",
+        });
         setActor({
           name: "",
           file: null,
         });
+        setModalOpen(modalDefaultState);
         setActorStatus(STATUS_TYPE.success);
       }, 1000);
     } catch (e) {
-      console.log(e.response.data.message);
+      setActorError({ status: true, message: e.response.data.message });
       setActorStatus(STATUS_TYPE.error);
     }
   }
@@ -261,6 +389,7 @@ export default function MovieCreateForm() {
   }, []);
 
   const isActorStatusLoading = actorStatus === STATUS_TYPE.loading;
+
   return (
     <Box>
       {user.isAdmin ? <AdminNavigation /> : <UserNavigation />}
@@ -379,89 +508,114 @@ export default function MovieCreateForm() {
             mb: 2,
           }}
         >
-          <Typography variant="h6" gutterBottom mr={4}>
-            Genre[s]
-          </Typography>
-
-          <Select
-            fullWidth
-            multiple
-            displayEmpty
-            inputProps={{ "aria-label": "Without label" }}
-            value={fData.genres}
-            onChange={handleChangeGenre}
-            renderValue={(selected) => (
-              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                {selected.map((value) => (
-                  <Chip key={value} label={value} />
-                ))}
-              </Box>
-            )}
-          >
-            {genres.map((genre) => (
-              <MenuItem key={genre._id} value={genre.name}>
-                {genre.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "flex-start",
-            alignItems: "center",
-            width: "100%",
-            gap: 4,
-            mt: 1,
-            mb: 2,
-          }}
-        >
-          <Typography variant="h6" gutterBottom>
-            Language[s]
-          </Typography>
-          <Select
-            fullWidth
-            multiple
-            displayEmpty
-            inputProps={{ "aria-label": "Without label" }}
-            value={fData.language}
-            onChange={handleChangeLanguage}
-            renderValue={(selected) => (
-              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                {selected.map((value) => (
-                  <Chip key={value} label={value} />
-                ))}
-              </Box>
-            )}
-          >
-            {languages.map((item) => (
-              <MenuItem key={item._id} value={item.language}>
-                {item.language}
-              </MenuItem>
-            ))}
-          </Select>
-        </Box>
-        {/* <Button variant="contained" size="medium" type="submit">
-          Submit
-        </Button> */}
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "flex-start",
-            alignItems: "center",
-            width: "100%",
-            gap: 4,
-            mt: 1,
-            mb: 2,
-          }}
-        >
-          <Typography variant="h6" gutterBottom>
-            Actor[s]
-          </Typography>
           <Autocomplete
             multiple
+            fullWidth
+            value={fData.genres}
+            onChange={(event, newValue) => {
+              setFData({ ...fData, genres: newValue });
+            }}
+            filterSelectedOptions
+            id="category-filter"
+            options={genres}
+            getOptionLabel={(option) => option?.name}
+            isOptionEqualToValue={(option, value) => {
+              if (option._id === value._id) return option._id === value._id;
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Genres"
+                placeholder="Select genre of the movie"
+              />
+            )}
+          />
+          <Tooltip title="Add a Actor">
+            <IconButton
+              aria-label="Add"
+              color={"White"}
+              onClick={() => hanldeOpenModal("genre")}
+              sx={{
+                width: 40,
+                height: 40,
+                background: Colors.primary,
+                "&:hover": {
+                  background: Colors.darkPrimary,
+                },
+              }}
+            >
+              <LanguageIcon />
+            </IconButton>
+          </Tooltip>
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "flex-start",
+            alignItems: "center",
+            width: "100%",
+            gap: 4,
+            mt: 1,
+            mb: 2,
+          }}
+        >
+          <Autocomplete
+            multiple
+            fullWidth
+            value={fData.language}
+            onChange={(event, newValue) => {
+              setFData({ ...fData, language: newValue });
+            }}
+            filterSelectedOptions
+            id="category-filter"
+            options={languages}
+            getOptionLabel={(option) => capitalizeFirstLetter(option?.language)}
+            isOptionEqualToValue={(option, value) => {
+              if (option._id === value._id) return option._id === value._id;
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Languages"
+                placeholder="Select language(s) of the movie"
+              />
+            )}
+          />
+
+          <Tooltip title="Add a Actor">
+            <IconButton
+              aria-label="Add"
+              color={"White"}
+              onClick={() => hanldeOpenModal("language")}
+              sx={{
+                width: 40,
+                height: 40,
+                background: Colors.primary,
+                "&:hover": {
+                  background: Colors.darkPrimary,
+                },
+              }}
+            >
+              <RedditIcon />
+            </IconButton>
+          </Tooltip>
+        </Box>
+
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "flex-start",
+            alignItems: "center",
+            width: "100%",
+            gap: 4,
+            mt: 1,
+            mb: 2,
+          }}
+        >
+          <Autocomplete
+            multiple
+            fullWidth
             value={fData.actors}
-            sx={{ ml: 5.3, width: "80%" }}
             onChange={(event, newValue) => {
               setFData({ ...fData, actors: newValue });
             }}
@@ -473,14 +627,18 @@ export default function MovieCreateForm() {
               if (option._id === value._id) return option._id === value._id;
             }}
             renderInput={(params) => (
-              <TextField {...params} label="Actors" placeholder="" />
+              <TextField
+                {...params}
+                label="Actors"
+                placeholder="Select actors of the movie"
+              />
             )}
           />
           <Tooltip title="Add a Actor">
             <IconButton
               aria-label="Add"
               color={"White"}
-              onClick={() => setOpen(true)}
+              onClick={() => hanldeOpenModal("actor")}
               sx={{
                 width: 40,
                 height: 40,
@@ -493,84 +651,58 @@ export default function MovieCreateForm() {
               <PersonAddIcon />
             </IconButton>
           </Tooltip>
-
-          {/* <GenericButton
-            type={null}
-            startIcon={<PersonAddIcon />}
-            text="Actor"
-            size="lg"
-            sx={{ height: 53 }}
-          /> */}
         </Box>
         <GenericButton type="submit" text="Submit" />
       </Box>
-      {/* <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
+      <Snackbar
+        anchorOrigin={{ vertical, horizontal }}
+        open={state.openSnackBar}
+        onClose={handleCloseSnackBar}
+        autoHideDuration={3000}
+        key={vertical + horizontal}
       >
-        <Box sx={style}>
-          <Typography
-            component="h1"
-            variant="h5"
-            color={Colors.primary}
-            sx={{ textAlign: "center" }}
-          >
-            Actor Create Form
-          </Typography>
-          <TextInput
-            id="name"
-            label="Actor Name"
-            value={actor.name}
-            onChange={handleChangeActor}
-          />
-          <Button
-            component="label"
-            role={undefined}
-            fullWidth
-            variant="contained"
-            tabIndex={-1}
-            startIcon={<CloudUploadIcon />}
-            sx={{
-              mb: 2,
-              mt: 2,
-              background: Colors.primary,
-              "&:hover": { background: Colors.darkPrimary },
-            }}
-          >
-            {actor.file ? actor.file.name : "Upload Image (Optional)"}
-            <VisuallyHiddenInput
-              type="file"
-              id="file"
-              name="file"
-              onChange={handleChange}
-            />
-          </Button>
-          <GenericButton
-            text={
-              isActorStatusLoading ? (
-                <LoadingSpinner color={"White"} size={25} />
-              ) : (
-                "Save"
-              )
-            }
-            sx={{ width: "30%", ml: 13 }}
-            onClick={handleCreateActor}
-          />
-        </Box>
-      </Modal> */}
-      <ActorCreateModal
-        open={open}
+        <Alert
+          onClose={handleCloseSnackBar}
+          severity="success"
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {state.message}
+        </Alert>
+      </Snackbar>
+
+      <ActorGenreLanguageCreateModal
+        open={modalOpen.language}
         onClose={handleClose}
-        onChangeActor={handleChangeActor}
-        onCreateActor={handleCreateActor}
-        actor={actor}
+        onChange={handleChangeLanguage}
+        onCreate={handleSubmitLangauge}
+        data={language}
         isLoading={isActorStatusLoading}
         openSnackBar={openSnackBar}
-        closeSnackBar={handleCloseSnackBar}
-        vertical={vertical}
-        horizontal={horizontal}
+        error={languageError}
+        type="language"
+      />
+      <ActorGenreLanguageCreateModal
+        open={modalOpen.genre}
+        onClose={handleClose}
+        onChange={handleChangeGenre}
+        onCreate={handleSubmitGenre}
+        data={genre}
+        isLoading={isActorStatusLoading}
+        openSnackBar={openSnackBar}
+        error={genreError}
+        type="genre"
+      />
+      <ActorGenreLanguageCreateModal
+        open={modalOpen.actor}
+        onClose={handleClose}
+        onChange={handleChangeActor}
+        onCreate={handleSubmitActor}
+        data={actor}
+        isLoading={isActorStatusLoading}
+        openSnackBar={openSnackBar}
+        error={actorError}
+        type="actor"
       />
     </Box>
   );
