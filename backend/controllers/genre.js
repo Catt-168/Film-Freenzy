@@ -28,11 +28,11 @@ exports.createGenre = async (req, res) => {
   try {
     const genres = await Genre.find();
     const isOldGenreExist = genres.filter(
-      (item) => item.name === req.body.name
+      (item) => item.name.toLowerCase() === req.body.name.toLowerCase()
     );
 
     if (isOldGenreExist.length !== 0)
-      return res.status(409).json({ message: "Already Exists" });
+      return res.status(409).json({ message: "Genre Already Exists" });
     const newGenre = await genre.save();
     res.status(201).json(newGenre);
   } catch (e) {

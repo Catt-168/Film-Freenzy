@@ -18,7 +18,7 @@ exports.createActor = async (req, res) => {
     const actors = await Actor.find();
 
     const isOldActorExist = actors.filter(
-      (item) => item.name === req.body.name
+      (item) => item.name.toLowerCase() === req.body.name.toLowerCase()
     );
 
     if (isOldActorExist.length !== 0)

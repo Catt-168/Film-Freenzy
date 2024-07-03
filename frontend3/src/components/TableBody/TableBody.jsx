@@ -3,6 +3,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { SERVER } from "../../constants";
 import restClient from "../../helpers/restClient";
+import { capitalizeFirstLetter } from "../../helpers/textHelper";
 
 export default function CustomTableBody({ items, type }) {
   let table = null;
@@ -70,7 +71,6 @@ function UserTableBody({ items }) {
 }
 
 function MoviesTableBody({ items }) {
-
   function genrerateGenres(genres) {
     const genre = genres.map((item) => item.name);
     return genre.join(",");
@@ -85,7 +85,7 @@ function MoviesTableBody({ items }) {
     if (text.length <= maxLength) {
       return text;
     }
-    return text.substring(0, maxLength) + ' .....';
+    return text.substring(0, maxLength) + " .....";
   }
 
   async function handleDelete(id) {
@@ -111,10 +111,10 @@ function MoviesTableBody({ items }) {
           >
             {row._id}
           </TableCell>
-          <TableCell size="large" align="left" sx={{ fontWeight: 'bold' }}>
+          <TableCell size="large" align="left" sx={{ fontWeight: "bold" }}>
             <Link to={`/admin/movies/${row._id}`}>{row.title}</Link>
           </TableCell>
-          <TableCell>{trimText(row.description, 70)}</TableCell> {/* Trim description */}
+          <TableCell>{trimText(row.description, 70)}</TableCell>
           <TableCell>
             <img
               src={`/${row.image.name}`}
@@ -164,7 +164,9 @@ function GenresTableBody({ items }) {
           sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
         >
           <TableCell component="th" scope="row">
-            <Link to={`/admin/genres/${row._id}`}>{row.name}</Link>
+            <Link to={`/admin/genres/${row._id}`}>
+              {capitalizeFirstLetter(row.name)}
+            </Link>
           </TableCell>
           <TableCell component="th" scope="row">
             <Button
@@ -259,7 +261,9 @@ function LanguagesTableBody({ items }) {
           sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
         >
           <TableCell component="th" scope="row">
-            <Link to={`/admin/languages/${row._id}`}>{row.language}</Link>
+            <Link to={`/admin/languages/${row._id}`}>
+              {capitalizeFirstLetter(row.language)}
+            </Link>
           </TableCell>
           <TableCell component="th" scope="row">
             <Button
