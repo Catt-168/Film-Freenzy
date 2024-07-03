@@ -26,6 +26,14 @@ exports.createLanguage = async (req, res) => {
     language: req.body.language,
   });
   try {
+    const languages = await Language.find();
+
+    const isOldLanguageExist = languages.filter(
+      (item) => item.language.toLowerCase() === req.body.language.toLowerCase()
+    );
+
+    if (isOldLanguageExist.length !== 0)
+      return res.status(409).json({ message: "Language Already Exists!" });
     const newLanguage = await language.save();
     res.status(201).json(newLanguage);
   } catch (e) {

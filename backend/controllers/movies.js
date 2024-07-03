@@ -20,10 +20,15 @@ exports.getAllMovies = async (req, res) => {
     const skip = (page - 1) * pageSize;
 
     let movies = [];
+    let moviesWithActors = [];
     let query = {};
+    let query2 = {};
 
     if (title.length !== 0) {
       query.title = new RegExp(title, "i");
+      query2 = {
+        "actor.name": new RegExp(title, "i"),
+      };
     }
 
     if (genre.length !== 0 && genre !== "All") {
@@ -49,16 +54,23 @@ exports.getAllMovies = async (req, res) => {
     }
 
     movies = await Movie.find(query, "-__v").limit(pageSize).skip(skip);
+    if (title.length !== 0) {
+      moviesWithActors = await Movie.find(query2, "-__v")
+        .limit(pageSize)
+        .skip(skip);
+    }
 
-    const totalItems = await Movie.countDocuments(query);
+    const totalItems =
+      (await Movie.countDocuments(query)) + moviesWithActors.length;
     const totalPages =
       totalItems % 10 === 0 ? totalItems / 10 : totalItems / 10 + 1;
     const metaData = {
       currentPage: parseInt(page),
       totalPages: parseInt(totalPages),
     };
+    console.log("metadata", metaData);
 
-    res.status(200).json({ movies, metaData });
+    res.status(200).json({ movies, metaData, moviesWithActors });
   } catch (e) {
     res.status(500).json({ message: e.message });
   }

@@ -324,6 +324,7 @@ export default function MovieCreateForm() {
       }, 1000);
     } catch (e) {
       setGenreError({ status: true, message: e.response.data.message });
+      setActorStatus(STATUS_TYPE.error);
       console.log(e);
     }
   }
@@ -389,6 +390,7 @@ export default function MovieCreateForm() {
   }, []);
 
   const isActorStatusLoading = actorStatus === STATUS_TYPE.loading;
+  console.log("actor", isActorStatusLoading);
 
   return (
     <Box>
@@ -631,29 +633,29 @@ export default function MovieCreateForm() {
         <Box
           sx={{
             display: "flex",
-            justifyContent: "flex-start",
+            justifyContent: "space-between",
             alignItems: "center",
             width: "100%",
-            gap: 6,
           }}
         >
-          <Typography variant="h6" gutterBottom>
-            Rating
-          </Typography>
-          <Rating
-            value={fData.rating}
-            defaultValue={1}
-            precision={0.5}
-            id="rating"
-            sx={{ mb: 1 }}
-            onChange={(event, newValue) => {
-              setFData((prev) => {
-                return { ...prev, rating: newValue };
-              });
-            }}
-          />
+          <Box sx={{ display: "flex", flexDirection: "row", ml: 1, gap: 2 }}>
+            <Typography variant="h6" gutterBottom>
+              Rating
+            </Typography>
+            <Rating
+              value={fData.rating}
+              defaultValue={1}
+              id="rating"
+              sx={{ mt: 0.5 }}
+              onChange={(event, newValue) => {
+                setFData((prev) => {
+                  return { ...prev, rating: newValue };
+                });
+              }}
+            />
+          </Box>
+          <GenericButton type="submit" text="Submit" sx={{ mr: 9 }} />
         </Box>
-        <GenericButton type="submit" text="Submit" />
       </Box>
       <Snackbar
         anchorOrigin={{ vertical, horizontal }}
@@ -664,9 +666,8 @@ export default function MovieCreateForm() {
       >
         <Alert
           onClose={handleCloseSnackBar}
-          severity="success"
           variant="filled"
-          sx={{ width: "100%" }}
+          sx={{ width: "100%", background: Colors.primary }}
         >
           {state.message}
         </Alert>

@@ -1,3 +1,5 @@
+import ReplayIcon from "@mui/icons-material/Replay";
+import SearchIcon from "@mui/icons-material/Search";
 import {
   FormControl,
   InputLabel,
@@ -7,9 +9,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import Tooltip from "@mui/material/Tooltip";
 import Box from "@mui/material/Box";
-import CircularProgress from "@mui/material/CircularProgress";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SERVER } from "../../constants";
@@ -17,14 +17,11 @@ import { Colors, STATUS_TYPE } from "../../helpers/constants";
 import restClient from "../../helpers/restClient";
 import { capitalizeFirstLetter } from "../../helpers/textHelper";
 import GenericButton from "../Core/GenericButton";
+import LoadingSpinner from "../Core/LoadingSpinner";
 import AdminNavigation from "../Navigation/AdminNavigation";
 import UserNavigation from "../Navigation/UserNavigation";
-import MovieCard from "./MovieCard";
-import LoadingSpinner from "../Core/LoadingSpinner";
-import ReplayIcon from "@mui/icons-material/Replay";
-import SearchIcon from "@mui/icons-material/Search";
-import TextInput from "../Input/TextInput";
 import useAuth from "../hooks/useAuth";
+import MovieCard from "./MovieCard";
 
 const PAGE_SIZE = 10;
 const FILTER_CATEGORIES = ["genre", "rating", "year", "language"];
@@ -106,11 +103,12 @@ export default function MoviesList() {
       const { data } = await restClient.get(
         `${SERVER}/movies?pageSize=${PAGE_SIZE}&page=${page}&genre=${genre}&language=${language}&rating=${rating}&yearStart=${yearStart}&yearEnd=${yearEnd}&title=${searchText}`
       );
-      setMovies(data.movies);
+      const allMovies = [...data.movies, ...data.moviesWithActors];
+      setMovies(allMovies);
       setMetaData(data.metaData);
       setStatus(STATUS_TYPE.success);
     } catch (e) {
-      console.warn(e.response.data);
+      console.warn(e);
       setStatus(STATUS_TYPE.error);
     }
   }
@@ -287,7 +285,7 @@ export default function MoviesList() {
   const isLoading = status === STATUS_TYPE.loading;
   const isSuccess = status === STATUS_TYPE.success;
   const isMoviesEmpty = movies.length === 0;
-  console.log(movies, page);
+
   return (
     <Box onKeyDown={handleKeyDown}>
       {user?.isAdmin ? <AdminNavigation /> : <UserNavigation />}
