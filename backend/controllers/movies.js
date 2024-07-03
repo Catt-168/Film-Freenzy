@@ -68,7 +68,6 @@ exports.getAllMovies = async (req, res) => {
       currentPage: parseInt(page),
       totalPages: parseInt(totalPages),
     };
-    console.log("metadata", metaData);
 
     res.status(200).json({ movies, metaData, moviesWithActors });
   } catch (e) {
