@@ -28,17 +28,33 @@ function UserNavigation() {
   };
   return (
     <Box sx={{ display: "flex" }}>
-      <AppBar component="nav" sx={{ background: Colors.primary }}>
+      <AppBar component="nav" sx={{ background: Colors.primary, zIndex: 10 }}>
         <Toolbar>
           <Typography
             variant="h6"
             component="div"
-            sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
+            sx={{
+              flexGrow: 1,
+              display: { xs: "none", sm: "flex" },
+              justifyContent: "flex-start",
+              alignItems: "center",
+              gap: 2,
+            }}
           >
-            Hello Welcome To Diggie Movies!{" "}
-            <span style={{ color: "#ffb703", fontWeight: "bold" }}>
-              {user?.name}
+            <img
+              src={"/logoColor.png"}
+              style={{ width: 40, height: 40, cursor: "pointer" }}
+              onClick={() => navigate("/movies")}
+            />
+            <span>
+              Hello Welcome To{" "}
+              <span style={{ color: Colors.yellow, fontWeight: "bold" }}>
+                Film Freenzy!
+              </span>
             </span>
+            {/* <span style={{ color: Colors.yellow, fontWeight: "bold" }}>
+              {user?.name}
+            </span> */}
           </Typography>
           <Box sx={{ display: { xs: "none", sm: "block" } }}>
             {navItems.map((item, index) => (
