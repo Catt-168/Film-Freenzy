@@ -124,6 +124,7 @@ export default function AdminActors() {
           //   onClick={() => navigate(`/admin/actors/create`)}
           sx={{ mr: "90%" }}
           text={"Create"}
+          disabled
         />
 
         {/* CHANGE MD:18  */}
