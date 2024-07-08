@@ -44,7 +44,10 @@ function UserNavigation() {
             <img
               src={"/logoColor.png"}
               style={{ width: 40, height: 40, cursor: "pointer" }}
-              onClick={() => navigate("/movies")}
+              onClick={() => {
+                localStorage.setItem("active", 0);
+                navigate("/movies");
+              }}
             />
             <span>
               Hello Welcome To{" "}

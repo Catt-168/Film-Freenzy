@@ -8,6 +8,13 @@ const actorSchema = new Schema({
     minlength: 3,
     maxlength: 50,
   },
+  image: {
+    type: new Schema({
+      name: { type: String, required: true },
+      contentType: { type: String, required: true },
+      path: { type: String, required: true },
+    }),
+  },
 });
 
 module.exports = mongoose.model("Actor", actorSchema);

@@ -46,6 +46,7 @@ export default function ActorGenreLanguageCreateModal(props) {
     openSnackBar,
     error,
     type,
+    isEditMode,
   } = props;
 
   const handleKeyDown = (event) => {
@@ -61,7 +62,7 @@ export default function ActorGenreLanguageCreateModal(props) {
       case "genre":
         return "Genre Create Form";
       case "actor":
-        return "Actor Create Form";
+        return isEditMode ? "Actor Edit Form" : "Actor Create Form";
       case "language":
         return "Language Create Form";
       default:
@@ -129,11 +130,17 @@ export default function ActorGenreLanguageCreateModal(props) {
               "&:hover": { background: Colors.darkPrimary },
             }}
           >
-            {data.file ? data.file.name : "Upload Image (Optional)"}
+            {!isEditMode
+              ? data.file
+                ? data.file.name
+                : "Upload Image (Optional)"
+              : data.image
+              ? data.image.name
+              : "Upload Image (Optional)"}
             <VisuallyHiddenInput
               type="file"
               id="file"
-              name="file"
+              name={isEditMode ? "image" : "file"}
               onChange={onChange}
             />
           </Button>
@@ -141,7 +148,7 @@ export default function ActorGenreLanguageCreateModal(props) {
 
         <Box sx={{ display: "flex", justifyContent: "center" }}>
           <GenericButton
-            disabled={data.name.length === 0}
+            disabled={data?.name?.length === 0}
             text={
               isLoading ? <LoadingSpinner color={"White"} size={25} /> : "Save"
             }
