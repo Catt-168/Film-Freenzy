@@ -21,6 +21,7 @@ import UserEditForm from "./components/UserEditForm";
 import AdminLanguage from "./components/Admin/Language/AdminLanguage";
 import AdminLanguageCreateForm from "./components/Admin/Language/AdminLanguageCreateForm";
 import AdminMovieCard from "./components/Admin/AdminMovieCard";
+import AdminActors from "./components/Admin/Actor/AdminActors";
 
 function App() {
   return (
@@ -33,7 +34,6 @@ function App() {
             <Route element={<MoviesList />} path="/movies" />
           </Route>
           <Route element={<Rentals />} path="/rentals" />
-
           <Route element={<UserEditForm />} path="/edit" />
         </Route>
         <Route element={<AdminRoute />}>
@@ -59,6 +59,7 @@ function App() {
           <Route element={<AdminUsers />} path="/admin/users" />
           <Route element={<AdminMovies />} path="/admin/movies" />
           <Route element={<AdminLanguage />} path="/admin/languages" />
+          <Route element={<AdminActors />} path="/admin/actors" />
 
           <Route element={<Home />} path="/admin" />
         </Route>

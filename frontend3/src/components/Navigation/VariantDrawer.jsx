@@ -18,16 +18,24 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
+import FaceRetouchingNaturalIcon from "@mui/icons-material/FaceRetouchingNatural";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { styled, useTheme } from "@mui/material/styles";
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
-import { capitalizeFirstLetter } from "../../helpers/textHelper";
 import { Colors } from "../../helpers/constants";
+import { capitalizeFirstLetter } from "../../helpers/textHelper";
 
 const drawerWidth = 240;
-const navItems = ["movies", "users", "genres", "languages", "rentals"];
+const navItems = [
+  "movies",
+  "actors",
+  "users",
+  "genres",
+  "languages",
+  "rentals",
+];
 
 const openedMixin = (theme) => ({
   width: drawerWidth,
@@ -126,9 +134,12 @@ export default function VariantDrawer() {
     const sxProp = {
       color: activeTab === index ? Colors.primary : "",
     };
+
     switch (item) {
       case "users":
         return <PersonIcon sx={sxProp} />;
+      case "actors":
+        return <FaceRetouchingNaturalIcon sx={sxProp} />;
       case "movies":
         return <MovieIcon sx={sxProp} />;
       case "genres":

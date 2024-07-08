@@ -390,7 +390,6 @@ export default function MovieCreateForm() {
   }, []);
 
   const isActorStatusLoading = actorStatus === STATUS_TYPE.loading;
-  console.log("actor", isActorStatusLoading);
 
   return (
     <Box>
@@ -657,6 +656,7 @@ export default function MovieCreateForm() {
           <GenericButton type="submit" text="Submit" sx={{ mr: 9 }} />
         </Box>
       </Box>
+
       <Snackbar
         anchorOrigin={{ vertical, horizontal }}
         open={state.openSnackBar}
