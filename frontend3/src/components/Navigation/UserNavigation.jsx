@@ -42,8 +42,8 @@ function UserNavigation() {
             }}
           >
             <img
-              src={"/logoColor.png"}
-              style={{ width: 40, height: 40, cursor: "pointer" }}
+              src={"/finalLogo.png"}
+              style={{ width: 35, height: 35, cursor: "pointer" }}
               onClick={() => {
                 localStorage.setItem("active", 0);
                 navigate("/movies");

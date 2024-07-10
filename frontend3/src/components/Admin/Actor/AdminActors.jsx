@@ -10,31 +10,37 @@ import { SERVER } from "../../../constants";
 import LoadingSpinner from "../../Core/LoadingSpinner";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import { Colors } from "../../../helpers/constants";
+import { Colors, STATUS_TYPE } from "../../../helpers/constants";
 import restClient from "../../../helpers/restClient";
 import DeleteModal from "../DeleteModal";
 import Snack from "../Snack";
 import ActorGenreLanguageCreateModal from "./ActorGenreLanguageCreateModal";
+import useWindowDimensions from "../../hooks/useWindowsDimenstions";
 
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: "center",
-  color: theme.palette.text.secondary,
-}));
+const errorDefaultState = {
+  status: false,
+  message: "",
+};
+
+const defaultActorState = { name: "", image: null };
 
 export default function AdminActors() {
   const user = JSON.parse(localStorage.getItem("user"));
+  const { height, width } = useWindowDimensions();
+
   const [modalOpen, setModalOpen] = useState(false); // confirm modal
-  const [selectedActor, setSelectedActor] = useState({ name: "", image: null });
+  const [openCreateModal, setOpenCreateModal] = useState(false);
+  const [selectedActor, setSelectedActor] = useState(defaultActorState);
   const [errorMessage, setErrorMessage] = useState("");
+
   const [state, setState] = useState({
     openSnackBar: false,
     vertical: "bottom",
     horizontal: "right",
     message: "",
   });
+  const [actorStatus, setActorStatus] = useState(STATUS_TYPE.idle);
+
   const [openModal, setOpenModal] = useState(false); // edit modal
   const [actorError, setActorError] = useState({
     status: false,
@@ -53,7 +59,60 @@ export default function AdminActors() {
   function handleCloseModal() {
     setOpenModal(false);
   }
+  async function handleSubmitActor() {
+    const { name } = selectedActor;
 
+    const isActorNameValid = name.length >= 3;
+
+    setActorError(
+      isActorNameValid
+        ? errorDefaultState
+        : {
+            status: true,
+            message: "Actor Name must be at least 3 characters",
+          }
+    );
+
+    if (!isActorNameValid) return;
+
+    handleCreateActor();
+  }
+  async function handleCreateActor() {
+    setActorStatus(STATUS_TYPE.loading);
+
+    const { name, file } = selectedActor;
+    const form = new FormData();
+
+    form.append("name", name);
+    form.append("file", file);
+
+    try {
+      await restClient.post(`${SERVER}/actors`, form, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+      setTimeout(() => {
+        setState({
+          ...state,
+          openSnackBar: true,
+          message: "Actor Successfully Added!",
+        });
+        setSelectedActor({
+          name: "",
+          file: null,
+        });
+        setActorError(errorDefaultState);
+        setOpenCreateModal(false);
+        setActorStatus(STATUS_TYPE.success);
+      }, 1000);
+    } catch (e) {
+      setActorError({ status: true, message: e.response.data.message });
+      setActorStatus(STATUS_TYPE.error);
+    }
+  }
   async function handleDeleteActor(id) {
     try {
       await restClient.delete(`${SERVER}/actors/${id}`);
@@ -104,7 +163,7 @@ export default function AdminActors() {
 
   function hanldeClose() {
     setModalOpen(false);
-    setSelectedActor({});
+    setSelectedActor(defaultActorState);
     setErrorMessage("");
   }
 
@@ -112,6 +171,8 @@ export default function AdminActors() {
     setSelectedActor(item);
     setOpenModal(true);
   }
+
+  const isActorStatusLoading = actorStatus === STATUS_TYPE.loading;
 
   if (isLoading) return <LoadingSpinner />;
   if (isError) return <p>Error!</p>;
@@ -121,10 +182,9 @@ export default function AdminActors() {
       {user.isAdmin ? <AdminNavigation /> : <UserNavigation />}
       <Box sx={{ mt: 7 }}>
         <GenericButton
-          //   onClick={() => navigate(`/admin/actors/create`)}
-          sx={{ mr: "90%" }}
+          onClick={() => setOpenCreateModal(true)}
+          sx={{ mr: "89.5%" }}
           text={"Create"}
-          disabled
         />
 
         {/* CHANGE MD:18  */}
@@ -171,6 +231,7 @@ export default function AdminActors() {
                       display: "flex",
                       justifyContent: "center",
                       alignItems: "center",
+                      mr: 1.3,
                     }}
                   >
                     <DeleteForeverIcon
@@ -194,23 +255,33 @@ export default function AdminActors() {
                   }
                   width={240}
                   height={240}
-                  style={{ objectFit: "cover" }}
+                  style={{
+                    objectFit: "cover",
+                    border: "3px solid #126180",
+                    borderRadius: 12,
+                  }}
                 />
 
-                <Typography variant="subtitle1" gutterBottom>
+                <Typography
+                  variant="subtitle1"
+                  gutterBottom
+                  sx={{ color: Colors.primary, fontWeight: "600" }}
+                >
                   {item.name}
                 </Typography>
               </Box>
               <Box
                 sx={{
                   position: "relative",
-                  height: 40,
-                  ml: 1.5,
+                  height: 37,
+                  ml: width === 1920 ? 10.4 : 1.3,
                   bottom: 77,
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
-                  width: "92%",
+                  width: width === 1920 ? "59%" : "91.5%",
+                  borderRadius: 2,
+                  overflow: "hidden",
                   background:
                     "linear-gradient(0deg,rgba(29,29,29,.7) 0,rgba(29,29,29,.7) 40%,rgba(29,29,29,0) 100%)",
                 }}
@@ -219,12 +290,29 @@ export default function AdminActors() {
           ))}
         </Grid>
       </Box>
-      <DeleteModal
-        open={modalOpen}
-        handleClose={hanldeClose}
-        onDelete={handleDeleteActor}
-        item={selectedActor}
-        errorMessage={errorMessage}
+      {modalOpen ? (
+        <DeleteModal
+          open={modalOpen}
+          handleClose={hanldeClose}
+          onDelete={handleDeleteActor}
+          item={selectedActor}
+          errorMessage={errorMessage}
+        />
+      ) : null}
+      <ActorGenreLanguageCreateModal
+        open={openCreateModal}
+        onClose={() => {
+          setOpenCreateModal(false);
+          setSelectedActor(defaultActorState);
+          setActorError(errorDefaultState);
+        }}
+        onChange={handleChangeActor}
+        onCreate={handleSubmitActor}
+        data={selectedActor}
+        isLoading={isActorStatusLoading}
+        openSnackBar={state.openSnackBar}
+        error={actorError}
+        type="actor"
       />
       {selectedActor?.name?.length !== 0 ? (
         <ActorGenreLanguageCreateModal
