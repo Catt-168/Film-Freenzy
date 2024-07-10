@@ -1,37 +1,31 @@
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import LanguageIcon from "@mui/icons-material/Language";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import RedditIcon from "@mui/icons-material/Reddit";
 import {
   Alert,
   Autocomplete,
-  Chip,
-  CircularProgress,
   IconButton,
-  MenuItem,
-  Modal,
   Rating,
-  Select,
   TextField,
   Tooltip,
   Typography,
 } from "@mui/material";
-import PersonAddIcon from "@mui/icons-material/PersonAdd";
-import Snackbar from "@mui/material/Snackbar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import Snackbar from "@mui/material/Snackbar";
 import { styled } from "@mui/material/styles";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SERVER } from "../../constants";
+import { Colors, STATUS_TYPE } from "../../helpers/constants";
 import restClient from "../../helpers/restClient";
+import { capitalizeFirstLetter } from "../../helpers/textHelper";
+import ActorGenreLanguageCreateModal from "../Admin/Actor/ActorGenreLanguageCreateModal";
+import GenericButton from "../Core/GenericButton";
 import TextInput from "../Input/TextInput";
 import AdminNavigation from "../Navigation/AdminNavigation";
 import UserNavigation from "../Navigation/UserNavigation";
-import GenericButton from "../Core/GenericButton";
-import { Colors, STATUS_TYPE } from "../../helpers/constants";
-import LoadingSpinner from "../Core/LoadingSpinner";
-import ActorGenreLanguageCreateModal from "../Admin/Actor/ActorGenreLanguageCreateModal";
-import { capitalizeFirstLetter } from "../../helpers/textHelper";
-import RedditIcon from "@mui/icons-material/Reddit";
-import LanguageIcon from "@mui/icons-material/Language";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -473,7 +467,6 @@ export default function MovieCreateForm() {
           value={fData.dailyRentalRate}
           onChange={handleChange}
         />
-
         <Box
           sx={{
             display: "flex",

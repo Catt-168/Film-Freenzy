@@ -157,6 +157,12 @@ exports.updateMovie = async (req, res) => {
   const genre = await Genre.find({ name: req.body.genre });
   if (genre.length === 0)
     return res.status(401).json({ message: "Select at least one genre" });
+
+  const actor = await Actor.find({ name: req.body.actor });
+  console.log(actor);
+  if (actor.length === 0) {
+    return res.status(401).json({ message: "Select at least one actor" });
+  }
   try {
     const oldMovie = await Movie.findById(id);
     const imageData = req.file
@@ -180,6 +186,7 @@ exports.updateMovie = async (req, res) => {
           dailyRentalRate,
           genre,
           image: imageData,
+          actor,
         },
       },
       {
