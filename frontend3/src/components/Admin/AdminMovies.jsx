@@ -33,9 +33,10 @@ export default function AdminMovies() {
     console.log("hehe");
   }, [isDrawerOpen]);
   const tableHeaders = movies.length !== 0 ? Object.keys(movies[0]) : [];
-  tableHeaders[9] = "Stock";
-  tableHeaders[10] = "Fee";
-  tableHeaders[11] = "Action";
+  // tableHeaders[9] = "Stock";
+  tableHeaders[9] = "Fee";
+  tableHeaders[10] = "Action";
+  tableHeaders[11] = "";
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -48,7 +49,7 @@ export default function AdminMovies() {
           text={"Create"}
         />
         {movies.length !== 0 ? (
-          <Box>
+          <Box sx={{ maxWidth: "100%" }}>
             <CustomTable
               tableHeaders={tableHeaders}
               items={movies}

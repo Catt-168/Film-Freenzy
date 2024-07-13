@@ -44,7 +44,7 @@ export default function MovieDetail() {
   }
 
   async function getRental() {
-    console.log("GET", user._id);
+    console.log("GET", user?._id);
     try {
       const { data } = await restClient.get(
         `${SERVER}/rentals?customerId=${user._id}`
@@ -92,7 +92,7 @@ export default function MovieDetail() {
   async function updateRent() {
     const reqBody = {
       rentalDate: rentDate,
-      dailyRentalRate: movie.dailyRentalRate,
+      price: movie.price,
     };
     setDisabled(true);
     try {
@@ -173,7 +173,7 @@ export default function MovieDetail() {
             <GenericButton
               sx={{ mt: 1 }}
               onClick={handleRent}
-              disabled={(movie.numberInStock === 0 && !isUpdate) || isDisabled}
+              // disabled={(movie.numberInStock === 0 && !isUpdate) || isDisabled}
               text={
                 isDisabled ? (
                   <LoadingSpinner size={25} />
@@ -218,11 +218,8 @@ export default function MovieDetail() {
             <GenericButton
               startIcon={<PlayArrowIcon />}
               sx={{ mb: 2 }}
-              onClick={() =>
-                window.open(
-                  "https://www.youtube.com/watch?v=iH6FdW39Hag&ab_channel=RottenTomatoesClassicTrailers"
-                )
-              }
+              onClick={() => window.open(movie.trailerLink)}
+              disabled={movie?.trailerLink?.length === 0}
               text="Watch Trailer"
             />
             <Typography variant="h6">Overview</Typography>
@@ -249,11 +246,11 @@ export default function MovieDetail() {
                 sx={{ position: "absolute" }}
               />
             </Typography>
-            <Typography variant="body2" sx={{ fontWeight: 600 }} gutterBottom>
+            {/* <Typography variant="body2" sx={{ fontWeight: 600 }} gutterBottom>
               Stock: {movie.numberInStock}
-            </Typography>
+            </Typography> */}
             <Typography variant="body2" sx={{ fontWeight: 600 }} gutterBottom>
-              Fee: {movie.dailyRentalRate}$ per Day
+              Fee: {movie.price}$
             </Typography>
             <Typography variant="body2" sx={{ fontWeight: 600 }} gutterBottom>
               Language:

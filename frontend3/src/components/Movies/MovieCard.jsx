@@ -113,7 +113,7 @@ export default function MovieCard({ item, handleClick }) {
           </Typography>
 
           <Typography variant="body2" sx={{ fontWeight: 600 }} gutterBottom>
-            Fee: {item.dailyRentalRate}$ per Day
+            Fee: {item.price}$
           </Typography>
         </Box>
         <Button

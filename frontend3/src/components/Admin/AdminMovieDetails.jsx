@@ -65,9 +65,9 @@ export default function AdminMovieDetails() {
     rating: 0,
     length: 0,
     releasedYear: 0,
-    dailyRentalRate: 0,
+    price: 0,
     file: null,
-    numberInStock: 0,
+    // numberInStock: 0,
     language: [],
     actors: [],
   });
@@ -181,9 +181,9 @@ export default function AdminMovieDetails() {
       genres,
       rating,
       releasedYear,
-      dailyRentalRate,
+      price,
       length,
-      numberInStock,
+      // numberInStock,
       language,
       actors,
     } = fData;
@@ -197,9 +197,9 @@ export default function AdminMovieDetails() {
     });
     form.append("rating", rating);
     form.append("releasedYear", releasedYear);
-    form.append("dailyRentalRate", dailyRentalRate);
+    form.append("price", price);
     form.append("length", length);
-    form.append("numberInStock", numberInStock);
+    // form.append("numberInStock", numberInStock);
     language?.forEach((g) => {
       form.append("language[]", g);
     });
@@ -207,7 +207,7 @@ export default function AdminMovieDetails() {
       form.append("actor[]", actor);
     });
 
-    if (!dailyRentalRate) return alert("Please Fill Daily Rental Rate");
+    if (!price) return alert("Please Fill Daily Rental Rate");
 
     try {
       const response = await restClient.put(`${SERVER}/movies/${id}`, form, {
@@ -229,8 +229,8 @@ export default function AdminMovieDetails() {
       const {
         title,
         description,
-        numberInStock,
-        dailyRentalRate,
+        // numberInStock,
+        price,
         rating,
         genre,
         releasedYear,
@@ -243,8 +243,8 @@ export default function AdminMovieDetails() {
         ...fData,
         title,
         description,
-        numberInStock,
-        dailyRentalRate,
+        // numberInStock,
+        price,
         length,
         rating,
         releasedYear,
@@ -487,12 +487,12 @@ export default function AdminMovieDetails() {
             onChange={handleChange}
           />
         </Button>
-        <TextInput
+        {/* <TextInput
           id="numberInStock"
           label="Number InStock"
           value={fData.numberInStock}
           onChange={handleChange}
-        />
+        /> */}
         <TextInput
           id="length"
           label="Movie Length"
@@ -506,9 +506,9 @@ export default function AdminMovieDetails() {
           onChange={handleChange}
         />
         <TextInput
-          id="dailyRentalRate"
+          id="price"
           label="Daily Rental Rate"
-          value={fData.dailyRentalRate}
+          value={fData.price}
           onChange={handleChange}
         />
 

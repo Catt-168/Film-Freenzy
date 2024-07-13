@@ -71,7 +71,7 @@ export default function AdminMovieCard() {
   async function updateRent() {
     const reqBody = {
       rentalDate: rentDate + 1,
-      dailyRentalRate: movie.dailyRentalRate,
+      price: movie.price,
     };
     try {
       await restClient.put(`${SERVER}/rentals?id=${rentId}`, reqBody);
@@ -185,11 +185,11 @@ export default function AdminMovieCard() {
                 sx={{ position: "absolute" }}
               />
             </Typography>
-            <Typography variant="body2" sx={{ fontWeight: 600 }} gutterBottom>
+            {/* <Typography variant="body2" sx={{ fontWeight: 600 }} gutterBottom>
               Stock: {movie.numberInStock}
-            </Typography>
+            </Typography> */}
             <Typography variant="body2" sx={{ fontWeight: 600 }} gutterBottom>
-              Fee: {movie.dailyRentalRate}$ per Day
+              Fee: {movie.price}$
             </Typography>
             <Typography variant="body2" sx={{ fontWeight: 600 }} gutterBottom>
               Language:

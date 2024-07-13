@@ -44,8 +44,12 @@ const movieSchema = new Schema({
   rating: { type: Number, required: true },
   length: { type: Number, required: true },
   releasedYear: { type: Number, required: true },
-  numberInStock: { type: Number, required: true, min: 0, max: 255 },
-  dailyRentalRate: { type: Number, required: true, min: 0 },
+  price: { type: Number, required: true, min: 0 },
+  trailerLink: {
+    type: String,
+    min: 0,
+    max: 500,
+  },
   actor: {
     type: [
       new Schema({
