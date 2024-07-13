@@ -127,8 +127,8 @@ function MoviesTableBody({ items }) {
           <TableCell>{row.rating}</TableCell>
           <TableCell>{row.length}</TableCell>
           <TableCell>{row.releasedYear}</TableCell>
-          <TableCell>{row.numberInStock}</TableCell>
-          <TableCell>{row.dailyRentalRate}</TableCell>
+          {/* <TableCell>{row.numberInStock}</TableCell> */}
+          <TableCell>{row.price}</TableCell>
           <TableCell>
             <Button
               color="error"
@@ -237,7 +237,7 @@ function AdminRentalsTableBody({ items }) {
           </TableCell>
           <TableCell>{row.rentalFee}</TableCell>
           <TableCell>{new Date(row.dateOut).toDateString()}</TableCell>
-          <TableCell>{row.movie.dailyRentalRate}</TableCell>
+          <TableCell>{row.movie.price}</TableCell>
         </TableRow>
       ))}
     </TableBody>
