@@ -47,8 +47,8 @@ exports.createRental = async (req, res) => {
   const movie = await Movie.findById(movieId);
   if (!customer) return res.status(400).send("Invalid Movie");
 
-  if (movie.numberInStock === 0)
-    return res.status(400).send("Movie out of Stock.");
+  // if (movie.numberInStock === 0)
+  //   return res.status(400).send("Movie out of Stock.");
 
   const { rentalDate } = req.body;
 
@@ -63,24 +63,24 @@ exports.createRental = async (req, res) => {
     movie: {
       title: movie.title,
       _id: movie._id,
-      dailyRentalRate: movie.dailyRentalRate,
+      price: movie.price,
       genre: movie.genre,
     },
     rentalDate,
-    rentalFee: movie.dailyRentalRate * rentalDate,
+    rentalFee: movie.price * rentalDate,
   });
 
   const filter = { _id: movie._id };
-  const update = {
-    numberInStock: movie.numberInStock - 1,
-  };
+  // const update = {
+  //   numberInStock: movie.numberInStock - 1,
+  // };
   try {
     const newRental = await rental.save();
-    await Movie.findOneAndUpdate(filter, update, {
-      new: true,
-    });
+    // await Movie.findOneAndUpdate(filter, update, {
+    //   new: true,
+    // });
     res.status(200).json({
-      message: "Movie Updated Reduce",
+      message: "Successfully Bought!",
       rental: newRental,
     });
   } catch (e) {
@@ -93,7 +93,7 @@ exports.updateRental = async (req, res) => {
   const filter = { _id: id };
   const update = {
     rentalDate: req.body.rentalDate,
-    rentalFee: req.body.dailyRentalRate * 1,
+    rentalFee: req.body.price * 1,
   };
   try {
     const oldRental = await Rental.findById(id);

@@ -30,7 +30,7 @@ const rentalSchema = new Schema({
           },
         },
       ],
-      dailyRentalRate: {
+      price: {
         type: Number,
         min: 0,
       },

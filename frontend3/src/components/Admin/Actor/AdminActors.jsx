@@ -188,9 +188,16 @@ export default function AdminActors() {
         />
 
         {/* CHANGE MD:18  */}
-        <Grid container spacing={0} columns={{ md: 12 }}>
+        <Grid container direction={"row"} spacing={0} columns={{ md: 12 }}>
           {data?.map((item) => (
-            <Grid item md={3} key={item._id} sx={{ position: "relative" }}>
+            <Grid
+              item
+              xl={6}
+              sm={12}
+              md={3}
+              key={item._id}
+              sx={{ position: "relative", mb: -5 }}
+            >
               <Box
                 sx={{
                   display: "flex",

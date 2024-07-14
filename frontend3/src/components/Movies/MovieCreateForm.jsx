@@ -1,37 +1,31 @@
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import LanguageIcon from "@mui/icons-material/Language";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import RedditIcon from "@mui/icons-material/Reddit";
 import {
   Alert,
   Autocomplete,
-  Chip,
-  CircularProgress,
   IconButton,
-  MenuItem,
-  Modal,
   Rating,
-  Select,
   TextField,
   Tooltip,
   Typography,
 } from "@mui/material";
-import PersonAddIcon from "@mui/icons-material/PersonAdd";
-import Snackbar from "@mui/material/Snackbar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import Snackbar from "@mui/material/Snackbar";
 import { styled } from "@mui/material/styles";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SERVER } from "../../constants";
+import { Colors, STATUS_TYPE } from "../../helpers/constants";
 import restClient from "../../helpers/restClient";
+import { capitalizeFirstLetter } from "../../helpers/textHelper";
+import ActorGenreLanguageCreateModal from "../Admin/Actor/ActorGenreLanguageCreateModal";
+import GenericButton from "../Core/GenericButton";
 import TextInput from "../Input/TextInput";
 import AdminNavigation from "../Navigation/AdminNavigation";
 import UserNavigation from "../Navigation/UserNavigation";
-import GenericButton from "../Core/GenericButton";
-import { Colors, STATUS_TYPE } from "../../helpers/constants";
-import LoadingSpinner from "../Core/LoadingSpinner";
-import ActorGenreLanguageCreateModal from "../Admin/Actor/ActorGenreLanguageCreateModal";
-import { capitalizeFirstLetter } from "../../helpers/textHelper";
-import RedditIcon from "@mui/icons-material/Reddit";
-import LanguageIcon from "@mui/icons-material/Language";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -87,9 +81,10 @@ export default function MovieCreateForm() {
     rating: 0,
     length: 0,
     releasedYear: 0,
-    dailyRentalRate: 0,
+    price: 0,
     file: null,
-    numberInStock: 0,
+    // numberInStock: 0,
+    trailerLink: "",
     language: [],
     actors: [],
   });
@@ -178,9 +173,10 @@ export default function MovieCreateForm() {
       genres,
       rating,
       releasedYear,
-      dailyRentalRate,
+      price,
       length,
-      numberInStock,
+      // numberInStock,
+      trailerLink,
       language,
       actors,
     } = fData;
@@ -194,9 +190,10 @@ export default function MovieCreateForm() {
     });
     form.append("rating", rating);
     form.append("releasedYear", releasedYear);
-    form.append("dailyRentalRate", dailyRentalRate);
+    form.append("price", price);
     form.append("length", length);
-    form.append("numberInStock", numberInStock);
+    form.append("trailerLink", trailerLink);
+    // form.append("numberInStock", numberInStock);
     language?.forEach((g) => {
       form.append("language[]", g.language);
     });
@@ -449,12 +446,12 @@ export default function MovieCreateForm() {
             onChange={handleChange}
           />
         </Button>
-        <TextInput
+        {/* <TextInput
           id="numberInStock"
           label="Number InStock"
           value={fData.numberInStock}
           onChange={handleChange}
-        />
+        /> */}
         <TextInput
           id="length"
           label="Movie Length"
@@ -468,12 +465,17 @@ export default function MovieCreateForm() {
           onChange={handleChange}
         />
         <TextInput
-          id="dailyRentalRate"
-          label="Daily Rental Rate"
-          value={fData.dailyRentalRate}
+          id="trailerLink"
+          label="Movie Trailer Link"
+          value={fData.trailerLink}
           onChange={handleChange}
         />
-
+        <TextInput
+          id="price"
+          label="Moive Price"
+          value={fData.price}
+          onChange={handleChange}
+        />
         <Box
           sx={{
             display: "flex",

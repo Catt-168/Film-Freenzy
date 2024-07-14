@@ -59,6 +59,47 @@ exports.getAllMovies = async (req, res) => {
         .limit(pageSize)
         .skip(skip);
     }
+    const isGreater = movies.length >= moviesWithActors.length;
+    // console.log(isGreater, movies.length, moviesWithActors.length);
+
+    let duplicate = [];
+    if (isGreater) {
+      for (let index = 0; index < movies.length; index++) {
+        for (let index2 = 0; index2 < moviesWithActors.length; index2++) {
+          if (movies[index].title === moviesWithActors[index2].title) {
+            duplicate.push(movies[index]);
+          }
+        }
+      }
+    }
+    if (!isGreater) {
+      for (let index = 0; index < moviesWithActors.length; index++) {
+        for (let index2 = 0; index2 < movies.length; index2++) {
+          if (moviesWithActors[index].title === movies[index2].title) {
+            duplicate.push(moviesWithActors[index]);
+          }
+        }
+      }
+    }
+
+    if (duplicate.length !== 0) {
+      for (let index = 0; index <= duplicate.length; index++) {
+        if (isGreater) {
+          if (movies.includes(duplicate[index])) {
+            moviesWithActors = moviesWithActors.filter(
+              (m) => m.title !== duplicate[index].title
+            );
+          }
+        } else {
+          if (moviesWithActors.includes(duplicate[index])) {
+            moviesWithActors = moviesWithActors.filter(
+              (m) => m.title !== duplicate[index].title
+            );
+          }
+        }
+      }
+    }
+    // console.log(moviesWithActors);
 
     const totalItems =
       (await Movie.countDocuments(query)) + moviesWithActors.length;
@@ -98,8 +139,9 @@ exports.createMovie = async (req, res) => {
     const rating = parseInt(req.body.rating);
     const length = parseInt(req.body.length);
     const releasedYear = parseInt(req.body.releasedYear);
-    const numberInStock = parseInt(req.body.numberInStock);
-    const dailyRentalRate = req.body.dailyRentalRate;
+    // const numberInStock = parseInt(req.body.numberInStock);
+    const trailerLink = req.body.trailerLink;
+    const price = req.body.price;
 
     const imageSchmea = new Image(imageData);
     await imageSchmea.save();
@@ -124,10 +166,11 @@ exports.createMovie = async (req, res) => {
       language: lang,
       length,
       releasedYear,
-      numberInStock,
-      dailyRentalRate,
+      // numberInStock,
+      price,
       genre,
       image: imageData,
+      trailerLink,
       actor,
     });
     const movie = await schema.save();
@@ -147,8 +190,9 @@ exports.updateMovie = async (req, res) => {
   const length = parseInt(req.body.length);
   const releasedYear = parseInt(req.body.releasedYear);
 
-  const numberInStock = parseInt(req.body.numberInStock);
-  const dailyRentalRate = req.body.dailyRentalRate;
+  // const numberInStock = parseInt(req.body.numberInStock);
+  const price = req.body.price;
+  const trailerLink = req.body.trailerLink;
 
   const lang = await Language.find({ language: req.body.language });
   if (lang.length === 0)
@@ -157,6 +201,12 @@ exports.updateMovie = async (req, res) => {
   const genre = await Genre.find({ name: req.body.genre });
   if (genre.length === 0)
     return res.status(401).json({ message: "Select at least one genre" });
+
+  const actor = await Actor.find({ name: req.body.actor });
+
+  if (actor.length === 0) {
+    return res.status(401).json({ message: "Select at least one actor" });
+  }
   try {
     const oldMovie = await Movie.findById(id);
     const imageData = req.file
@@ -176,10 +226,12 @@ exports.updateMovie = async (req, res) => {
           rating,
           length,
           releasedYear,
-          numberInStock,
-          dailyRentalRate,
+          // numberInStock,
+          price,
           genre,
           image: imageData,
+          trailerLink,
+          actor,
         },
       },
       {
@@ -191,7 +243,7 @@ exports.updateMovie = async (req, res) => {
     //   {
     //     "movie.title": title,
     //     "movie.genre": genre,
-    //     "movie.dailyRentalRate": dailyRentalRate,
+    //     "movie.price": price,
     //   }
     // );
 
