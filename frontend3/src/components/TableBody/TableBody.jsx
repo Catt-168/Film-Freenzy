@@ -119,7 +119,7 @@ function MoviesTableBody({ items }) {
             <img
               src={`/${row.image.name}`}
               alt={"hi"}
-              style={{ width: "30%", height: "30%" }}
+              style={{ width: "100%", height: "100%" }}
             />
           </TableCell>
           <TableCell>{genrerateGenres(row.genre)}</TableCell>
@@ -127,7 +127,6 @@ function MoviesTableBody({ items }) {
           <TableCell>{row.rating}</TableCell>
           <TableCell>{row.length}</TableCell>
           <TableCell>{row.releasedYear}</TableCell>
-          {/* <TableCell>{row.numberInStock}</TableCell> */}
           <TableCell>{row.price}</TableCell>
           <TableCell>
             <Button
