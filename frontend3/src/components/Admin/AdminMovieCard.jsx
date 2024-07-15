@@ -189,7 +189,7 @@ export default function AdminMovieCard() {
               Stock: {movie.numberInStock}
             </Typography> */}
             <Typography variant="body2" sx={{ fontWeight: 600 }} gutterBottom>
-              Fee: {movie.price}$
+              Price: {movie.price}$
             </Typography>
             <Typography variant="body2" sx={{ fontWeight: 600 }} gutterBottom>
               Language:
