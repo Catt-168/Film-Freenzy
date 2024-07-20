@@ -11,6 +11,7 @@ export default function TextInput(props) {
     error,
     helperText,
     disabled = false,
+    placeholder = "",
   } = props;
   return (
     <TextField
@@ -27,6 +28,7 @@ export default function TextInput(props) {
       error={error}
       helperText={helperText}
       disabled={disabled}
+      placeholder={placeholder}
     />
   );
 }

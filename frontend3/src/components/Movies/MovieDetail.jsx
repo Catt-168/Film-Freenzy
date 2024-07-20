@@ -19,6 +19,7 @@ import AdminNavigation from "../Navigation/AdminNavigation";
 import UserNavigation from "../Navigation/UserNavigation";
 import LoadingSpinner from "../Core/LoadingSpinner";
 import useAuth from "../hooks/useAuth";
+import PaymentForm from "../Payment/PaymentForm";
 
 export default function MovieDetail() {
   const { id } = useParams();
@@ -32,6 +33,7 @@ export default function MovieDetail() {
   const [disabled, setDisabled] = useState(false);
   const user = JSON.parse(localStorage.getItem("user"));
   const { isAuthenticated } = useAuth();
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
 
   async function getMovieDetails() {
     try {
@@ -70,7 +72,7 @@ export default function MovieDetail() {
     const reqBody = {
       customerId: user._id,
       movieId: movie._id,
-      rentalDate: rentDate,
+      rentalDate: 1,
     };
     if (rentDate <= 0) return alert("Please lend a day at least!");
     setDisabled(true);
@@ -118,7 +120,8 @@ export default function MovieDetail() {
       );
       return navigate("/login");
     }
-    isUpdate ? updateRent() : createRent();
+    return setShowPaymentModal(true);
+    // isUpdate ? updateRent() : createRent();
   }
 
   const isLoading = status === "loading";
@@ -173,18 +176,10 @@ export default function MovieDetail() {
             <GenericButton
               sx={{ mt: 1 }}
               onClick={handleRent}
-              // disabled={(movie.numberInStock === 0 && !isUpdate) || isDisabled}
-              text={
-                isDisabled ? (
-                  <LoadingSpinner size={25} />
-                ) : isUpdate ? (
-                  "Update Rent Date"
-                ) : (
-                  "Rent"
-                )
-              }
+              disabled={isUpdate}
+              text={isDisabled ? <LoadingSpinner size={25} /> : "BUY"}
             />
-            <TextField
+            {/* <TextField
               type={"number"}
               margin="normal"
               required
@@ -196,7 +191,7 @@ export default function MovieDetail() {
               autoComplete="rentDay"
               value={rentDate}
               onChange={(e) => setRentDate(e.target.value)}
-            />
+            /> */}
           </Box>
           <Box
             sx={{
@@ -433,6 +428,13 @@ export default function MovieDetail() {
             </Box> */}
           </Box>
         </Paper>
+        {showPaymentModal && (
+          <PaymentForm
+            visible={showPaymentModal}
+            onClose={() => setShowPaymentModal(false)}
+            onBuy={createRent}
+          />
+        )}
       </Box>
     );
 }
