@@ -37,6 +37,7 @@ export default function AdminMovies() {
   tableHeaders[9] = "Price";
   tableHeaders[10] = "Action";
   tableHeaders[11] = "";
+  tableHeaders[12] = "";
 
   return (
     <Box sx={{ display: "flex" }}>
