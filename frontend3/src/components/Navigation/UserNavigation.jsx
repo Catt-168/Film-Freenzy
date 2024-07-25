@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { Colors } from "../../helpers/constants";
 import useAuth from "../hooks/useAuth";
 
-const navItems = ["movies", "rentals", "edit", "logout"];
+const navItems = ["home", "movies", "rentals", "edit", "logout"];
 
 function UserNavigation() {
   const navigate = useNavigate();
@@ -28,7 +28,10 @@ function UserNavigation() {
   };
   return (
     <Box sx={{ display: "flex" }}>
-      <AppBar component="nav" sx={{ background: Colors.primary, zIndex: 10 }}>
+      <AppBar
+        component="nav"
+        sx={{ background: Colors.primary, zIndex: 10, boxShadow: 0 }}
+      >
         <Toolbar>
           <Typography
             variant="h6"

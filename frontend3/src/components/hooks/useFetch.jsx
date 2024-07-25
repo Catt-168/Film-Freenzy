@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import restClient from "../../helpers/restClient";
+import { useEffect, useState } from "react";
 import { STATUS_TYPE } from "../../helpers/constants";
+import restClient from "../../helpers/restClient";
 
 export default function useFetch(url) {
   const [data, setData] = useState([]);

@@ -21,7 +21,6 @@ exports.getRentals = async (req, res) => {
     query = { "movie._id": movie };
   }
   filteredRental = await Rental.find(query, "-__v");
-  console.log(filteredRental.length);
   return filteredRental.length > 0
     ? res.send(filteredRental)
     : res.json({ message: "No Rental Movies Exist" });

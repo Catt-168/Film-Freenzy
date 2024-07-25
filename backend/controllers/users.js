@@ -54,8 +54,10 @@ exports.updateUser = async (req, res) => {
     name: req.body.name,
     email: req.body.email,
     password: req.body.password,
+    payment: req.body.payment,
   };
 
+  // console.log(req.body.payment);
   try {
     const updateduser = await User.findOneAndUpdate(filter, update, {
       new: true,

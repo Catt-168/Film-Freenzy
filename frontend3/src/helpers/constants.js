@@ -21,4 +21,5 @@ export const Colors = {
   darkPrimary: "#0f506a",
   red: "#D32F2F",
   yellow: "#FFB703",
+  grey: "#707070",
 };

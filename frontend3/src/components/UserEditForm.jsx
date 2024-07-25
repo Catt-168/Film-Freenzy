@@ -6,6 +6,7 @@ import restClient from "../helpers/restClient";
 import GenericButton from "./Core/GenericButton";
 import AdminNavigation from "./Navigation/AdminNavigation";
 import UserNavigation from "./Navigation/UserNavigation";
+import Footer from "./Footer/Footer";
 
 export default function UserEditForm() {
   const localUser = JSON.parse(localStorage.getItem("user"));
@@ -38,7 +39,11 @@ export default function UserEditForm() {
   return (
     <Box>
       {localUser.isAdmin ? <AdminNavigation /> : <UserNavigation />}
-      <Container component="main" maxWidth="sm">
+      <Container
+        component="main"
+        maxWidth="sm"
+        sx={{ padding: "2rem 2rem 0 2rem" }}
+      >
         <Box
           sx={{
             boxShadow: 3,
@@ -93,6 +98,9 @@ export default function UserEditForm() {
           </Box>
         </Box>
       </Container>
+      <Box sx={{ bottom: -88, position: "relative" }}>
+        <Footer />
+      </Box>
     </Box>
   );
 }

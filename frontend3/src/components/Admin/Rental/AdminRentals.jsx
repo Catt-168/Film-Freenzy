@@ -28,7 +28,7 @@ export default function AdminRentals() {
   return (
     <Box sx={{ display: "flex" }}>
       <AdminNavigation />
-      <Box mt={7} flexGrow={1}>
+      <Box mt={7} flexGrow={1} sx={{ padding: "2rem" }}>
         {rentals.length !== 0 ? (
           <CustomTable
             tableHeaders={tableHeaders}

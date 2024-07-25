@@ -22,6 +22,7 @@ import AdminNavigation from "../Navigation/AdminNavigation";
 import UserNavigation from "../Navigation/UserNavigation";
 import useAuth from "../hooks/useAuth";
 import MovieCard from "./MovieCard";
+import Footer from "../Footer/Footer";
 
 const PAGE_SIZE = 10;
 const FILTER_CATEGORIES = ["genre", "rating", "year", "language"];
@@ -301,124 +302,132 @@ export default function MoviesList() {
           }}
         />
       </Box> */}
-      <Box sx={{ display: "flex", ml: "8%", marginTop: 6, gap: 4.7 }}>
-        <TextField
-          id="outlined-basic"
-          label="Search Movies..."
-          variant="outlined"
-          sx={{ width: 208 }}
-          value={searchText}
-          onChange={(e) => {
-            setSearchText(e.target.value);
-          }}
-        />
-
-        {FILTER_CATEGORIES.map((category) => (
-          <FormControl key={category}>
-            <InputLabel id="demo-simple-select-label">
-              {capitalizeFirstLetter(category)}
-            </InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={
-                category === "year" ? filter[category].value : filter[category]
-              }
-              label={category}
-              onChange={handleChange}
-              name={category}
-              sx={{ width: 130, height: 55 }}
-            >
-              {generateMenuItems(category)}
-            </Select>
-          </FormControl>
-        ))}
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "flex-start",
-            alignItems: "center",
-            gap: 2,
-            ml: 3.2,
-          }}
-        >
-          <GenericButton
-            onClick={handleFilter}
-            sx={{ width: 10, height: 50 }}
-            text={<SearchIcon size={60} />}
-            tooltipTitle="Filter"
-          />
-
-          <GenericButton
-            hoverColor={Colors.yellow}
-            sx={{
-              width: 10,
-              height: 50,
-              background: Colors.yellow,
+      <Box sx={{ padding: "2rem" }}>
+        <Box sx={{ display: "flex", ml: "8%", marginTop: 6, gap: 4.7 }}>
+          <TextField
+            id="outlined-basic"
+            label="Search Movies..."
+            variant="outlined"
+            sx={{ width: 208 }}
+            value={searchText}
+            onChange={(e) => {
+              setSearchText(e.target.value);
             }}
-            onClick={handleReset}
-            text={
-              <ReplayIcon
-                size={60}
-                color={"BlueSapphire"}
-                sx={{
-                  padding: "10",
-                }}
-              />
-            }
-            isError={true}
-            tooltipTitle="Reset"
           />
-        </Box>
-      </Box>
-      <Box
-        sx={{
-          display: "flex",
-          gap: 5,
-          flexWrap: "wrap",
-          marginTop: 13,
-          flexGrow: 5,
-          justifyContent: "flex-start",
-          alignItems: "center",
-          width: "90%",
-          ml: "8%",
-        }}
-      >
-        {isLoading ? (
+
+          {FILTER_CATEGORIES.map((category) => (
+            <FormControl key={category}>
+              <InputLabel id="demo-simple-select-label">
+                {capitalizeFirstLetter(category)}
+              </InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={
+                  category === "year"
+                    ? filter[category].value
+                    : filter[category]
+                }
+                label={category}
+                onChange={handleChange}
+                name={category}
+                sx={{ width: 130, height: 55 }}
+              >
+                {generateMenuItems(category)}
+              </Select>
+            </FormControl>
+          ))}
           <Box
             sx={{
               display: "flex",
-              justifyContent: "center",
-              alignItems: "flex-start",
-              width: "100%",
+              justifyContent: "flex-start",
+              alignItems: "center",
+              gap: 2,
+              ml: 3.2,
             }}
           >
-            <LoadingSpinner />
+            <GenericButton
+              onClick={handleFilter}
+              sx={{ width: 10, height: 50 }}
+              text={<SearchIcon size={60} />}
+              tooltipTitle="Filter"
+            />
+
+            <GenericButton
+              hoverColor={Colors.yellow}
+              sx={{
+                width: 10,
+                height: 50,
+                background: Colors.yellow,
+              }}
+              onClick={handleReset}
+              text={
+                <ReplayIcon
+                  size={60}
+                  color={"BlueSapphire"}
+                  sx={{
+                    padding: "10",
+                  }}
+                />
+              }
+              isError={true}
+              tooltipTitle="Reset"
+            />
           </Box>
-        ) : isMoviesEmpty ? (
-          <Typography variant="h3" sx={{ textAlign: "center", width: "100%" }}>
-            Sorry, No Movies!
-          </Typography>
-        ) : (
-          movies.map((item) => (
-            <MovieCard item={item} handleClick={handleClick} key={item._id} />
-          ))
-        )}
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            gap: 5,
+            flexWrap: "wrap",
+            marginTop: 13,
+            flexGrow: 5,
+            justifyContent: "flex-start",
+            alignItems: "center",
+            width: "90%",
+            ml: "8%",
+          }}
+        >
+          {isLoading ? (
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "flex-start",
+                width: "100%",
+              }}
+            >
+              <LoadingSpinner />
+            </Box>
+          ) : isMoviesEmpty ? (
+            <Typography
+              variant="h3"
+              sx={{ textAlign: "center", width: "100%" }}
+            >
+              Sorry, No Movies!
+            </Typography>
+          ) : (
+            movies.map((item) => (
+              <MovieCard item={item} handleClick={handleClick} key={item._id} />
+            ))
+          )}
+        </Box>
+        <Box
+          sx={{
+            display: isMoviesEmpty || isLoading ? "none" : "flex",
+            justifyContent: "center",
+          }}
+        >
+          <Pagination
+            page={page}
+            count={metaData.totalPages}
+            onChange={handlePaginate}
+            shape="rounded"
+            color={"BlueSapphire"}
+          />
+        </Box>
       </Box>
-      <Box
-        sx={{
-          display: isMoviesEmpty || isLoading ? "none" : "flex",
-          justifyContent: "center",
-        }}
-      >
-        <Pagination
-          page={page}
-          count={metaData.totalPages}
-          onChange={handlePaginate}
-          shape="rounded"
-          color={"BlueSapphire"}
-        />
-      </Box>
+      <Footer />
     </Box>
   );
 }

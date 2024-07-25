@@ -389,7 +389,7 @@ export default function MovieCreateForm() {
   const isActorStatusLoading = actorStatus === STATUS_TYPE.loading;
 
   return (
-    <Box>
+    <Box sx={{ padding: "2rem" }}>
       {user.isAdmin ? <AdminNavigation /> : <UserNavigation />}
       <Box
         component="form"

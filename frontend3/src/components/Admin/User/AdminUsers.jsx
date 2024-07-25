@@ -29,7 +29,7 @@ export default function AdminUsers() {
   return (
     <Box sx={{ display: "flex" }}>
       {user.isAdmin ? <AdminNavigation /> : <UserNavigation />}
-      <Box sx={{ mt: 7, flexGrow: 1 }}>
+      <Box sx={{ mt: 7, flexGrow: 1, padding: "2rem" }}>
         <GenericButton
           disabled
           onClick={() => navigate(`/admin/user/create`)}

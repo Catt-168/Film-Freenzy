@@ -1,34 +1,33 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 
 import "./App.css";
-import Home from "./components/Home";
-import Authenticate from "./components/Login";
-import MoviesList from "./components/Movies/MoviesList";
-import UserNavigation from "./components/Navigation/UserNavigation";
-import ProtectedRoute from "./components/Routes/ProtectedRoute";
-import MovieDetail from "./components/Movies/MovieDetail";
-import AdminUsers from "./components/Admin/User/AdminUsers";
-import AdminRoute from "./components/Routes/AdminRoute";
-import AdminMovies from "./components/Admin/AdminMovies";
-import MovieCreateForm from "./components/Movies/MovieCreateForm";
+import AdminActors from "./components/Admin/Actor/AdminActors";
+import AdminMovieCard from "./components/Admin/AdminMovieCard";
 import AdminMovieDetails from "./components/Admin/AdminMovieDetails";
-import AdminGeners from "./components/Admin/Genre/AdminGenres";
+import AdminMovies from "./components/Admin/AdminMovies";
 import AdminGenersCreate from "./components/Admin/Genre/AdminGenreCreateForm";
-import AdminUserEdit from "./components/Admin/User/AdminUserEdit";
-import Rentals from "./components/Rentals/Rentals";
-import AdminRentals from "./components/Admin/Rental/AdminRentals";
-import UserEditForm from "./components/UserEditForm";
+import AdminGeners from "./components/Admin/Genre/AdminGenres";
 import AdminLanguage from "./components/Admin/Language/AdminLanguage";
 import AdminLanguageCreateForm from "./components/Admin/Language/AdminLanguageCreateForm";
-import AdminMovieCard from "./components/Admin/AdminMovieCard";
-import AdminActors from "./components/Admin/Actor/AdminActors";
+import AdminRentals from "./components/Admin/Rental/AdminRentals";
+import AdminUserEdit from "./components/Admin/User/AdminUserEdit";
+import AdminUsers from "./components/Admin/User/AdminUsers";
+import Authenticate from "./components/Login";
+import MovieCreateForm from "./components/Movies/MovieCreateForm";
+import MovieDetail from "./components/Movies/MovieDetail";
+import MoviesList from "./components/Movies/MoviesList";
+import Rentals from "./components/Rentals/Rentals";
+import AdminRoute from "./components/Routes/AdminRoute";
+import ProtectedRoute from "./components/Routes/ProtectedRoute";
+import UserEditForm from "./components/UserEditForm";
+import Home from "./components/Home/Home";
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route element={<ProtectedRoute />}>
-          <Route element={<Home />} path="/" exact />
+          <Route element={<Home />} path="/home" exact />
           <Route path="/movies">
             <Route element={<MovieDetail />} path="/movies/:id" />
             <Route element={<MoviesList />} path="/movies" />

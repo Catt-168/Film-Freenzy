@@ -271,3 +271,30 @@ exports.deleteMovie = async (req, res) => {
     res.status(400).json({ message: e.message });
   }
 };
+
+exports.getPopularMovies = async (req, res) => {
+  try {
+    const movies = await Movie.find({ rating: 5 });
+
+    let newMovies = [];
+    for (let i = 0; i <= 4; i++) {
+      const randomIndex = Math.floor(Math.random() * movies.length);
+      if (!newMovies.includes(movies[randomIndex]))
+        newMovies.push(movies[randomIndex]);
+    }
+
+    return res.json({ movies: newMovies });
+  } catch (e) {
+    res.status(400).json({ message: e.message });
+  }
+};
+
+exports.getNewReleasedMovies = async (req, res) => {
+  try {
+    const movies = await Movie.find().sort({ releasedYear: -1 }).limit(5);
+
+    return res.json({ movies });
+  } catch (e) {
+    res.status(400).json({ message: e.message });
+  }
+};

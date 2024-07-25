@@ -58,7 +58,7 @@ export default function AdminLanguageCreateForm() {
   }, [id]);
 
   return (
-    <Box>
+    <Box sx={{ padding: "2rem" }}>
       {user.isAdmin ? <AdminNavigation /> : <UserNavigation />}
       <Box
         component="form"

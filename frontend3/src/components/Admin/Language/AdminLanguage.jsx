@@ -29,7 +29,7 @@ export default function AdminLanguage() {
   return (
     <Box sx={{ display: "flex" }}>
       {user.isAdmin ? <AdminNavigation /> : <UserNavigation />}
-      <Box sx={{ mt: 7, flexGrow: 1 }}>
+      <Box sx={{ mt: 7, flexGrow: 1, padding: "2rem" }}>
         <GenericButton
           onClick={() => navigate(`/admin/languages/create`)}
           sx={{ marginBottom: 3, mr: "100%" }}

@@ -44,7 +44,7 @@ export default function AdminUserEdit() {
     fetchUser();
   }, [id]);
   return (
-    <Box>
+    <Box sx={{ padding: "2rem" }}>
       {localUser.isAdmin ? <AdminNavigation /> : <UserNavigation />}
       <Box
         noValidate
