@@ -313,7 +313,7 @@ export default function Authenticate() {
           alignItems: "center",
         }}
       >
-        <Typography component="h1" variant="h5" color="black">
+        <Typography component="h1" variant="h5" color={Colors.primary}>
           {isLogin ? "Login" : "SignUp"}
         </Typography>
         {isLogin ? (
