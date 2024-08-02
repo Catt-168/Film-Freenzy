@@ -30,6 +30,10 @@ const userSchema = new Schema({
     type: Boolean,
     default: false,
   },
+  payment: {
+    type: Boolean,
+    default: false,
+  },
 });
 userSchema.methods.generateAuthToken = function () {
   const token = jwt.sign({ _id: this._id, isAdmin: this.isAdmin }, "shhhhh");

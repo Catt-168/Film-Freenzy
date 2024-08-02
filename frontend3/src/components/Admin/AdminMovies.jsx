@@ -43,7 +43,7 @@ export default function AdminMovies() {
     <Box sx={{ display: "flex" }}>
       {user.isAdmin ? <AdminNavigation /> : <UserNavigation />}
 
-      <Box sx={{ mt: 7 }}>
+      <Box sx={{ mt: 7, padding: "2rem" }}>
         <GenericButton
           onClick={() => navigate(`/admin/movies/create`)}
           sx={{ marginBottom: 3, mr: "100%" }}

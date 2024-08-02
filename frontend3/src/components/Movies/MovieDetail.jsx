@@ -20,6 +20,7 @@ import UserNavigation from "../Navigation/UserNavigation";
 import LoadingSpinner from "../Core/LoadingSpinner";
 import useAuth from "../hooks/useAuth";
 import PaymentForm from "../Payment/PaymentForm";
+import Footer from "../Footer/Footer";
 
 export default function MovieDetail() {
   const { id } = useParams();
@@ -133,53 +134,54 @@ export default function MovieDetail() {
   if (isLoading) return <p>Loading</p>;
   if (isSuccess)
     return (
-      <Box>
+      <Box sx={{ paddingTop: "2rem" }}>
         {user?.isAdmin ? <AdminNavigation /> : <UserNavigation />}
-        <Typography variant="h3" component="div" sx={{ mt: 5, mb: 1 }}>
-          {/* {capitalizeFirstLetterinSentence(movie.title)} */}
-          <Snackbar
-            open={openSnackbar}
-            autoHideDuration={3000}
-            onClose={() => setOpenSnackbar(false)}
-            message={
-              isUpdate
-                ? "Video Rental Date Successfully Updated"
-                : "Video Successfully Rented!"
-            }
-          />
-        </Typography>
-        <Paper
-          sx={{
-            display: "flex",
-            width: "60%",
-            ml: "20%",
-            gap: 5,
-            padding: 2,
-          }}
-          elevation={6}
-        >
-          <Box
+        <Box sx={{ padding: "1.2rem" }}>
+          <Typography variant="h3" component="div" sx={{ mt: 6, mb: 1 }}>
+            {/* {capitalizeFirstLetterinSentence(movie.title)} */}
+            <Snackbar
+              open={openSnackbar}
+              autoHideDuration={3000}
+              onClose={() => setOpenSnackbar(false)}
+              message={
+                isUpdate
+                  ? "Video Rental Date Successfully Updated"
+                  : "Video Successfully Rented!"
+              }
+            />
+          </Typography>
+          <Paper
             sx={{
-              width: "50%",
               display: "flex",
-              flexDirection: "column",
-              justifyItems: "center",
-              pt: 2,
-              pl: 4,
+              width: "60%",
+              ml: "20%",
+              gap: 5,
+              padding: 2,
             }}
+            elevation={6}
           >
-            <img
-              src={`../../../public/${movie.image.name}`}
-              alt="Movie Image"
-            />
+            <Box
+              sx={{
+                width: "50%",
+                display: "flex",
+                flexDirection: "column",
+                justifyItems: "center",
+                pt: 2,
+                pl: 4,
+              }}
+            >
+              <img
+                src={`../../../public/${movie.image.name}`}
+                alt="Movie Image"
+              />
 
-            <GenericButton
-              sx={{ mt: 1 }}
-              onClick={handleRent}
-              disabled={isUpdate}
-              text={isDisabled ? <LoadingSpinner size={25} /> : "BUY"}
-            />
-            {/* <TextField
+              <GenericButton
+                sx={{ mt: 1 }}
+                onClick={handleRent}
+                disabled={isUpdate}
+                text={isDisabled ? <LoadingSpinner size={25} /> : "BUY"}
+              />
+              {/* <TextField
               type={"number"}
               margin="normal"
               required
@@ -192,249 +194,85 @@ export default function MovieDetail() {
               value={rentDate}
               onChange={(e) => setRentDate(e.target.value)}
             /> */}
-          </Box>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-              justifyItems: "center",
-            }}
-          >
-            <Typography variant="h3" component="div" sx={{ mt: 1, mb: 1 }}>
-              {movie.title}
-            </Typography>
-            <Box mb={3}>
-              {movie.genre.map((g) => (
-                <GenericChip label={g.name} sx={{ mr: 1 }} key={g._id} />
-              ))}
             </Box>
-
-            <GenericButton
-              startIcon={<PlayArrowIcon />}
-              sx={{ mb: 2 }}
-              onClick={() => window.open(movie.trailerLink)}
-              disabled={movie?.trailerLink?.length === 0}
-              text="Watch Trailer"
-            />
-            <Typography variant="h6">Overview</Typography>
-            <Typography
-              variant="body1"
-              color="text.secondary"
-              sx={{ textAlign: "left", marginBottom: 2 }}
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "flex-start",
+                justifyItems: "center",
+              }}
             >
-              {movie.description}
-            </Typography>
-            <Typography variant="body2" sx={{ fontWeight: 600 }} gutterBottom>
-              Duration: {movie.length} minutes
-            </Typography>
-            <Typography variant="body2" sx={{ fontWeight: 600 }} gutterBottom>
-              Released Date:{movie.releasedYear}
-            </Typography>
-            <Typography variant="body2" sx={{ fontWeight: 600 }} gutterBottom>
-              Rating:
-              <Rating
-                name="read-only"
-                value={movie.rating}
-                readOnly
-                size="small"
-                sx={{ position: "absolute" }}
+              <Typography variant="h3" component="div" sx={{ mt: 1, mb: 1 }}>
+                {movie.title}
+              </Typography>
+              <Box mb={3}>
+                {movie.genre.map((g) => (
+                  <GenericChip label={g.name} sx={{ mr: 1 }} key={g._id} />
+                ))}
+              </Box>
+
+              <GenericButton
+                startIcon={<PlayArrowIcon />}
+                sx={{ mb: 2 }}
+                onClick={() => window.open(movie.trailerLink)}
+                disabled={movie?.trailerLink?.length === 0}
+                text="Watch Trailer"
               />
-            </Typography>
-            {/* <Typography variant="body2" sx={{ fontWeight: 600 }} gutterBottom>
+              <Typography variant="h6">Overview</Typography>
+              <Typography
+                variant="body1"
+                color="text.secondary"
+                sx={{ textAlign: "left", marginBottom: 2 }}
+              >
+                {movie.description}
+              </Typography>
+              <Typography variant="body2" sx={{ fontWeight: 600 }} gutterBottom>
+                Duration: {movie.length} minutes
+              </Typography>
+              <Typography variant="body2" sx={{ fontWeight: 600 }} gutterBottom>
+                Released Date:{movie.releasedYear}
+              </Typography>
+              <Typography variant="body2" sx={{ fontWeight: 600 }} gutterBottom>
+                Rating:
+                <Rating
+                  name="read-only"
+                  value={movie.rating}
+                  readOnly
+                  size="small"
+                  sx={{ position: "absolute" }}
+                />
+              </Typography>
+              {/* <Typography variant="body2" sx={{ fontWeight: 600 }} gutterBottom>
               Stock: {movie.numberInStock}
             </Typography> */}
-            <Typography variant="body2" sx={{ fontWeight: 600 }} gutterBottom>
-              Price: {movie.price}$
-            </Typography>
-            <Typography variant="body2" sx={{ fontWeight: 600 }} gutterBottom>
-              Language:
-              {movie.language.map((g) => (
-                <GenericChip
-                  label={capitalizeFirstLetter(g.language)}
-                  sx={{ ml: 1 }}
-                  key={g._id}
-                />
-              ))}
-            </Typography>
-            {/*  */}
-            {/* <Box
-              sx={{
-                display: "flex",
-                justifyContent: "flex-start",
-                alignItems: "center",
-                width: "100%",
-                gap: 4,
-                mt: 1,
-                mb: 2,
-              }}
-            >
-              <Autocomplete
-                multiple
-                fullWidth
-                value={fData.genres}
-                onChange={(event, newValue) => {
-                  setFData({ ...fData, genres: newValue });
-                }}
-                filterSelectedOptions
-                id="category-filter"
-                options={genres}
-                getOptionLabel={(option) => option?.name}
-                isOptionEqualToValue={(option, value) => {
-                  if (option._id === value._id) return option._id === value._id;
-                }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Genres"
-                    placeholder="Select genre of the movie"
+              <Typography variant="body2" sx={{ fontWeight: 600 }} gutterBottom>
+                Fee: {movie.price}$
+              </Typography>
+              <Typography variant="body2" sx={{ fontWeight: 600 }} gutterBottom>
+                Language:
+                {movie.language.map((g) => (
+                  <GenericChip
+                    label={capitalizeFirstLetter(g.language)}
+                    sx={{ ml: 1 }}
+                    key={g._id}
                   />
-                )}
-              />
-            </Box> */}
-            {/* <Box
-              sx={{
-                display: "flex",
-                justifyContent: "flex-start",
-                alignItems: "center",
-                width: "100%",
-                gap: 4,
-                mt: 1,
-                mb: 2,
-              }}
-            >
-              <Autocomplete
-                multiple
-                fullWidth
-                value={fData.language}
-                onChange={(event, newValue) => {
-                  setFData({ ...fData, language: newValue });
-                }}
-                filterSelectedOptions
-                id="category-filter"
-                options={languages}
-                getOptionLabel={(option) =>
-                  capitalizeFirstLetter(option?.language)
-                }
-                isOptionEqualToValue={(option, value) => {
-                  if (option._id === value._id) return option._id === value._id;
-                }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Languages"
-                    placeholder="Select language(s) of the movie"
-                  />
-                )}
-              />
-
-              <Tooltip title="Add Language">
-                <IconButton
-                  aria-label="Add"
-                  color={"White"}
-                  onClick={() => hanldeOpenModal("language")}
-                  sx={{
-                    width: 40,
-                    height: 40,
-                    background: Colors.primary,
-                    "&:hover": {
-                      background: Colors.darkPrimary,
-                    },
-                  }}
-                >
-                  <RedditIcon />
-                </IconButton>
-              </Tooltip>
+                ))}
+              </Typography>
+              {/*  */}
             </Box>
-
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "flex-start",
-                alignItems: "center",
-                width: "100%",
-                gap: 4,
-                mt: 1,
-                mb: 2,
-              }}
-            >
-              <Autocomplete
-                multiple
-                fullWidth
-                value={fData.actors}
-                onChange={(event, newValue) => {
-                  setFData({ ...fData, actors: newValue });
-                }}
-                filterSelectedOptions
-                id="category-filter"
-                options={actors}
-                getOptionLabel={(option) => option?.name}
-                isOptionEqualToValue={(option, value) => {
-                  if (option._id === value._id) return option._id === value._id;
-                }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Actors"
-                    placeholder="Select actors of the movie"
-                  />
-                )}
-              />
-              <Tooltip title="Add Actor">
-                <IconButton
-                  aria-label="Add"
-                  color={"White"}
-                  onClick={() => hanldeOpenModal("actor")}
-                  sx={{
-                    width: 40,
-                    height: 40,
-                    background: Colors.primary,
-                    "&:hover": {
-                      background: Colors.darkPrimary,
-                    },
-                  }}
-                >
-                  <PersonAddIcon />
-                </IconButton>
-              </Tooltip>
-            </Box>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                width: "100%",
-              }}
-            >
-              <Box
-                sx={{ display: "flex", flexDirection: "row", ml: 1, gap: 2 }}
-              >
-                <Typography variant="h6" gutterBottom>
-                  Rating
-                </Typography>
-                <Rating
-                  value={fData.rating}
-                  defaultValue={1}
-                  id="rating"
-                  sx={{ mt: 0.5 }}
-                  onChange={(event, newValue) => {
-                    setFData((prev) => {
-                      return { ...prev, rating: newValue };
-                    });
-                  }}
-                />
-              </Box>
-              <GenericButton type="submit" text="Submit" sx={{ mr: 9 }} />
-            </Box> */}
-          </Box>
-        </Paper>
-        {showPaymentModal && (
-          <PaymentForm
-            visible={showPaymentModal}
-            onClose={() => setShowPaymentModal(false)}
-            onBuy={createRent}
-          />
-        )}
+          </Paper>
+          {showPaymentModal && (
+            <PaymentForm
+              visible={showPaymentModal}
+              onClose={() => setShowPaymentModal(false)}
+              onBuy={createRent}
+            />
+          )}
+        </Box>
+        <Box sx={{ bottom: -25, position: "relative" }}>
+          <Footer />
+        </Box>
       </Box>
     );
 }

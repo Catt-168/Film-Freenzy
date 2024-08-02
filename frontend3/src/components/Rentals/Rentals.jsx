@@ -5,6 +5,7 @@ import UserNavigation from "../Navigation/UserNavigation";
 import restClient from "../../helpers/restClient";
 import { SERVER } from "../../constants";
 import CustomTable from "../Admin/CustomTable";
+import Footer from "../Footer/Footer";
 
 export default function Rentals() {
   const [rentals, setRentals] = useState([]);
@@ -35,7 +36,7 @@ export default function Rentals() {
   return (
     <Box>
       {user.isAdmin ? <AdminNavigation /> : <UserNavigation />}
-      <Box mt={5}>
+      <Box mt={5} sx={{ padding: "2rem" }}>
         {rentals.length !== 0 ? (
           <CustomTable
             tableHeaders={tableHeaders}
@@ -45,6 +46,9 @@ export default function Rentals() {
         ) : (
           <p>You has not rented any movies</p>
         )}
+      </Box>
+      <Box sx={{ bottom: -78, position: "relative" }}>
+        <Footer />
       </Box>
     </Box>
   );
