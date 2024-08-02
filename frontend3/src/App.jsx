@@ -21,6 +21,7 @@ import AdminRoute from "./components/Routes/AdminRoute";
 import ProtectedRoute from "./components/Routes/ProtectedRoute";
 import UserEditForm from "./components/UserEditForm";
 import Home from "./components/Home/Home";
+import Dashboard from "./components/Admin/Dashboard/Dashboard";
 
 function App() {
   return (
@@ -60,6 +61,7 @@ function App() {
           <Route element={<AdminLanguage />} path="/admin/languages" />
           <Route element={<AdminActors />} path="/admin/actors" />
 
+          <Route element={<Dashboard />} path="/admin/home" />
           <Route element={<Home />} path="/admin" />
         </Route>
         <Route element={<Authenticate />} path="/login" />
