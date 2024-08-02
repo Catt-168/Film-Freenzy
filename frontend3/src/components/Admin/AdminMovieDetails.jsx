@@ -507,7 +507,7 @@ export default function AdminMovieDetails() {
         />
         <TextInput
           id="price"
-          label="Daily Rental Rate"
+          label="Movie Price"
           value={fData.price}
           onChange={handleChange}
         />

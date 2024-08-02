@@ -34,7 +34,7 @@ export default function AdminMovies() {
   }, [isDrawerOpen]);
   const tableHeaders = movies.length !== 0 ? Object.keys(movies[0]) : [];
   // tableHeaders[9] = "Stock";
-  tableHeaders[9] = "Fee";
+  tableHeaders[9] = "Price";
   tableHeaders[10] = "Action";
   tableHeaders[11] = "";
   tableHeaders[12] = "";
