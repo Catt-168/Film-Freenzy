@@ -5,27 +5,32 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
-import { Colors } from "../../helpers/constants";
+import { Colors, DEFAULT_ACTIV_TAB } from "../../helpers/constants";
 import useAuth from "../hooks/useAuth";
+import { useState } from "react";
 
 const navItems = ["home", "movies", "rentals", "edit", "logout"];
 
 function UserNavigation() {
   const navigate = useNavigate();
   // const user = JSON.parse(localStorage.getItem("user"));
-  const { isAuthenticated, user } = useAuth();
-  const activeTab = JSON.parse(localStorage.getItem("active")) || 0;
+  const { isAuthenticated } = useAuth();
+
+  const [activeTab, setActiveTab] = useState(
+    JSON.parse(localStorage.getItem("active"))
+  );
 
   const handleNavigate = (item) => {
     if (item !== "logout") return navigate(`/${item}`);
 
-    localStorage.removeItem("active");
+    localStorage.setItem("active", DEFAULT_ACTIV_TAB);
     localStorage.removeItem("jwtToken");
     localStorage.removeItem("user");
     localStorage.removeItem("page");
     navigate(isAuthenticated ? "/movies" : "/login", { replace: true });
     isAuthenticated ? window.location.reload() : null;
   };
+  console.log("[Active Tab]: ", activeTab);
   return (
     <Box sx={{ display: "flex" }}>
       <AppBar
@@ -49,7 +54,7 @@ function UserNavigation() {
               style={{ width: 35, height: 35, cursor: "pointer" }}
               onClick={() => {
                 localStorage.setItem("active", 0);
-                navigate("/movies");
+                navigate("/home");
               }}
             />
             <span>
@@ -76,6 +81,7 @@ function UserNavigation() {
                     : "",
                 }}
                 onClick={() => {
+                  setActiveTab(index);
                   localStorage.setItem("active", index);
                   handleNavigate(item);
                 }}

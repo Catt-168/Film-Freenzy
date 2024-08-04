@@ -255,7 +255,8 @@ function Login({ onChangeLogin }) {
         navigate(`../${prevUrl}`);
         return localStorage.removeItem("prevUrl");
       }
-      navigate(data.user.isAdmin ? "/admin/movies" : "/movies");
+      localStorage.setItem("active", data.user.isAdmin ? 0 : 1);
+      navigate(data.user.isAdmin ? "/admin/dashboard" : "/movies");
     } catch (e) {
       setError({
         email: e.response.data.message,

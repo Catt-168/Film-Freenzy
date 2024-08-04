@@ -23,3 +23,5 @@ export const Colors = {
   yellow: "#FFB703",
   grey: "#707070",
 };
+
+export const DEFAULT_ACTIV_TAB = 1;

@@ -10,6 +10,7 @@ import RedditIcon from "@mui/icons-material/Reddit";
 import MuiAppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
+import DashboardIcon from "@mui/icons-material/Dashboard";
 import Divider from "@mui/material/Divider";
 import MuiDrawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
@@ -24,11 +25,12 @@ import Typography from "@mui/material/Typography";
 import { styled, useTheme } from "@mui/material/styles";
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
-import { Colors } from "../../helpers/constants";
+import { Colors, DEFAULT_ACTIV_TAB } from "../../helpers/constants";
 import { capitalizeFirstLetter } from "../../helpers/textHelper";
 
 const drawerWidth = 240;
 const navItems = [
+  "dashboard",
   "movies",
   "actors",
   "users",
@@ -109,11 +111,11 @@ export default function VariantDrawer() {
   );
   const navigate = useNavigate();
   const activeTab = JSON.parse(localStorage.getItem("active")) || 0;
-
+  console.log(activeTab);
   const handleNavigate = (item) => {
     if (item !== "logout") return navigate(`/admin/${item}`);
 
-    localStorage.removeItem("active");
+    localStorage.setItem("active", DEFAULT_ACTIV_TAB);
     localStorage.removeItem("jwtToken");
     localStorage.removeItem("user");
     localStorage.removeItem("navigation");
@@ -136,6 +138,8 @@ export default function VariantDrawer() {
     };
 
     switch (item) {
+      case "dashboard":
+        return <DashboardIcon sx={sxProp} />;
       case "users":
         return <PersonIcon sx={sxProp} />;
       case "actors":

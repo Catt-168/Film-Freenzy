@@ -240,8 +240,8 @@ const PaymentForm = (props) => {
 
   function handleConfirmPay() {
     onClose();
-    updateUser();
-    // onBuy();
+    // updateUser();
+    onBuy();
   }
 
   return (

@@ -61,7 +61,7 @@ function App() {
           <Route element={<AdminLanguage />} path="/admin/languages" />
           <Route element={<AdminActors />} path="/admin/actors" />
 
-          <Route element={<Dashboard />} path="/admin/home" />
+          <Route element={<Dashboard />} path="/admin/dashboard" />
           <Route element={<Home />} path="/admin" />
         </Route>
         <Route element={<Authenticate />} path="/login" />
