@@ -31,8 +31,10 @@ export default function Rentals() {
 
   let tableHeaders = rentals.length !== 0 ? Object.keys(rentals[0]) : [];
 
-  tableHeaders[3] = "Expired Date";
-  tableHeaders[5] = "Subscribed Date";
+  tableHeaders[3] = "Fee";
+  tableHeaders[4] = "Purchased Date";
+
+  tableHeaders.pop();
   return (
     <Box>
       {user.isAdmin ? <AdminNavigation /> : <UserNavigation />}

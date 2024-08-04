@@ -33,7 +33,7 @@ function App() {
             <Route element={<MovieDetail />} path="/movies/:id" />
             <Route element={<MoviesList />} path="/movies" />
           </Route>
-          <Route element={<Rentals />} path="/rentals" />
+          <Route element={<Rentals />} path="/purchase" />
           <Route element={<UserEditForm />} path="/edit" />
         </Route>
         <Route element={<AdminRoute />}>
@@ -54,7 +54,7 @@ function App() {
             path="admin/languages/:id"
           />
           <Route element={<AdminUserEdit />} path="admin/users/:id" />
-          <Route element={<AdminRentals />} path="/admin/rentals" />
+          <Route element={<AdminRentals />} path="/admin/purchases" />
           <Route element={<AdminGeners />} path="/admin/genres" />
           <Route element={<AdminUsers />} path="/admin/users" />
           <Route element={<AdminMovies />} path="/admin/movies" />

@@ -146,7 +146,7 @@ export default function MovieDetail() {
               message={
                 isUpdate
                   ? "Video Rental Date Successfully Updated"
-                  : "Video Successfully Rented!"
+                  : "Video Successfully Purchased!"
               }
             />
           </Typography>
