@@ -233,15 +233,45 @@ const PaymentForm = (props) => {
   };
 
   function handleConfirm() {
+    if (selectedPay === "visa") {
+      return handleExistingVisaPurchase();
+    }
+
     if (selectedPay.length === 0)
       return alert("Please Choose a payment service to proceeed purchase");
     setFinalPay(selectedPay);
   }
 
+  async function handleExistingVisaPurchase() {
+    try {
+      const { data } = await restClient.get(`${SERVER}/users/${user._id}`);
+      if (data?.payment) return confirmCreditCard();
+      setFinalPay(selectedPay);
+    } catch (e) {
+      console.log(e);
+    }
+  }
+  console.log(finalPay);
+  function confirmCreditCard() {
+    const confirmContinue = confirm(
+      "Would you like to use your existing credit card for this purchase?"
+    );
+    if (confirmContinue) {
+      onClose();
+      return onBuy();
+    }
+
+    setFinalPay(selectedPay);
+  }
+
   function handleConfirmPay() {
     onClose();
-    // updateUser();
+    // user?.payment ? () => {} : updateUser(); // if user has visa payment, dont update user
+
     onBuy();
+    if (finalPay === "visa") {
+      updateUser();
+    }
   }
 
   return (

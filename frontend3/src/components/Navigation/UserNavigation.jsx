@@ -9,7 +9,7 @@ import { Colors, DEFAULT_ACTIV_TAB } from "../../helpers/constants";
 import useAuth from "../hooks/useAuth";
 import { useState } from "react";
 
-const navItems = ["home", "movies", "rentals", "edit", "logout"];
+const navItems = ["home", "movies", "purchase", "edit", "logout"];
 
 function UserNavigation() {
   const navigate = useNavigate();
@@ -75,7 +75,7 @@ function UserNavigation() {
                   color: "#fff",
                   fontWeight: activeTab === index ? "bold" : "",
                   display: !isAuthenticated
-                    ? item === "rentals" || item === "edit"
+                    ? item === "purchase" || item === "edit"
                       ? "none"
                       : ""
                     : "",

@@ -36,7 +36,7 @@ const navItems = [
   "users",
   "genres",
   "languages",
-  "rentals",
+  "purchases",
 ];
 
 const openedMixin = (theme) => ({
@@ -150,7 +150,7 @@ export default function VariantDrawer() {
         return <RedditIcon sx={sxProp} />;
       case "languages":
         return <LanguageIcon sx={sxProp} />;
-      case "rentals":
+      case "purchases":
         return <MovieFilterIcon sx={sxProp} />;
       case "logout":
         return <LogoutIcon sx={sxProp} />;
