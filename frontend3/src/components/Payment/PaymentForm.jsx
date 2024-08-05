@@ -1,8 +1,11 @@
 import {
   Autocomplete,
   Box,
+  FormControlLabel,
   Grid,
   Modal,
+  Radio,
+  RadioGroup,
   TextField,
   Typography,
 } from "@mui/material";
@@ -309,6 +312,9 @@ const PaymentForm = (props) => {
                   md={10}
                   lg={10}
                   sx={{
+                    display: "flex",
+                    justifyContent: "flex-start",
+                    alignItems: "center",
                     mt: 1,
                     cursor: "pointer",
                     color:
@@ -318,6 +324,19 @@ const PaymentForm = (props) => {
                   }}
                   onClick={() => onClick(method)}
                 >
+                  <RadioGroup
+                    aria-labelledby="demo-controlled-radio-buttons-group"
+                    name="controlled-radio-buttons-group"
+                    value={selectedPay}
+                    onChange={() => console.log("CLICKED")}
+                  >
+                    <FormControlLabel
+                      value={method}
+                      control={<Radio />}
+                      label={""}
+                      sx={{}}
+                    />
+                  </RadioGroup>
                   <Typography variant="h6">
                     {capitalizeFirstLetter(method)}
                   </Typography>

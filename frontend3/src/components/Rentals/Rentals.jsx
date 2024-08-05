@@ -38,7 +38,7 @@ export default function Rentals() {
   return (
     <Box>
       {user.isAdmin ? <AdminNavigation /> : <UserNavigation />}
-      <Box mt={5} sx={{ padding: "2rem" }}>
+      <Box mt={5} sx={{ padding: "2rem", minHeight: "72.8vh" }}>
         {rentals.length !== 0 ? (
           <CustomTable
             tableHeaders={tableHeaders}
@@ -46,12 +46,20 @@ export default function Rentals() {
             type="rentals"
           />
         ) : (
-          <p>You has not rented any movies</p>
+          <Box
+            sx={{
+              display: "flex",
+              height: "100%",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <p>You has not rented any movies</p>
+          </Box>
         )}
       </Box>
-      <Box sx={{ bottom: -78, position: "relative" }}>
-        <Footer />
-      </Box>
+
+      <Footer />
     </Box>
   );
 }
