@@ -111,7 +111,7 @@ export default function VariantDrawer() {
   );
   const navigate = useNavigate();
   const activeTab = JSON.parse(localStorage.getItem("active")) || 0;
-  console.log(activeTab);
+
   const handleNavigate = (item) => {
     if (item !== "logout") return navigate(`/admin/${item}`);
 
