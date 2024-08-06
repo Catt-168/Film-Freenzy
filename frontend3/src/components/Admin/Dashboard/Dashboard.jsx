@@ -1,4 +1,4 @@
-import { Box, Slider, Typography } from "@mui/material";
+import { Box, Slider, TextField, Typography } from "@mui/material";
 import { BarChart } from "@mui/x-charts/BarChart";
 import { PieChart } from "@mui/x-charts/PieChart";
 import * as React from "react";
@@ -10,6 +10,8 @@ import useAuth from "../../hooks/useAuth";
 import AdminNavigation from "../../Navigation/AdminNavigation";
 
 const PIE_SLIDER_MIN = 3;
+const barChartX = [];
+const barChartY = [];
 
 export default function Dashboard() {
   const { user, isAdmin } = useAuth();
@@ -17,6 +19,8 @@ export default function Dashboard() {
   const [pieData, setPieData] = useState([]);
   const [pieDataCount, setPieDataCount] = useState(3);
   const [barChartData, setBarchData] = useState([]);
+  const [purchasedMovieCount, setPurchasedMovieCount] = useState(0); // tpm limit
+  const [barChartCount, setBarChartCount] = useState(5); // bar chart count for backend tpm
 
   async function fetchPieData() {
     const response = await restClient.get(
@@ -27,9 +31,10 @@ export default function Dashboard() {
 
   async function fetchBarChartData() {
     const response = await restClient.get(
-      `${SERVER}/dashboard/getBarChartData`
+      `${SERVER}/dashboard/getBarChartData/${barChartCount}`
     );
     setBarchData(response.data.barChartData);
+    setPurchasedMovieCount(response.data.totalCount);
   }
 
   useEffect(() => {
@@ -37,29 +42,20 @@ export default function Dashboard() {
     fetchBarChartData();
   }, []);
 
-  const moviesData = [
-    { movieId: 1, title: "Movie A", rentalCount: 100 },
-    { movieId: 2, title: "Movie B", rentalCount: 80 },
-    // ... more movies
-  ];
-  const chartData = {
-    columns: [
-      { field: "title", headerName: "Movie Title", width: 200 },
-      { field: "rentalCount", headerName: "Rental Count", type: "number" },
-    ],
-    rows: moviesData,
-  };
   const sortedPieData = pieData
     ?.sort((a, b) => b.value - a.value)
     .slice(0, pieDataCount);
 
-  const barChartX = [];
-  const barChartY = [];
   barChartData.forEach((b) => {
     barChartX.push(b[0]);
     barChartY.push(b[1]);
   });
-  console.log(pieDataCount);
+
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      fetchBarChartData();
+    }
+  };
 
   return (
     <Box sx={{ display: "flex", height: "100vh" }}>
@@ -68,10 +64,11 @@ export default function Dashboard() {
         sx={{
           mt: 15,
           display: "flex",
-          flexDirection: "column",
-          flexWrap: "nowrap",
-          gap: 5,
-          width: "70%",
+
+          // flexDirection: "column",
+          // flexWrap: "nowrap",
+
+          // width: "70%",
         }}
       >
         <Box
@@ -80,10 +77,10 @@ export default function Dashboard() {
             ml: 5,
             border: "1px solid #D3D3D3",
             borderRadius: 2,
-            maxHeight: 500,
+            maxHeight: 450,
           }}
         >
-          <Typography id="input-item-number" gutterBottom>
+          <Typography id="input-item-number" gutterBottom fontSize={13}>
             Number of items
           </Typography>
           <Slider
@@ -105,12 +102,27 @@ export default function Dashboard() {
                   additionalRadius: -30,
                   color: "gray",
                 },
+                // outerRadius: 100,
+                cx: 140,
+                // cy: 100,
               },
             ]}
-            width={800}
+            width={pieDataCount >= 10 ? (pieDataCount >= 18 ? 550 : 480) : 360}
             height={300}
+            slotProps={{
+              legend: {
+                // direction: "row",
+                // position: { vertical: "bottom", horizontal: "middle" },
+                padding: 0,
+                labelStyle: {
+                  fontSize: 12,
+                },
+                itemMarkWidth: 6,
+                itemMarkHeight: 6,
+              },
+            }}
           />
-          <Typography fontSize={24} color={Colors.primary}>
+          <Typography fontSize={24} color={Colors.primary} mt={2}>
             Top Movies by Genre
           </Typography>
         </Box>
@@ -121,21 +133,43 @@ export default function Dashboard() {
             ml: 5,
             border: "1px solid #D3D3D3",
             borderRadius: 2,
-            maxHeight: 400,
+            maxHeight: 450,
           }}
         >
+          <Box sx={{ display: "flex", justifyContent: "space-around" }}>
+            <TextField
+              id="outlined-controlled"
+              label={"Bar Chart Count"}
+              value={barChartCount}
+              onChange={(event) => {
+                setBarChartCount(event.target.value);
+              }}
+              onKeyDown={handleKeyDown}
+            />
+            <p>{`Maximum Count ${purchasedMovieCount}`}</p>
+          </Box>
           <BarChart
-            xAxis={[{ scaleType: "band", data: barChartX }]}
+            xAxis={[
+              {
+                scaleType: "band",
+                data: barChartX,
+                tickLabelStyle: {
+                  textAnchor: "start",
+                  fontSize: 11,
+                  angle: 50,
+                },
+              },
+            ]}
             series={[
               {
                 data: barChartY,
               },
             ]}
-            width={900}
-            height={300}
+            width={pieDataCount >= 10 ? (pieDataCount >= 18 ? 400 : 480) : 600}
+            height={310}
             colors={colors}
           />
-          <Typography fontSize={18} color={Colors.primary}>
+          <Typography fontSize={24} color={Colors.primary} mt={2}>
             Top Purchased Movies
           </Typography>
         </Box>

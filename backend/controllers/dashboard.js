@@ -22,11 +22,28 @@ exports.getPieChartData = async (req, res) => {
 
 exports.getBarChartData = async (req, res) => {
   try {
+    const { count } = req.params;
     const rentals = await Rental.find();
     const hightestRentals = rentals.map((r) => r.movie.title);
     const counts = countDuplicates(hightestRentals);
-    const t3 = getTop(counts, 5);
-    res.json({ barChartData: t3 }).status(200);
+    const t3 = getTop(counts, count);
+    res
+      .json({ barChartData: t3, totalCount: Object.keys(counts).length })
+      .status(200);
+  } catch (e) {
+    res.status(500).json({ message: e.message });
+  }
+};
+
+exports.getMoviesByReleaseDate = async (req, res) => {
+  try {
+    let pieData = [];
+
+    const movies = await Movie.find({}, "releasedYear -_id");
+    const m2 = movies.map((i) => i.releasedYear);
+    const cD = countDuplicates(m2);
+    const t3 = getTop(cD, 5);
+    res.json({ t3 }).status(200);
   } catch (e) {
     res.status(500).json({ message: e.message });
   }
