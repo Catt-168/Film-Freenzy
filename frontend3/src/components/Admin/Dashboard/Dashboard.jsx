@@ -10,17 +10,17 @@ import useAuth from "../../hooks/useAuth";
 import AdminNavigation from "../../Navigation/AdminNavigation";
 
 const PIE_SLIDER_MIN = 3;
-const barChartX = [];
-const barChartY = [];
 
 export default function Dashboard() {
   const { user, isAdmin } = useAuth();
 
   const [pieData, setPieData] = useState([]);
   const [pieDataCount, setPieDataCount] = useState(3);
-  const [barChartData, setBarchData] = useState([]);
+
   const [purchasedMovieCount, setPurchasedMovieCount] = useState(0); // tpm limit
   const [barChartCount, setBarChartCount] = useState(5); // bar chart count for backend tpm
+  const [bcX, setBcX] = useState([]); // x-axis
+  const [bcY, setBcY] = useState([]); // y-axis
 
   async function fetchPieData() {
     const response = await restClient.get(
@@ -33,8 +33,11 @@ export default function Dashboard() {
     const response = await restClient.get(
       `${SERVER}/dashboard/getBarChartData/${barChartCount}`
     );
-    setBarchData(response.data.barChartData);
+    // setBarchData(response.data.barChartData);
     setPurchasedMovieCount(response.data.totalCount);
+
+    setBcX(response.data.barChartData.map((item) => item[0]));
+    setBcY(response.data.barChartData.map((item) => item[1]));
   }
 
   useEffect(() => {
@@ -45,11 +48,6 @@ export default function Dashboard() {
   const sortedPieData = pieData
     ?.sort((a, b) => b.value - a.value)
     .slice(0, pieDataCount);
-
-  barChartData.forEach((b) => {
-    barChartX.push(b[0]);
-    barChartY.push(b[1]);
-  });
 
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
@@ -152,7 +150,7 @@ export default function Dashboard() {
             xAxis={[
               {
                 scaleType: "band",
-                data: barChartX,
+                data: bcX,
                 tickLabelStyle: {
                   textAnchor: "start",
                   fontSize: 11,
@@ -162,7 +160,7 @@ export default function Dashboard() {
             ]}
             series={[
               {
-                data: barChartY,
+                data: bcY,
               },
             ]}
             width={pieDataCount >= 10 ? (pieDataCount >= 18 ? 400 : 480) : 600}
