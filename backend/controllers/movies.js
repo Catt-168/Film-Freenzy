@@ -298,3 +298,14 @@ exports.getNewReleasedMovies = async (req, res) => {
     res.status(400).json({ message: e.message });
   }
 };
+
+exports.getRandomMovie = async (req, res) => {
+  try {
+    const count = await Movie.countDocuments();
+    const random = Math.floor(Math.random() * count);
+    const randomMovie = await Movie.findOne().skip(random);
+    return res.json({ movie: randomMovie });
+  } catch (e) {
+    res.status(400).json({ message: e.message });
+  }
+};

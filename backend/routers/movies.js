@@ -19,6 +19,7 @@ router.put("/:id", upload.single("file"), moviesController.updateMovie);
 router.delete("/:id", moviesController.deleteMovie);
 router.get("/popular", moviesController.getPopularMovies);
 router.get("/newReleased", moviesController.getNewReleasedMovies);
+router.get("/getRandom", moviesController.getRandomMovie);
 router.get("/:id", moviesController.getMovieDetails);
 
 router.get("/", moviesController.getAllMovies);
