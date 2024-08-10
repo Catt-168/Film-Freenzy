@@ -37,13 +37,23 @@ exports.getBarChartData = async (req, res) => {
 
 exports.getMoviesByReleaseDate = async (req, res) => {
   try {
-    let pieData = [];
-
     const movies = await Movie.find({}, "releasedYear -_id");
     const m2 = movies.map((i) => i.releasedYear);
     const cD = countDuplicates(m2);
     const t3 = getTop(cD, 5);
     res.json({ t3 }).status(200);
+  } catch (e) {
+    res.status(500).json({ message: e.message });
+  }
+};
+
+exports.getHighestPurchasedUsers = async (req, res) => {
+  try {
+    const rentals = await Rental.find({}, "customer -_id");
+    const sec = rentals.map((item) => item.customer.name);
+    const customers = countDuplicates(sec);
+    const top3Customers = getTop(customers, 20);
+    res.json({ customers: top3Customers }).status(200);
   } catch (e) {
     res.status(500).json({ message: e.message });
   }
