@@ -70,12 +70,10 @@ export default function Home() {
     }
   };
 
-  const fetchTopMovie = async () => {
+  const fetchRandomMovie = async () => {
     try {
-      const { data } = await restClient.get(
-        `${SERVER}/movies/${`6693aa64d024c27ffaaf9ea9`}`
-      );
-      setTopMovie(data);
+      const { data } = await restClient.get(`${SERVER}/movies/getRandom`);
+      setTopMovie(data.movie);
     } catch (e) {
       setStatus(STATUS_TYPE.error);
     }
@@ -85,7 +83,7 @@ export default function Home() {
     setStatus(STATUS_TYPE.loading);
     fetchPopularMovies();
     fetchNewReleasedMovies();
-    fetchTopMovie();
+    fetchRandomMovie();
   }, []);
 
   async function handleClick(id) {
@@ -148,7 +146,7 @@ export default function Home() {
                 }}
               />
             </Grid>
-            <Grid item xs={12} lg={3} md={3} sx={{ mt: 1.5 }}>
+            <Grid item xs={12} lg={3} md={3} sx={{ mt: 2.5 }}>
               <img
                 src={`/${topMovie?.image?.name}`}
                 style={{ width: 300, height: 400, objectFit: "cover" }}
