@@ -23,12 +23,21 @@ exports.getUserDetail = async (req, res) => {
 };
 
 exports.createUser = async (req, res) => {
+  const imageData = req.file
+    ? {
+        name: req.file.filename,
+        contentType: req.file.mimetype,
+        path: req.file.path,
+      }
+    : null;
+
   const userSchema = new User({
     name: req.body.name,
     email: req.body.email,
     password: req.body.password,
     isAdmin: req.body.isAdmin,
     dob: req.body.dob,
+    image: imageData,
   });
 
   try {
@@ -50,11 +59,23 @@ exports.createUser = async (req, res) => {
 exports.updateUser = async (req, res) => {
   const { id } = req.params;
   const filter = { _id: id };
+
+  const oldUser = await User.findById(id);
+
+  const imageData = req.file
+    ? {
+        name: req.file.filename,
+        contentType: req.file.mimetype,
+        path: req.file.path,
+      }
+    : oldUser.image;
+
   const update = {
     name: req.body.name,
     email: req.body.email,
     password: req.body.password,
     payment: req.body.payment,
+    image: imageData,
   };
 
   // console.log(req.body.payment);
