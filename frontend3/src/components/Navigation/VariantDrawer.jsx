@@ -129,7 +129,7 @@ export default function VariantDrawer() {
 
   const handleDrawerClose = () => {
     setOpen(false);
-    localStorage.setItem("navigation", String(false));
+    localStorage.setItem("navigation", String(true));
   };
 
   function generateIcons(item, index) {
@@ -160,7 +160,7 @@ export default function VariantDrawer() {
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <AppBar position="fixed" open={open} sx={{ background: Colors.primary }}>
+      <AppBar position="fixed" open={true} sx={{ background: Colors.primary }}>
         <Toolbar>
           <IconButton
             color="inherit"
@@ -185,11 +185,10 @@ export default function VariantDrawer() {
           sx={{ background: theme.direction === "rtl" ? "" : Colors.primary }}
         >
           <IconButton onClick={handleDrawerClose}>
-            {theme.direction === "rtl" ? (
-              <ChevronRightIcon />
-            ) : (
-              <ChevronLeftIcon sx={{ color: Colors.textWhite }} />
-            )}
+            {
+              theme.direction === "rtl" ? <ChevronRightIcon /> : null
+              // <ChevronLeftIcon sx={{ color: Colors.textWhite }} />
+            }
           </IconButton>
         </DrawerHeader>
         <Divider />

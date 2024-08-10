@@ -8,5 +8,9 @@ router.get(
   "/getMoviesByReleaseDate",
   dashboardController.getMoviesByReleaseDate
 );
+router.get(
+  "/getHighestPurchasedUsers",
+  dashboardController.getHighestPurchasedUsers
+);
 
 module.exports = router;

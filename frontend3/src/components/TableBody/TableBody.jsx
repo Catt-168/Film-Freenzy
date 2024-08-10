@@ -1,9 +1,12 @@
-import { Button, TableBody, TableCell, TableRow } from "@mui/material";
+import { Button, TableBody, TableCell, TableRow, Tooltip } from "@mui/material";
 import React from "react";
 import { Link } from "react-router-dom";
 import { SERVER } from "../../constants";
 import restClient from "../../helpers/restClient";
 import { capitalizeFirstLetter } from "../../helpers/textHelper";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import { Colors } from "../../helpers/constants";
 
 export default function CustomTableBody({ items, type }) {
   let table = null;
@@ -93,9 +96,10 @@ function MoviesTableBody({ items }) {
       await restClient.delete(`${SERVER}/movies/${id}`);
       window.location.reload();
     } catch (e) {
-      alert("Action cannot be performed due to dependencies");
+      alert("Purchased Movie cannot be deleted!");
     }
   }
+
   return (
     <TableBody>
       {items.map((row, index) => (
@@ -106,29 +110,39 @@ function MoviesTableBody({ items }) {
           <TableCell
             component="th"
             scope="row"
-            sx={{ display: "none" }}
+            sx={{ display: "flex", gap: 1 }}
             align="left"
           >
-            {row._id}
+            <Tooltip title="Edit">
+              <Link to={`/admin/movies/${row._id}/update`}>
+                <EditIcon style={{ color: Colors.primary }} />
+              </Link>
+            </Tooltip>
+            <Tooltip title="Delete">
+              <DeleteForeverIcon
+                style={{ color: Colors.red }}
+                onClick={() => handleDelete(row._id)}
+              />
+            </Tooltip>
           </TableCell>
           <TableCell size="large" align="left" sx={{ fontWeight: "bold" }}>
             <Link to={`/admin/movies/${row._id}`}>{row.title}</Link>
           </TableCell>
-          <TableCell>{trimText(row.description, 70)}</TableCell>
-          <TableCell>
+          {/* <TableCell>{trimText(row.description, 70)}</TableCell> */}
+          {/* <TableCell>
             <img
               src={`/${row.image.name}`}
               alt={"hi"}
               style={{ width: "100%", height: "100%" }}
             />
-          </TableCell>
-          <TableCell>{genrerateGenres(row.genre)}</TableCell>
-          <TableCell>{generateLanguages(row.language)}</TableCell>
+          </TableCell> */}
+          {/* <TableCell>{genrerateGenres(row.genre)}</TableCell> */}
+          {/* <TableCell>{generateLanguages(row.language)}</TableCell> */}
           <TableCell>{row.rating}</TableCell>
           <TableCell>{row.length}</TableCell>
           <TableCell>{row.releasedYear}</TableCell>
           <TableCell>{row.price}</TableCell>
-          <TableCell>
+          {/* <TableCell>
             <Button
               color="error"
               variant="contained"
@@ -136,7 +150,7 @@ function MoviesTableBody({ items }) {
             >
               Delete
             </Button>
-          </TableCell>
+          </TableCell> */}
         </TableRow>
       ))}
     </TableBody>

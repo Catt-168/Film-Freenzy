@@ -10,17 +10,20 @@ import useAuth from "../../hooks/useAuth";
 import AdminNavigation from "../../Navigation/AdminNavigation";
 
 const PIE_SLIDER_MIN = 3;
-const barChartX = [];
-const barChartY = [];
 
 export default function Dashboard() {
   const { user, isAdmin } = useAuth();
 
   const [pieData, setPieData] = useState([]);
   const [pieDataCount, setPieDataCount] = useState(3);
-  const [barChartData, setBarchData] = useState([]);
+
   const [purchasedMovieCount, setPurchasedMovieCount] = useState(0); // tpm limit
   const [barChartCount, setBarChartCount] = useState(5); // bar chart count for backend tpm
+  const [bcX, setBcX] = useState([]); // x-axis
+  const [bcY, setBcY] = useState([]); // y-axis
+
+  const [customerX, setCustomerX] = useState([]);
+  const [customerY, setCustomerY] = useState([]);
 
   async function fetchPieData() {
     const response = await restClient.get(
@@ -33,145 +36,212 @@ export default function Dashboard() {
     const response = await restClient.get(
       `${SERVER}/dashboard/getBarChartData/${barChartCount}`
     );
-    setBarchData(response.data.barChartData);
+    // setBarchData(response.data.barChartData);
     setPurchasedMovieCount(response.data.totalCount);
+
+    setBcX(response.data.barChartData.map((item) => item[0]));
+    setBcY(response.data.barChartData.map((item) => item[1]));
+  }
+
+  async function fetchHighestCustomerData() {
+    const response = await restClient.get(
+      `${SERVER}/dashboard/getHighestPurchasedUsers`
+    );
+
+    setCustomerX(
+      response.data.customers.map((item) => {
+        return item[0];
+      })
+    );
+    setCustomerY(response.data.customers.map((item) => item[1]));
   }
 
   useEffect(() => {
     fetchPieData();
     fetchBarChartData();
+    fetchHighestCustomerData();
   }, []);
 
   const sortedPieData = pieData
     ?.sort((a, b) => b.value - a.value)
     .slice(0, pieDataCount);
 
-  barChartData.forEach((b) => {
-    barChartX.push(b[0]);
-    barChartY.push(b[1]);
-  });
-
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
       fetchBarChartData();
     }
   };
-
+  console.log(customerX);
   return (
     <Box sx={{ display: "flex", height: "100vh" }}>
       <AdminNavigation />
-      <Box
-        sx={{
-          mt: 15,
-          display: "flex",
-
-          // flexDirection: "column",
-          // flexWrap: "nowrap",
-
-          // width: "70%",
-        }}
-      >
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 5 }}>
         <Box
           sx={{
-            padding: "1rem",
-            ml: 5,
-            border: "1px solid #D3D3D3",
-            borderRadius: 2,
-            maxHeight: 450,
+            mt: 15,
+            display: "flex",
+
+            // flexDirection: "column",
+            // flexWrap: "nowrap",
+
+            // width: "70%",
           }}
         >
-          <Typography id="input-item-number" gutterBottom fontSize={13}>
-            Number of items
-          </Typography>
-          <Slider
-            value={pieDataCount}
-            onChange={(e, newValue) => setPieDataCount(newValue)}
-            valueLabelDisplay="auto"
-            min={PIE_SLIDER_MIN}
-            max={pieData.length}
-            aria-labelledby="input-item-number"
-          />
-          <PieChart
-            colors={colors}
-            series={[
-              {
-                data: sortedPieData,
-                highlightScope: { faded: "global", highlighted: "item" },
-                faded: {
-                  innerRadius: 30,
-                  additionalRadius: -30,
-                  color: "gray",
-                },
-                // outerRadius: 100,
-                cx: 140,
-                // cy: 100,
-              },
-            ]}
-            width={pieDataCount >= 10 ? (pieDataCount >= 18 ? 550 : 480) : 360}
-            height={300}
-            slotProps={{
-              legend: {
-                // direction: "row",
-                // position: { vertical: "bottom", horizontal: "middle" },
-                padding: 0,
-                labelStyle: {
-                  fontSize: 12,
-                },
-                itemMarkWidth: 6,
-                itemMarkHeight: 6,
-              },
+          <Box
+            sx={{
+              padding: "1rem",
+              ml: 5,
+              border: "1px solid #D3D3D3",
+              borderRadius: 2,
+              maxHeight: 450,
             }}
-          />
-          <Typography fontSize={24} color={Colors.primary} mt={2}>
-            Top Movies by Genre
-          </Typography>
-        </Box>
-
-        <Box
-          sx={{
-            padding: "1rem",
-            ml: 5,
-            border: "1px solid #D3D3D3",
-            borderRadius: 2,
-            maxHeight: 450,
-          }}
-        >
-          <Box sx={{ display: "flex", justifyContent: "space-around" }}>
-            <TextField
-              id="outlined-controlled"
-              label={"Bar Chart Count"}
-              value={barChartCount}
-              onChange={(event) => {
-                setBarChartCount(event.target.value);
-              }}
-              onKeyDown={handleKeyDown}
+          >
+            <Typography id="input-item-number" gutterBottom fontSize={13}>
+              Number of items
+            </Typography>
+            <Slider
+              value={pieDataCount}
+              onChange={(e, newValue) => setPieDataCount(newValue)}
+              valueLabelDisplay="auto"
+              min={PIE_SLIDER_MIN}
+              max={pieData.length}
+              aria-labelledby="input-item-number"
             />
-            <p>{`Maximum Count ${purchasedMovieCount}`}</p>
-          </Box>
-          <BarChart
-            xAxis={[
-              {
-                scaleType: "band",
-                data: barChartX,
-                tickLabelStyle: {
-                  textAnchor: "start",
-                  fontSize: 11,
-                  angle: 50,
+            <PieChart
+              colors={colors}
+              series={[
+                {
+                  data: sortedPieData,
+                  highlightScope: { faded: "global", highlighted: "item" },
+                  faded: {
+                    innerRadius: 30,
+                    additionalRadius: -30,
+                    color: "gray",
+                  },
+                  // outerRadius: 100,
+                  cx: 140,
+                  // cy: 100,
                 },
-              },
-            ]}
-            series={[
-              {
-                data: barChartY,
-              },
-            ]}
-            width={pieDataCount >= 10 ? (pieDataCount >= 18 ? 400 : 480) : 600}
-            height={310}
-            colors={colors}
-          />
-          <Typography fontSize={24} color={Colors.primary} mt={2}>
-            Top Purchased Movies
-          </Typography>
+              ]}
+              width={
+                pieDataCount >= 10 ? (pieDataCount >= 18 ? 550 : 480) : 360
+              }
+              height={300}
+              slotProps={{
+                legend: {
+                  // direction: "row",
+                  // position: { vertical: "bottom", horizontal: "middle" },
+                  padding: 0,
+                  labelStyle: {
+                    fontSize: 12,
+                  },
+                  itemMarkWidth: 6,
+                  itemMarkHeight: 6,
+                },
+              }}
+            />
+            <Typography fontSize={24} color={Colors.primary} mt={2}>
+              Top Movies by Genre
+            </Typography>
+          </Box>
+
+          <Box
+            sx={{
+              padding: "1rem",
+              ml: 5,
+              border: "1px solid #D3D3D3",
+              borderRadius: 2,
+              maxHeight: 450,
+            }}
+          >
+            <Box sx={{ display: "flex", justifyContent: "space-around" }}>
+              <TextField
+                id="outlined-controlled"
+                label={"Bar Chart Count"}
+                value={barChartCount}
+                onChange={(event) => {
+                  setBarChartCount(event.target.value);
+                }}
+                onKeyDown={handleKeyDown}
+              />
+              <p>{`Maximum Count ${purchasedMovieCount}`}</p>
+            </Box>
+            <BarChart
+              xAxis={[
+                {
+                  scaleType: "band",
+                  data: bcX,
+                  tickLabelStyle: {
+                    textAnchor: "start",
+                    fontSize: 11,
+                    angle: 50,
+                  },
+                },
+              ]}
+              series={[
+                {
+                  data: bcY,
+                },
+              ]}
+              width={
+                pieDataCount >= 10 ? (pieDataCount >= 18 ? 400 : 480) : 600
+              }
+              height={310}
+              colors={colors}
+            />
+            <Typography fontSize={24} color={Colors.primary} mt={2}>
+              Top Purchased Movies
+            </Typography>
+          </Box>
+        </Box>
+        <Box sx={{ display: "flex" }}>
+          <Box
+            sx={{
+              padding: "1rem",
+              ml: 5,
+              border: "1px solid #D3D3D3",
+              borderRadius: 2,
+              maxHeight: 450,
+            }}
+          >
+            <Box sx={{ display: "flex", justifyContent: "space-around" }}>
+              {/* <TextField
+                id="outlined-controlled"
+                label={"Bar Chart Count"}
+                value={barChartCount}
+                onChange={(event) => {
+                  setBarChartCount(event.target.value);
+                }}
+                onKeyDown={handleKeyDown}
+              />
+              <p>{`Maximum Count ${purchasedMovieCount}`}</p> */}
+            </Box>
+            <BarChart
+              xAxis={[
+                {
+                  scaleType: "band",
+                  data: customerX,
+                  tickLabelStyle: {
+                    textAnchor: "start",
+                    fontSize: 11,
+                    angle: 50,
+                  },
+                  categoryGapRatio: 0.2,
+                },
+              ]}
+              series={[
+                {
+                  data: customerY,
+                },
+              ]}
+              width={500}
+              height={310}
+              colors={colors}
+            />
+            <Typography fontSize={24} color={Colors.primary} mt={2}>
+              Highest Purchased Customers
+            </Typography>
+          </Box>
         </Box>
       </Box>
     </Box>
