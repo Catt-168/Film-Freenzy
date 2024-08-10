@@ -34,6 +34,13 @@ const userSchema = new Schema({
     type: Boolean,
     default: false,
   },
+  image: {
+    type: new Schema({
+      name: { type: String, required: true },
+      contentType: { type: String, required: true },
+      path: { type: String, required: true },
+    }),
+  },
 });
 userSchema.methods.generateAuthToken = function () {
   const token = jwt.sign({ _id: this._id, isAdmin: this.isAdmin }, "shhhhh");

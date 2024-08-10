@@ -38,12 +38,12 @@ exports.createActor = async (req, res) => {
     res.status(400).json({ message: e.message });
   }
 };
+
 exports.updateActor = async (req, res) => {
   const { id } = req.params;
   const filter = { _id: id };
 
   const { name } = req.body;
-  console.log("file", req.file);
   try {
     const oldActor = await Actor.findById(id);
     const imageData = req.file
