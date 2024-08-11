@@ -81,7 +81,8 @@ function MoviesTableBody({ items }) {
 
   function generateLanguages(languages) {
     const language = languages.map((item) => item.language);
-    return language.join(",");
+    return language[0];
+    // return language.join(",");
   }
 
   function trimText(text, maxLength) {
@@ -92,6 +93,9 @@ function MoviesTableBody({ items }) {
   }
 
   async function handleDelete(id) {
+    const response = confirm("Would You like to delete this movie");
+    if (!response) return;
+
     try {
       await restClient.delete(`${SERVER}/movies/${id}`);
       window.location.reload();
@@ -103,10 +107,7 @@ function MoviesTableBody({ items }) {
   return (
     <TableBody>
       {items.map((row, index) => (
-        <TableRow
-          key={index}
-          sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-        >
+        <TableRow key={index} style={{ maxHeight: 10 }}>
           <TableCell
             component="th"
             scope="row"
@@ -126,9 +127,11 @@ function MoviesTableBody({ items }) {
             </Tooltip>
           </TableCell>
           <TableCell size="large" align="left" sx={{ fontWeight: "bold" }}>
-            <Link to={`/admin/movies/${row._id}`}>{row.title}</Link>
+            <Link to={`/admin/movies/${row._id}`}>
+              {trimText(row.title, 20)}
+            </Link>
           </TableCell>
-          {/* <TableCell>{trimText(row.description, 70)}</TableCell> */}
+          <TableCell>{trimText(row.description, 45)}</TableCell>
           {/* <TableCell>
             <img
               src={`/${row.image.name}`}
@@ -137,11 +140,13 @@ function MoviesTableBody({ items }) {
             />
           </TableCell> */}
           {/* <TableCell>{genrerateGenres(row.genre)}</TableCell> */}
-          {/* <TableCell>{generateLanguages(row.language)}</TableCell> */}
+
           <TableCell>{row.rating}</TableCell>
-          <TableCell>{row.length}</TableCell>
+
           <TableCell>{row.releasedYear}</TableCell>
-          <TableCell>{row.price}</TableCell>
+          <TableCell>{row.length}</TableCell>
+          <TableCell>{generateLanguages(row.language)}</TableCell>
+          {/* <TableCell>{row.price}</TableCell> */}
           {/* <TableCell>
             <Button
               color="error"

@@ -65,6 +65,8 @@ const modalDefaultState = {
   actor: false,
 };
 
+const urlPattern =
+  /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/|v\/|user\/[\w]+\/)|youtu\.be\/)([\w-]{11})(?:\S+)?$/;
 export default function MovieCreateForm() {
   const user = JSON.parse(localStorage.getItem("user"));
   const categories = [
@@ -175,11 +177,31 @@ export default function MovieCreateForm() {
       releasedYear,
       price,
       length,
-      // numberInStock,
       trailerLink,
       language,
       actors,
     } = fData;
+
+    if (title.length === 0) return alert("Please Enter Movie Title");
+    if (description.length === 0)
+      return alert("Please Enter Movie Description");
+    if (!file) return alert("Please Select Movie Image");
+
+    if (length.length === 0 || length === 0)
+      return alert("Please Enter Movie Length in minutes");
+    if (!parseInt(length)) return alert("Movie Length must be in number");
+
+    if (releasedYear.length === 0 || releasedYear === 0)
+      return alert("Please Enter Movie Release Year");
+    if (!parseInt(releasedYear))
+      return alert("Movie Released Year must be in number");
+
+    if (trailerLink.length === 0 || !urlPattern.test(trailerLink))
+      return alert("Please Enter valid Trailer Link");
+
+    if (price.length === 0 || price === 0)
+      return alert("Please Enter Movie Fee");
+    if (!parseFloat(price)) return alert("Movie Fee must be in number");
 
     const form = new FormData();
     form.append("title", title);
@@ -206,7 +228,12 @@ export default function MovieCreateForm() {
       });
       navigate("/admin/movies");
     } catch (e) {
-      console.log(e);
+      const { status } = e.request;
+
+      if (status === 401) {
+        console.log(JSON.parse(e.request.response).message);
+        return alert(JSON.parse(e.request.response).message);
+      }
       alert("Please Fill all the values");
     }
   }
@@ -389,7 +416,15 @@ export default function MovieCreateForm() {
   const isActorStatusLoading = actorStatus === STATUS_TYPE.loading;
 
   return (
-    <Box sx={{ padding: "2rem" }}>
+    <Box
+      sx={{
+        padding: "1rem",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
       {user.isAdmin ? <AdminNavigation /> : <UserNavigation />}
       <Box
         component="form"
@@ -404,26 +439,26 @@ export default function MovieCreateForm() {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          width: "50%",
-          ml: "25%",
+          width: "65%",
         }}
       >
-        <Typography component="h1" variant="h5" color="black">
+        <Typography component="h1" variant="h5" color={Colors.primary}>
           Movie Create Form
         </Typography>
-        <TextInput
-          id="title"
-          label="Movie Title"
-          value={fData.title}
-          onChange={handleChange}
-        />
-        <TextInput
-          id="description"
-          label="Movie description"
-          value={fData.description}
-          onChange={handleChange}
-        />
-
+        <Box sx={{ display: "flex", gap: 3, width: "100%", height: 65 }}>
+          <TextInput
+            id="title"
+            label="Movie Title"
+            value={fData.title}
+            onChange={handleChange}
+          />
+          <TextInput
+            id="description"
+            label="Movie description"
+            value={fData.description}
+            onChange={handleChange}
+          />
+        </Box>
         <Button
           component="label"
           role={undefined}
@@ -432,9 +467,10 @@ export default function MovieCreateForm() {
           tabIndex={-1}
           startIcon={<CloudUploadIcon />}
           sx={{
-            mb: 2,
+            // mb: 2,
             mt: 2,
             background: Colors.primary,
+
             "&:hover": { background: Colors.darkPrimary },
           }}
         >
@@ -446,216 +482,231 @@ export default function MovieCreateForm() {
             onChange={handleChange}
           />
         </Button>
-        {/* <TextInput
+        <Box sx={{ display: "flex", gap: 3, width: "100%" }}>
+          {/* <TextInput
           id="numberInStock"
           label="Number InStock"
           value={fData.numberInStock}
           onChange={handleChange}
         /> */}
-        <TextInput
-          id="length"
-          label="Movie Length"
-          value={fData.length}
-          onChange={handleChange}
-        />
-        <TextInput
-          id="releasedYear"
-          label="Movie Released Year"
-          value={fData.releasedYear}
-          onChange={handleChange}
-        />
-        <TextInput
-          id="trailerLink"
-          label="Movie Trailer Link"
-          value={fData.trailerLink}
-          onChange={handleChange}
-        />
-        <TextInput
-          id="price"
-          label="Moive Price"
-          value={fData.price}
-          onChange={handleChange}
-        />
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "flex-start",
-            alignItems: "center",
-            width: "100%",
-            gap: 4,
-            mt: 1,
-            mb: 2,
-          }}
-        >
-          <Autocomplete
-            multiple
-            fullWidth
-            value={fData.genres}
-            onChange={(event, newValue) => {
-              setFData({ ...fData, genres: newValue });
-            }}
-            filterSelectedOptions
-            id="category-filter"
-            options={genres}
-            getOptionLabel={(option) => option?.name}
-            isOptionEqualToValue={(option, value) => {
-              if (option._id === value._id) return option._id === value._id;
-            }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Genres"
-                placeholder="Select genre of the movie"
-              />
-            )}
+          <TextInput
+            id="length"
+            label="Movie Length"
+            value={fData.length}
+            onChange={handleChange}
           />
-          <Tooltip title="Add Genre">
-            <IconButton
-              aria-label="Add"
-              color={"White"}
-              onClick={() => hanldeOpenModal("genre")}
-              sx={{
-                width: 40,
-                height: 40,
-                background: Colors.primary,
-                "&:hover": {
-                  background: Colors.darkPrimary,
-                },
-              }}
-            >
-              <LanguageIcon />
-            </IconButton>
-          </Tooltip>
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "flex-start",
-            alignItems: "center",
-            width: "100%",
-            gap: 4,
-            mt: 1,
-            mb: 2,
-          }}
-        >
-          <Autocomplete
-            multiple
-            fullWidth
-            value={fData.language}
-            onChange={(event, newValue) => {
-              setFData({ ...fData, language: newValue });
-            }}
-            filterSelectedOptions
-            id="category-filter"
-            options={languages}
-            getOptionLabel={(option) => capitalizeFirstLetter(option?.language)}
-            isOptionEqualToValue={(option, value) => {
-              if (option._id === value._id) return option._id === value._id;
-            }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Languages"
-                placeholder="Select language(s) of the movie"
-              />
-            )}
+          <TextInput
+            id="releasedYear"
+            label="Movie Released Year"
+            value={fData.releasedYear}
+            onChange={handleChange}
           />
-
-          <Tooltip title="Add Language">
-            <IconButton
-              aria-label="Add"
-              color={"White"}
-              onClick={() => hanldeOpenModal("language")}
-              sx={{
-                width: 40,
-                height: 40,
-                background: Colors.primary,
-                "&:hover": {
-                  background: Colors.darkPrimary,
-                },
-              }}
-            >
-              <RedditIcon />
-            </IconButton>
-          </Tooltip>
         </Box>
-
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "flex-start",
-            alignItems: "center",
-            width: "100%",
-            gap: 4,
-            mt: 1,
-            mb: 2,
-          }}
-        >
-          <Autocomplete
-            multiple
-            fullWidth
-            value={fData.actors}
-            onChange={(event, newValue) => {
-              setFData({ ...fData, actors: newValue });
-            }}
-            filterSelectedOptions
-            id="category-filter"
-            options={actors}
-            getOptionLabel={(option) => option?.name}
-            isOptionEqualToValue={(option, value) => {
-              if (option._id === value._id) return option._id === value._id;
-            }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Actors"
-                placeholder="Select actors of the movie"
-              />
-            )}
+        <Box sx={{ display: "flex", gap: 3, width: "100%" }}>
+          <TextInput
+            id="trailerLink"
+            label="Movie Trailer Link"
+            value={fData.trailerLink}
+            onChange={handleChange}
           />
-          <Tooltip title="Add Actor">
-            <IconButton
-              aria-label="Add"
-              color={"White"}
-              onClick={() => hanldeOpenModal("actor")}
-              sx={{
-                width: 40,
-                height: 40,
-                background: Colors.primary,
-                "&:hover": {
-                  background: Colors.darkPrimary,
-                },
-              }}
-            >
-              <PersonAddIcon />
-            </IconButton>
-          </Tooltip>
+          <TextInput
+            id="price"
+            label="Moive Price"
+            value={fData.price}
+            onChange={handleChange}
+          />
         </Box>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            width: "100%",
-          }}
-        >
-          <Box sx={{ display: "flex", flexDirection: "row", ml: 1, gap: 2 }}>
-            <Typography variant="h6" gutterBottom>
-              Rating
-            </Typography>
-            <Rating
-              value={fData.rating}
-              defaultValue={1}
-              id="rating"
-              sx={{ mt: 0.5 }}
+        <Box sx={{ display: "flex", gap: 3, width: "100%" }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "flex-start",
+              alignItems: "center",
+              width: "100%",
+              gap: 4,
+              mt: 1,
+              mb: 2,
+            }}
+          >
+            <Autocomplete
+              multiple
+              fullWidth
+              value={fData.genres}
               onChange={(event, newValue) => {
-                setFData((prev) => {
-                  return { ...prev, rating: newValue };
-                });
+                setFData({ ...fData, genres: newValue });
               }}
+              filterSelectedOptions
+              id="category-filter"
+              options={genres}
+              getOptionLabel={(option) => option?.name}
+              isOptionEqualToValue={(option, value) => {
+                if (option._id === value._id) return option._id === value._id;
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Genres"
+                  placeholder="Select genre of the movie"
+                />
+              )}
             />
+            <Tooltip title="Add Genre">
+              <IconButton
+                aria-label="Add"
+                color={"White"}
+                onClick={() => hanldeOpenModal("genre")}
+                sx={{
+                  width: 40,
+                  height: 40,
+                  background: Colors.primary,
+                  "&:hover": {
+                    background: Colors.darkPrimary,
+                  },
+                }}
+              >
+                <LanguageIcon />
+              </IconButton>
+            </Tooltip>
           </Box>
-          <GenericButton type="submit" text="Submit" sx={{ mr: 9 }} />
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "flex-start",
+              alignItems: "center",
+              width: "100%",
+              gap: 4,
+              mt: 1,
+              mb: 2,
+            }}
+          >
+            <Autocomplete
+              multiple
+              fullWidth
+              value={fData.language}
+              onChange={(event, newValue) => {
+                setFData({ ...fData, language: newValue });
+              }}
+              filterSelectedOptions
+              id="category-filter"
+              options={languages}
+              getOptionLabel={(option) =>
+                capitalizeFirstLetter(option?.language)
+              }
+              isOptionEqualToValue={(option, value) => {
+                if (option._id === value._id) return option._id === value._id;
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Languages"
+                  placeholder="Select language(s) of the movie"
+                />
+              )}
+            />
+
+            <Tooltip title="Add Language">
+              <IconButton
+                aria-label="Add"
+                color={"White"}
+                onClick={() => hanldeOpenModal("language")}
+                sx={{
+                  width: 40,
+                  height: 40,
+                  background: Colors.primary,
+                  "&:hover": {
+                    background: Colors.darkPrimary,
+                  },
+                }}
+              >
+                <RedditIcon />
+              </IconButton>
+            </Tooltip>
+          </Box>
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            gap: 3,
+            width: "100%",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "flex-start",
+              alignItems: "center",
+              width: "100%",
+              gap: 4,
+              mt: 1,
+              mb: 2,
+            }}
+          >
+            <Autocomplete
+              multiple
+              fullWidth
+              value={fData.actors}
+              onChange={(event, newValue) => {
+                setFData({ ...fData, actors: newValue });
+              }}
+              filterSelectedOptions
+              id="category-filter"
+              options={actors}
+              getOptionLabel={(option) => option?.name}
+              isOptionEqualToValue={(option, value) => {
+                if (option._id === value._id) return option._id === value._id;
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Actors"
+                  placeholder="Select actors of the movie"
+                />
+              )}
+            />
+            <Tooltip title="Add Actor">
+              <IconButton
+                aria-label="Add"
+                color={"White"}
+                onClick={() => hanldeOpenModal("actor")}
+                sx={{
+                  width: 40,
+                  height: 40,
+                  background: Colors.primary,
+                  "&:hover": {
+                    background: Colors.darkPrimary,
+                  },
+                }}
+              >
+                <PersonAddIcon />
+              </IconButton>
+            </Tooltip>
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              width: "100%",
+            }}
+          >
+            <Box sx={{ display: "flex", flexDirection: "row", ml: 1, gap: 2 }}>
+              <Typography variant="h6" gutterBottom>
+                Rating
+              </Typography>
+              <Rating
+                value={fData.rating}
+                defaultValue={1}
+                id="rating"
+                sx={{ mt: 0.5 }}
+                onChange={(event, newValue) => {
+                  setFData((prev) => {
+                    return { ...prev, rating: newValue };
+                  });
+                }}
+              />
+            </Box>
+            <GenericButton type="submit" text="Submit" />
+          </Box>
         </Box>
       </Box>
 

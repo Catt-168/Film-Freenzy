@@ -104,7 +104,10 @@ exports.getAllMovies = async (req, res) => {
     const totalItems =
       (await Movie.countDocuments(query)) + moviesWithActors.length;
     const totalPages =
-      totalItems % 10 === 0 ? totalItems / 10 : totalItems / 10 + 1;
+      totalItems % pageSize === 0
+        ? totalItems / pageSize
+        : totalItems / pageSize + 1;
+    console.log(totalItems);
     const metaData = {
       currentPage: parseInt(page),
       totalPages: parseInt(totalPages),
@@ -146,17 +149,21 @@ exports.createMovie = async (req, res) => {
     const imageSchmea = new Image(imageData);
     await imageSchmea.save();
 
-    const lang = await Language.find({ language: req.body.language });
-    if (lang.length === 0)
-      return res.status(401).json({ message: "Select at least one Language" });
-
     const genre = await Genre.find({ name: req.body.genre });
     if (genre.length === 0)
       return res.status(401).json({ message: "Select at least one genre" });
 
+    const lang = await Language.find({ language: req.body.language });
+    if (lang.length === 0)
+      return res.status(401).json({ message: "Select at least one Language" });
+
     const actor = await Actor.find({ name: req.body.actor });
     if (actor.length === 0) {
       return res.status(401).json({ message: "Select at least one actor" });
+    }
+
+    if (rating === 0) {
+      return res.status(401).json({ message: "Please Rate the movie" });
     }
 
     const schema = new Movie({

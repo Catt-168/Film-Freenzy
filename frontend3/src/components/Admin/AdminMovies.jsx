@@ -9,7 +9,7 @@ import AdminNavigation from "../Navigation/AdminNavigation";
 import UserNavigation from "../Navigation/UserNavigation";
 import CustomTable from "./CustomTable";
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 5;
 export default function AdminMovies() {
   const [movies, setMovies] = useState([]);
   const [metaData, setMetaData] = useState({});
@@ -33,12 +33,8 @@ export default function AdminMovies() {
   }
 
   useEffect(() => {
-    getMovies();
+    getMovies(page);
   }, []);
-
-  useEffect(() => {
-    console.log("hehe");
-  }, [isDrawerOpen]);
 
   async function handlePaginate(e, value) {
     setPage(value);
@@ -47,18 +43,20 @@ export default function AdminMovies() {
 
   let tableHeaders = movies.length !== 0 ? Object.keys(movies[0]) : [];
 
-  tableHeaders.splice(2, 4);
+  tableHeaders.splice(3, 3);
   // tableHeaders[9] = "Stock";
-  tableHeaders[9] = "Price";
+  tableHeaders[4] = "Price";
   tableHeaders[0] = "Action";
+
   // tableHeaders[11] = "";
   // tableHeaders[12] = "";
-
-  console.log(tableHeaders);
-
   tableHeaders.splice(5, 4);
+  tableHeaders[4] = "Released Year";
+  tableHeaders[5] = "Price";
+  tableHeaders[6] = "Language";
 
   const isMoviesEmpty = movies.length === 0;
+
   return (
     <Box sx={{ display: "flex" }}>
       {user.isAdmin ? <AdminNavigation /> : <UserNavigation />}
@@ -66,7 +64,7 @@ export default function AdminMovies() {
       <Box sx={{ mt: 7, padding: "2rem" }}>
         <GenericButton
           onClick={() => navigate(`/admin/movies/create`)}
-          sx={{ marginBottom: 3, mr: "100%" }}
+          sx={{ marginBottom: 3, ml: "90%" }}
           text={"Create"}
         />
         {!isMoviesEmpty ? (
@@ -86,7 +84,7 @@ export default function AdminMovies() {
           sx={{
             mt: 4,
             display: isMoviesEmpty ? "none" : "flex",
-            justifyContent: "flex-start",
+            justifyContent: "flex-end",
           }}
         >
           <Pagination
