@@ -6,6 +6,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import MovieIcon from "@mui/icons-material/Movie";
 import MovieFilterIcon from "@mui/icons-material/MovieFilter";
 import PersonIcon from "@mui/icons-material/Person";
+import CheckIcon from "@mui/icons-material/Check";
 import RedditIcon from "@mui/icons-material/Reddit";
 import MuiAppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -16,6 +17,7 @@ import MuiDrawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
+import MailIcon from "@mui/icons-material/Mail";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
@@ -25,8 +27,33 @@ import Typography from "@mui/material/Typography";
 import { styled, useTheme } from "@mui/material/styles";
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
-import { Colors, DEFAULT_ACTIV_TAB } from "../../helpers/constants";
+import {
+  Colors,
+  DEFAULT_ACTIV_TAB,
+  STATUS_TYPE,
+} from "../../helpers/constants";
 import { capitalizeFirstLetter } from "../../helpers/textHelper";
+import restClient from "../../helpers/restClient";
+import { useEffect } from "react";
+import { SERVER } from "../../constants";
+import { useState } from "react";
+import {
+  Alert,
+  Badge,
+  Grid,
+  Modal,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Tooltip,
+} from "@mui/material";
+import GenericButton from "../Core/GenericButton";
+import LoadingSpinner from "../Core/LoadingSpinner";
+import CloseIcon from "@mui/icons-material/Close";
 
 const drawerWidth = 240;
 const navItems = [
@@ -38,6 +65,22 @@ const navItems = [
   "languages",
   "purchases",
 ];
+
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 650,
+  bgcolor: "#fff",
+  border: "2px solid",
+  borderColor: Colors.primary,
+  p: 4,
+  display: "flex",
+  flexDirection: "column",
+  boxShadow: 3,
+  borderRadius: 2,
+};
 
 const openedMixin = (theme) => ({
   width: drawerWidth,
@@ -111,6 +154,11 @@ export default function VariantDrawer() {
   );
   const navigate = useNavigate();
   const activeTab = JSON.parse(localStorage.getItem("active")) || 0;
+  const [notiList, setNotiList] = useState([]);
+  const [openNotiBox, setOpenNotiBox] = useState(false);
+  const [status, setStatus] = useState(STATUS_TYPE.idle); // forgotpass submit loading status
+  const [pressedItem, setPressedItem] = useState(null);
+  const [forgotStatus, setForgotStatus] = useState(0);
 
   const handleNavigate = (item) => {
     if (item !== "logout") return navigate(`/admin/${item}`);
@@ -157,6 +205,39 @@ export default function VariantDrawer() {
     }
   }
 
+  async function getNoti() {
+    const { data } = await restClient.get(`${SERVER}/forgotPassword`);
+    setNotiList(data.data);
+  }
+
+  async function handleSendResetMail(email) {
+    setStatus(STATUS_TYPE.loading);
+    try {
+      const { data } = await restClient.post(
+        `${SERVER}/forgotPassword/${email}`
+      );
+      if (data.message.length !== 0) {
+        setStatus(STATUS_TYPE.success);
+        setPressedItem(null);
+        getNoti();
+        setForgotStatus(200);
+        setTimeout(() => {
+          setForgotStatus(0);
+        }, 3000);
+      }
+    } catch (e) {
+      console.log("[ERROR]: ", e.request);
+      setStatus(STATUS_TYPE.error);
+    }
+  }
+
+  useEffect(() => {
+    getNoti();
+  }, []);
+
+  const notiCount = notiList.length;
+  const isLoading = status === STATUS_TYPE.loading;
+
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
@@ -178,6 +259,19 @@ export default function VariantDrawer() {
           <Typography variant="h6" noWrap component="div">
             Admin Site - Admin Name
           </Typography>
+          <Tooltip title="Rest Password Notifications">
+            <Badge
+              badgeContent={notiCount}
+              color={"secondary"}
+              sx={{ ml: 2, cursor: "pointer" }}
+              onClick={() => {
+                console.log("RED");
+                setOpenNotiBox(true);
+              }}
+            >
+              <MailIcon color="White" />
+            </Badge>
+          </Tooltip>
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>
@@ -227,6 +321,86 @@ export default function VariantDrawer() {
           </ListItem>
         </List>
       </Drawer>
+      <Modal
+        open={openNotiBox}
+        onClose={() => {
+          setOpenNotiBox(false);
+        }}
+      >
+        <Box sx={[style]}>
+          <Typography fontSize={18} color={Colors.primary} sx={{ mb: 4 }}>
+            Rest Passord Request List
+          </Typography>
+          <TableContainer component={Paper}>
+            <Table sx={{ width: "100%" }} aria-label="simple table">
+              <TableHead>
+                <TableRow>
+                  <TableCell
+                    sx={{
+                      fontWeight: 600,
+                    }}
+                  >
+                    Email
+                  </TableCell>
+                  <TableCell
+                    align="center"
+                    sx={{
+                      fontWeight: 600,
+                    }}
+                  >
+                    Action
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {notiList.map((item, index) => (
+                  <TableRow
+                    key={index}
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  >
+                    <TableCell component="th" scope="row">
+                      {item.email}
+                    </TableCell>
+                    <TableCell align="center">
+                      <GenericButton
+                        text={
+                          isLoading && pressedItem === index ? (
+                            <LoadingSpinner color={"White"} size={20} />
+                          ) : (
+                            "Send Rest Password"
+                          )
+                        }
+                        isError
+                        onClick={() => {
+                          setPressedItem(index);
+                          handleSendResetMail(item.email);
+                        }}
+                        size="small"
+                        disabled={isLoading}
+                      />
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          {forgotStatus === 200 ? (
+            <Alert
+              icon={<CheckIcon fontSize="inherit" />}
+              severity="success"
+              action={
+                <CloseIcon
+                  onClick={() => setForgotStatus(0)}
+                  sx={{ cursor: "pointer" }}
+                />
+              }
+              sx={{ mt: 2 }}
+            >
+              Successfully sent new password
+            </Alert>
+          ) : null}
+        </Box>
+      </Modal>
     </Box>
   );
 }

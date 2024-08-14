@@ -31,14 +31,19 @@ export default function Rentals() {
 
   let tableHeaders = rentals.length !== 0 ? Object.keys(rentals[0]) : [];
 
-  tableHeaders[3] = "Fee";
-  tableHeaders[4] = "Purchased Date";
+  // tableHeaders[3] = "Fee";
+  // tableHeaders[4] = "Purchased Date";
 
-  tableHeaders.pop();
+  // tableHeaders.pop();
+
+  tableHeaders.splice(1, 1);
+  tableHeaders.splice(4, 2);
+
+  tableHeaders[2] = "Purchased Date";
   return (
     <Box>
       {user.isAdmin ? <AdminNavigation /> : <UserNavigation />}
-      <Box mt={5} sx={{ padding: "2rem", minHeight: "72.8vh" }}>
+      <Box mt={7} sx={{ padding: "2rem", minHeight: "72.8vh" }}>
         {rentals.length !== 0 ? (
           <CustomTable
             tableHeaders={tableHeaders}

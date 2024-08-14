@@ -214,17 +214,18 @@ function UsersRentalTableBody({ items }) {
           key={index}
           sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
         >
-          <TableCell component="th" scope="row" align="left">
+          {/* <TableCell component="th" scope="row" align="left">
             {row.customer.name}
-          </TableCell>
+          </TableCell> */}
           <TableCell size="large" align="left">
             <Link to={`/movies/${row.movie._id}`}>{row.movie.title}</Link>
           </TableCell>
           {/* <TableCell>
             {generateExpireDate(row.dateOut, row.rentalDate)}
           </TableCell> */}
-          <TableCell>{row.rentalFee}</TableCell>
+
           <TableCell>{new Date(row.dateOut).toDateString()}</TableCell>
+          <TableCell>{row.rentalFee}</TableCell>
         </TableRow>
       ))}
     </TableBody>

@@ -98,7 +98,14 @@ function UserNavigation() {
                 key={item}
                 sx={{
                   color: "#fff",
-                  fontWeight: activeTab === index ? "bold" : "",
+                  fontWeight:
+                    activeTab === null
+                      ? index === 1
+                        ? "bold"
+                        : ""
+                      : activeTab === index
+                      ? "bold"
+                      : "",
                   display: !isAuthenticated
                     ? item === "purchase"
                       ? item === "user"

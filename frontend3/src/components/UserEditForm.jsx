@@ -1,4 +1,6 @@
 import {
+  Alert,
+  Avatar,
   Box,
   Button,
   Container,
@@ -14,6 +16,7 @@ import GenericButton from "./Core/GenericButton";
 import AdminNavigation from "./Navigation/AdminNavigation";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import UserNavigation from "./Navigation/UserNavigation";
+
 import Footer from "./Footer/Footer";
 import { Colors } from "../helpers/constants";
 
@@ -85,13 +88,18 @@ export default function UserEditForm() {
             boxShadow: 3,
             borderRadius: 2,
             px: 4,
-            py: 6,
+            py: 2,
             marginTop: 8,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
           }}
         >
+          <Avatar
+            alt={localUser.name}
+            src={`/${localUser?.image?.name}`}
+            sx={{ width: 65, height: 65 }}
+          />
           <Typography component="h1" variant="h5" color="black">
             {"Hello " + localUser.name}
           </Typography>
@@ -101,57 +109,60 @@ export default function UserEditForm() {
             noValidate
             sx={{ mt: 1 }}
           >
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="name"
-              label="Username"
-              name="name"
-              autoComplete="name"
-              value={user.name}
-              onChange={handleChange}
-            />
-            <Button
-              component="label"
-              role={undefined}
-              fullWidth
-              variant="contained"
-              tabIndex={-1}
-              startIcon={<CloudUploadIcon />}
-              sx={{
-                mb: 2,
-                mt: 2,
-                background: Colors.primary,
-                "&:hover": { background: Colors.darkPrimary },
-              }}
-            >
-              {user.file ? user.file.name : "Upload Image"}
-              <VisuallyHiddenInput
-                type="file"
-                id="file"
-                name="file"
+            <Box sx={{ display: "flex", gap: 3 }}>
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="name"
+                label="Username"
+                name="name"
+                autoComplete="name"
+                value={user.name}
                 onChange={handleChange}
               />
-            </Button>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="email"
-              label="Email"
-              type="email"
-              id="email"
-              value={user.email}
-              onChange={handleChange}
-            />
-
-            <GenericButton
-              type="submit"
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-              text="Edit"
-            />
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="email"
+                label="Email"
+                type="email"
+                id="email"
+                value={user.email}
+                onChange={handleChange}
+              />
+            </Box>
+            <Box sx={{ display: "flex", gap: 3 }}>
+              <Button
+                component="label"
+                role={undefined}
+                fullWidth
+                variant="contained"
+                tabIndex={-1}
+                startIcon={<CloudUploadIcon />}
+                sx={{
+                  mb: 2,
+                  mt: 2,
+                  background: Colors.primary,
+                  "&:hover": { background: Colors.darkPrimary },
+                }}
+              >
+                {user.file ? user.file.name : "Upload Image"}
+                <VisuallyHiddenInput
+                  type="file"
+                  id="file"
+                  name="file"
+                  onChange={handleChange}
+                />
+              </Button>
+              <GenericButton
+                type="submit"
+                variant="contained"
+                sx={{ mt: 2, mb: 2 }}
+                text="Edit"
+              />
+            </Box>
           </Box>
         </Box>
       </Container>

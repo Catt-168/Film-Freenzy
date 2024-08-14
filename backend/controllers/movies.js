@@ -107,7 +107,7 @@ exports.getAllMovies = async (req, res) => {
       totalItems % pageSize === 0
         ? totalItems / pageSize
         : totalItems / pageSize + 1;
-    console.log(totalItems);
+
     const metaData = {
       currentPage: parseInt(page),
       totalPages: parseInt(totalPages),
