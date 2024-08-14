@@ -5,7 +5,7 @@ import Typography from "@mui/material/Typography";
 import axios from "axios";
 import { useState } from "react";
 import { SERVER } from "../constants";
-
+import CheckIcon from "@mui/icons-material/Check";
 import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
 import { Colors, EMAIL_REGEX, PASSWORD_REGEX } from "../helpers/constants";
@@ -15,6 +15,24 @@ import GenericButton from "./Core/GenericButton";
 import DateInput from "./Input/DateInput";
 import PasswordInput from "./Input/PassowrdInput";
 import TextInput from "./Input/TextInput";
+import Modal from "@mui/material/Modal";
+import { Alert, Button, Collapse } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  border: "2px solid",
+  borderColor: "transparent",
+  boxShadow: 24,
+  borderRadius: 2,
+  p: 4,
+  pb: 2,
+};
 
 function SingUp({ onChangeSignup }) {
   const navigate = useNavigate();
@@ -244,7 +262,10 @@ function Login({ onChangeLogin }) {
     email: "",
     password: "",
   });
-  const [error, setError] = useState({ email: "", password: "" });
+  const [forgotPassEmail, setForgotPassEmail] = useState("");
+  const [error, setError] = useState({ email: "", password: "", forgot: "" });
+  const [open, setOpen] = useState(false);
+  const [forgotStatus, setForgotStatus] = useState(0);
 
   const handleSubmit = async () => {
     try {
@@ -299,6 +320,50 @@ function Login({ onChangeLogin }) {
   function handleMouseDownPassword(event) {
     event.preventDefault();
   }
+  function handleForgotPassword() {
+    setOpen(true);
+  }
+  function submitForgotPassword() {
+    const { error } = handleForgotPassInput();
+
+    setError((prev) => {
+      return {
+        ...prev,
+        forgot: error.length === 0 ? "" : error,
+      };
+    });
+    if (error.length === 0) handleCreateForgotPasword();
+  }
+
+  async function handleCreateForgotPasword() {
+    try {
+      const response = await restClient.post(`${SERVER}/forgotPassword`, {
+        email: forgotPassEmail,
+      });
+      setForgotStatus(response.status);
+      setTimeout(() => {
+        setForgotStatus(0);
+      }, 3000);
+    } catch (e) {
+      setError((prev) => {
+        return { ...prev, forgot: e.response.data.message };
+      });
+    }
+  }
+
+  function handleForgotPassInput() {
+    let error = { forgotPassEmail: "" };
+    const isEmpty = forgotPassEmail.length === 0;
+    const isPasswordValid = EMAIL_REGEX.test(forgotPassEmail);
+
+    if (!isEmpty && isPasswordValid) {
+      error.forgotPassEmail = "";
+      return { error: error.forgotPassEmail };
+    }
+
+    error.forgotPassEmail = "Enter Valid Email Address";
+    return { error: error.forgotPassEmail };
+  }
 
   return (
     <Box component="form" onSubmit={validateForm} sx={{ mt: 1 }} noValidate>
@@ -329,14 +394,75 @@ function Login({ onChangeLogin }) {
         sx={{ mt: 3, mb: 2 }}
         text={"Login"}
       />
-      <Typography
-        fontSize={18}
-        sx={{ mr: -50, mt: 2, cursor: "pointer" }}
-        color={Colors.primary}
-        onClick={() => onChangeLogin()}
+      <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
+        <Typography
+          fontSize={18}
+          sx={{ cursor: "pointer" }}
+          color={Colors.red}
+          onClick={handleForgotPassword}
+        >
+          Forgot Password
+        </Typography>
+        <Typography
+          fontSize={18}
+          sx={{ cursor: "pointer" }}
+          color={Colors.primary}
+          onClick={() => onChangeLogin()}
+        >
+          SignUp
+        </Typography>
+      </Box>
+      <Modal
+        open={open}
+        onClose={() => {
+          setForgotPassEmail("");
+          setOpen((prev) => !prev);
+        }}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
       >
-        SignUp
-      </Typography>
+        <Box sx={style}>
+          <Typography
+            id="modal-modal-title"
+            variant="h6"
+            component="h2"
+            justifyContent={"center"}
+            textAlign={"center"}
+          >
+            Forgot Password
+          </Typography>
+          <TextInput
+            id="email"
+            label="Email Address"
+            value={forgotPassEmail}
+            onChange={(e) => setForgotPassEmail(e.target.value)}
+            error={error?.forgot?.length !== 0}
+            helperText={error.forgot}
+          />
+          <GenericButton
+            fullWidth
+            sx={{ mt: 3, mb: 2 }}
+            text={"Request"}
+            onClick={submitForgotPassword}
+          />
+          {forgotStatus === 200 ? (
+            <Collapse in={forgotStatus === 200}>
+              <Alert
+                icon={<CheckIcon fontSize="inherit" />}
+                severity="success"
+                action={
+                  <CloseIcon
+                    onClick={() => setForgotStatus(0)}
+                    sx={{ cursor: "pointer" }}
+                  />
+                }
+              >
+                Request Success!
+              </Alert>
+            </Collapse>
+          ) : null}
+        </Box>
+      </Modal>
     </Box>
   );
 }
