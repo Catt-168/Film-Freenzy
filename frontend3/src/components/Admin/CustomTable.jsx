@@ -10,8 +10,17 @@ import CustomTableBody from "../TableBody/TableBody";
 
 export default function CustomTable({ tableHeaders, items, type }) {
   return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+    <TableContainer component={Paper} sx={{ maxHeight: "100%", overflow: "hidden" }}>
+      <Table
+        sx={{
+          minWidth: 450,
+          "& .MuiTableCell-root": {
+            padding: "8px 16px", // Smaller padding
+            fontSize: "0.8rem", // Smaller font size
+          },
+        }}
+        aria-label="simple table"
+      >
         <TableHead>
           <TableRow>
             {tableHeaders.map((item, index) => (

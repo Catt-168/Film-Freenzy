@@ -121,25 +121,25 @@ function MoviesTableBody({ items }) {
             scope="row"
             sx={{
               display: "flex",
-              gap: 1,
-              justifyContent: "center",
-              alignItems: "center",
+              gap: 0.5,
+              // justifyContent: "center",
+              // alignItems: "center",
             }}
-            align="left"
-            size="medium"
           >
             <Tooltip title="Edit">
-              <Link to={`/admin/movies/${row._id}/update`}>
-                <EditIcon style={{ color: Colors.primary }} />
+              <Link to={`/admin/movies/${row._id}/update`} style={{ textDecoration: 'none' }}>
+                <EditIcon style={{ color: Colors.primary }} fontSize="small" />
               </Link>
             </Tooltip>
             <Tooltip title="Delete">
               <DeleteForeverIcon
                 style={{ color: Colors.red }}
+                fontSize="small"
                 onClick={() => handleDelete(row._id)}
               />
             </Tooltip>
           </TableCell>
+
           <TableCell size="medium" align="left" sx={{ fontWeight: "bold" }}>
             <Link to={`/admin/movies/${row._id}`}>
               {/* {trimText(row.title, 20)} */}

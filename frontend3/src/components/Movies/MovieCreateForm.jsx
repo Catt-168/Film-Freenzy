@@ -440,10 +440,10 @@ export default function MovieCreateForm() {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          width: "65%",
+          width: "100%",
         }}
       >
-        <Typography component="h1" variant="h5" color={Colors.primary}>
+        <Typography component="h1" variant="h5" color={Colors.primary}  sx={{ fontWeight: 'bold' }}>
           Movie Create Form
         </Typography>
         <Box sx={{ display: "flex", gap: 3, width: "100%", height: 65 }}>
