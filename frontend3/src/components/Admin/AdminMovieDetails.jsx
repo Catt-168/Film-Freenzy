@@ -449,8 +449,8 @@ export default function AdminMovieDetails() {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          width: "50%",
-          ml: "34%",
+          width: "80%",
+          ml: "19%",
         }}
       >
         <Snackbar
@@ -463,11 +463,11 @@ export default function AdminMovieDetails() {
           component="h1"
           variant="h5"
           color="black"
-          sx={{ color: Colors.primary }}
+          sx={{ color: Colors.primary , fontWeight: 'bold' }}
         >
           Movie Edit Form
         </Typography>
-        <Box sx={{ display: "flex", gap: 3, width: "100%", height: 65 }}>
+        <Box sx={{ display: "flex", gap: 3, width: "100%"}}>
           <TextInput
             id="title"
             label="Movie Title"
@@ -505,7 +505,7 @@ export default function AdminMovieDetails() {
           value={fData.numberInStock}
           onChange={handleChange}
         /> */}
-        <Box sx={{ display: "flex", gap: 3, width: "100%", height: 65 }}>
+        <Box sx={{ display: "flex", gap: 3, width: "100%" }}>
           <TextInput
             id="length"
             label="Movie Length"
@@ -519,7 +519,7 @@ export default function AdminMovieDetails() {
             onChange={handleChange}
           />
         </Box>
-        <Box sx={{ display: "flex", gap: 3, width: "100%", height: 65 }}>
+        <Box sx={{ display: "flex", gap: 3, width: "100%" }}>
           <TextInput
             id="trailerLink"
             label="Movie Trailer Link"
@@ -533,7 +533,7 @@ export default function AdminMovieDetails() {
             onChange={handleChange}
           />
         </Box>
-
+        <Box sx={{ display: "flex", gap: 3, width: "100%" }}>
         <Box
           sx={{
             display: "flex",
@@ -651,6 +651,8 @@ export default function AdminMovieDetails() {
             </IconButton>
           </Tooltip>
         </Box>
+        </Box>
+        <Box sx={{ display: "flex", gap: 3, width: "100%" }}>
         <Box
           sx={{
             display: "flex",
@@ -731,8 +733,10 @@ export default function AdminMovieDetails() {
               }}
             />
           </Box>
-          <GenericButton type="submit" text="Submit" sx={{ mr: 9 }} />
+          <GenericButton type="submit" text="Submit" />
         </Box>
+        </Box>
+
       </Box>
       <ActorGenreLanguageCreateModal
         open={modalOpen.genre}

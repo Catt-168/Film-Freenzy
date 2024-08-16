@@ -9,7 +9,8 @@ import AdminNavigation from "../Navigation/AdminNavigation";
 import UserNavigation from "../Navigation/UserNavigation";
 import CustomTable from "./CustomTable";
 
-const PAGE_SIZE = 5;
+const PAGE_SIZE = 10;
+
 export default function AdminMovies() {
   const [movies, setMovies] = useState([]);
   const [metaData, setMetaData] = useState({});
@@ -24,7 +25,6 @@ export default function AdminMovies() {
       const { data } = await restClient.get(
         `${SERVER}/movies?pageSize=${PAGE_SIZE}&page=${page}`
       );
-
       setMovies(data.movies);
       setMetaData(data.metaData);
     } catch (e) {
@@ -34,7 +34,7 @@ export default function AdminMovies() {
 
   useEffect(() => {
     getMovies(page);
-  }, []);
+  }, [page]);
 
   async function handlePaginate(e, value) {
     setPage(value);
@@ -43,13 +43,9 @@ export default function AdminMovies() {
 
   let tableHeaders = movies.length !== 0 ? Object.keys(movies[0]) : [];
 
-  tableHeaders.splice(3, 3);
-  // tableHeaders[9] = "Stock";
+  tableHeaders.splice(3, 3); // Adjust headers as needed
   tableHeaders[4] = "Price";
   tableHeaders[0] = "Action";
-
-  // tableHeaders[11] = "";
-  // tableHeaders[12] = "";
   tableHeaders.splice(5, 4);
   tableHeaders[4] = "Released Year";
   tableHeaders[5] = "Price";
@@ -58,13 +54,20 @@ export default function AdminMovies() {
   const isMoviesEmpty = movies.length === 0;
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ display: "flex", height: "100vh" }}>
       {user.isAdmin ? <AdminNavigation /> : <UserNavigation />}
 
-      <Box sx={{ mt: 6.5, padding: "1.3rem" }}>
+      <Box sx={{ mt: 7, padding: "1rem", flexGrow: 1 }}>
         <GenericButton
           onClick={() => navigate(`/admin/movies/create`)}
-          sx={{ marginBottom: 2, ml: "91.5%" }}
+          sx={{
+            marginBottom: 1,
+            ml: "auto",
+            display: "block",
+            width: "fit-content",
+            fontSize: "0.8rem",
+            padding: "0.5rem 1rem",
+          }}
           text={"Create"}
         />
         {!isMoviesEmpty ? (
@@ -76,23 +79,24 @@ export default function AdminMovies() {
             />
           </Box>
         ) : (
-          <Box sx={{ mt: 4 }}>
-            <h1>No Movies Right Now!</h1>
+          <Box sx={{ mt: 2 }}>
+            <h1 style={{ fontSize: "1rem" }}>No Movies Right Now!</h1>
           </Box>
         )}
         <Box
           sx={{
-            mt: 4,
+            mt: 2,
             display: isMoviesEmpty ? "none" : "flex",
             justifyContent: "flex-end",
           }}
         >
           <Pagination
             page={page}
-            count={metaData.totalPages}
+            count={Math.ceil(metaData.totalItems / PAGE_SIZE)}
             onChange={handlePaginate}
             shape="rounded"
             color={"BlueSapphire"}
+            size="small" // Smaller pagination
           />
         </Box>
       </Box>
