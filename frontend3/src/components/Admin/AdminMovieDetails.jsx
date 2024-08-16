@@ -69,6 +69,7 @@ export default function AdminMovieDetails() {
     file: null,
     // numberInStock: 0,
     language: [],
+    trailerLink: "",
     actors: [],
   });
   const [status, setStatus] = useState("idle");
@@ -237,11 +238,13 @@ export default function AdminMovieDetails() {
         length,
         language,
         actor,
+        trailerLink,
       } = data;
 
       setFData({
         ...fData,
         title,
+        trailerLink,
         description,
         // numberInStock,
         price,
@@ -429,6 +432,7 @@ export default function AdminMovieDetails() {
 
   const isActorStatusLoading = actorStatus === STATUS_TYPE.loading;
 
+  console.log(fData);
   return (
     <Box>
       {user.isAdmin ? <AdminNavigation /> : <UserNavigation />}
@@ -441,12 +445,12 @@ export default function AdminMovieDetails() {
           borderRadius: 2,
           px: 4,
           py: 2,
-          marginTop: 8,
+          marginTop: 10,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
           width: "50%",
-          ml: "25%",
+          ml: "34%",
         }}
       >
         <Snackbar
@@ -455,21 +459,29 @@ export default function AdminMovieDetails() {
           onClose={() => setOpenSnackbar(false)}
           message={"Movie Successfully Updated!"}
         />
-        <Typography component="h1" variant="h5" color="black">
+        <Typography
+          component="h1"
+          variant="h5"
+          color="black"
+          sx={{ color: Colors.primary }}
+        >
           Movie Edit Form
         </Typography>
-        <TextInput
-          id="title"
-          label="Movie Title"
-          value={fData.title}
-          onChange={handleChange}
-        />
-        <TextInput
-          id="description"
-          label="Movie description"
-          value={fData.description}
-          onChange={handleChange}
-        />
+        <Box sx={{ display: "flex", gap: 3, width: "100%", height: 65 }}>
+          <TextInput
+            id="title"
+            label="Movie Title"
+            value={fData.title}
+            onChange={handleChange}
+          />
+          <TextInput
+            id="description"
+            label="Movie description"
+            value={fData.description}
+            onChange={handleChange}
+          />
+        </Box>
+
         <Button
           component="label"
           role={undefined}
@@ -477,7 +489,7 @@ export default function AdminMovieDetails() {
           variant="contained"
           tabIndex={-1}
           startIcon={<CloudUploadIcon />}
-          sx={{ mb: 2, mt: 2 }}
+          sx={{ mb: 2, mt: 2, background: Colors.primary }}
         >
           {fData.file ? fData.file.name : "Upload Image"}
           <VisuallyHiddenInput
@@ -493,24 +505,34 @@ export default function AdminMovieDetails() {
           value={fData.numberInStock}
           onChange={handleChange}
         /> */}
-        <TextInput
-          id="length"
-          label="Movie Length"
-          value={fData.length}
-          onChange={handleChange}
-        />
-        <TextInput
-          id="releasedYear"
-          label="Movie Released Year"
-          value={fData.releasedYear}
-          onChange={handleChange}
-        />
-        <TextInput
-          id="price"
-          label="Movie Price"
-          value={fData.price}
-          onChange={handleChange}
-        />
+        <Box sx={{ display: "flex", gap: 3, width: "100%", height: 65 }}>
+          <TextInput
+            id="length"
+            label="Movie Length"
+            value={fData.length}
+            onChange={handleChange}
+          />
+          <TextInput
+            id="releasedYear"
+            label="Movie Released Year"
+            value={fData.releasedYear}
+            onChange={handleChange}
+          />
+        </Box>
+        <Box sx={{ display: "flex", gap: 3, width: "100%", height: 65 }}>
+          <TextInput
+            id="trailerLink"
+            label="Movie Trailer Link"
+            value={fData.trailerLink}
+            onChange={handleChange}
+          />
+          <TextInput
+            id="price"
+            label="Movie Price"
+            value={fData.price}
+            onChange={handleChange}
+          />
+        </Box>
 
         <Box
           sx={{
@@ -518,8 +540,8 @@ export default function AdminMovieDetails() {
             justifyContent: "flex-start",
             alignItems: "center",
             width: "100%",
-            gap: 4,
-            mt: 1,
+            gap: 3,
+            mt: 2.5,
             mb: 2,
           }}
         >

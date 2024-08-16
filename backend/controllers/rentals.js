@@ -57,6 +57,7 @@ exports.createRental = async (req, res) => {
   const rental = new Rental({
     customer: {
       name: customer.name,
+      email: customer.email,
       _id: customer._id,
     },
     movie: {

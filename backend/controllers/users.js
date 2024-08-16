@@ -4,8 +4,23 @@ const bcrypt = require("bcryptjs");
 
 exports.getAllUsers = async (req, res) => {
   try {
-    const users = await User.find({}, "-__v");
-    res.json(users).status(200);
+    const { pageSize, page } = req.query;
+    const skip = (page - 1) * pageSize;
+    const users = await User.find({}, "-__v -password")
+      .limit(pageSize)
+      .skip(skip);
+    const totalItems = await User.countDocuments();
+    const totalPages =
+      totalItems % pageSize === 0
+        ? totalItems / pageSize
+        : totalItems / pageSize + 1;
+
+    console.log("USER COUNT", totalItems);
+    const metaData = {
+      currentPage: parseInt(page),
+      totalPages: parseInt(totalPages),
+    };
+    res.json({ users, metaData }).status(200);
   } catch (e) {
     res.status(500).json({ message: e.message });
   }
@@ -101,6 +116,15 @@ exports.deleteUser = async (req, res) => {
   try {
     const user = await User.findById(id);
     if (!user) return res.status(404).json({ message: "User Not Found!" });
+    const isUserPurchased = await Rental.findOne({
+      "customer.name": user.name,
+    });
+
+    if (!!isUserPurchased)
+      return res
+        .status(405)
+        .json({ message: "Can not deleted users who purchased" });
+
     await User.deleteOne(user);
     await Rental.deleteMany({ "customer._id": id });
     res.status(204).json({ message: "Successfully Deleted" });

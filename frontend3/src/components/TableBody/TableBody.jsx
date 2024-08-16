@@ -54,18 +54,26 @@ function UserTableBody({ items }) {
             <Link to={`/admin/users/${row._id}`}>{row.name}</Link>
           </TableCell>
           <TableCell>{row.email}</TableCell>
-          <TableCell>{row.password}</TableCell>
-          <TableCell>{row.isAdmin ? "true" : "false"}</TableCell>{" "}
+          {/* <TableCell>{row.password}</TableCell> */}
+          {/* <TableCell>{row.isAdmin ? "true" : "false"}</TableCell>{" "} */}
           <TableCell>{new Date(row.dob).toLocaleDateString("en-GB")}</TableCell>
           <TableCell>
             <Button
               color="error"
               variant="contained"
-              disabled={row.isAdmin}
+              disabled={row.isAdmin || true}
               onClick={() => handleDelete(row._id)}
             >
               Delete
             </Button>
+          </TableCell>
+          <TableCell
+            sx={{
+              color: !!row.payment ? Colors.primary : "",
+              fontWeight: !!row.payment ? "bold" : "",
+            }}
+          >
+            {!!row.payment ? "Yes" : "No"}
           </TableCell>
         </TableRow>
       ))}
@@ -111,8 +119,14 @@ function MoviesTableBody({ items }) {
           <TableCell
             component="th"
             scope="row"
-            sx={{ display: "flex", gap: 1 }}
+            sx={{
+              display: "flex",
+              gap: 1,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
             align="left"
+            size="medium"
           >
             <Tooltip title="Edit">
               <Link to={`/admin/movies/${row._id}/update`}>
@@ -126,12 +140,15 @@ function MoviesTableBody({ items }) {
               />
             </Tooltip>
           </TableCell>
-          <TableCell size="large" align="left" sx={{ fontWeight: "bold" }}>
+          <TableCell size="medium" align="left" sx={{ fontWeight: "bold" }}>
             <Link to={`/admin/movies/${row._id}`}>
-              {trimText(row.title, 20)}
+              {/* {trimText(row.title, 20)} */}
+              {row.title}
             </Link>
           </TableCell>
-          <TableCell>{trimText(row.description, 45)}</TableCell>
+          <TableCell size="medium" align="left">
+            {trimText(row.description, 30)}
+          </TableCell>
           {/* <TableCell>
             <img
               src={`/${row.image.name}`}
@@ -141,11 +158,11 @@ function MoviesTableBody({ items }) {
           </TableCell> */}
           {/* <TableCell>{genrerateGenres(row.genre)}</TableCell> */}
 
-          <TableCell>{row.rating}</TableCell>
+          <TableCell size="medium">{row.rating}</TableCell>
 
-          <TableCell>{row.releasedYear}</TableCell>
-          <TableCell>{row.length}</TableCell>
-          <TableCell>{generateLanguages(row.language)}</TableCell>
+          <TableCell size="medium">{row.releasedYear}</TableCell>
+          <TableCell size="medium">{row.length}</TableCell>
+          <TableCell size="medium">{generateLanguages(row.language)}</TableCell>
           {/* <TableCell>{row.price}</TableCell> */}
           {/* <TableCell>
             <Button

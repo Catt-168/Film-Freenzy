@@ -9,16 +9,16 @@ import restClient from "../../../helpers/restClient";
 import useAuth from "../../hooks/useAuth";
 import AdminNavigation from "../../Navigation/AdminNavigation";
 
-const PIE_SLIDER_MIN = 3;
+const PIE_SLIDER_MIN = 10;
 
 export default function Dashboard() {
   const { user, isAdmin } = useAuth();
 
   const [pieData, setPieData] = useState([]);
-  const [pieDataCount, setPieDataCount] = useState(3);
+  const [pieDataCount, setPieDataCount] = useState(10);
 
   const [purchasedMovieCount, setPurchasedMovieCount] = useState(0); // tpm limit
-  const [barChartCount, setBarChartCount] = useState(5); // bar chart count for backend tpm
+  const [barChartCount, setBarChartCount] = useState(10); // bar chart count for backend tpm
   const [bcX, setBcX] = useState([]); // x-axis
   const [bcY, setBcY] = useState([]); // y-axis
 
@@ -78,7 +78,7 @@ export default function Dashboard() {
       <Box sx={{ display: "flex", flexDirection: "column", gap: 5 }}>
         <Box
           sx={{
-            mt: 15,
+            mt: 10.5,
             display: "flex",
 
             // flexDirection: "column",
@@ -90,10 +90,10 @@ export default function Dashboard() {
           <Box
             sx={{
               padding: "1rem",
-              ml: 5,
+              ml: 2.5,
               border: "1px solid #D3D3D3",
               borderRadius: 2,
-              maxHeight: 450,
+              maxHeight: 500,
             }}
           >
             <Typography id="input-item-number" gutterBottom fontSize={13}>
@@ -119,18 +119,20 @@ export default function Dashboard() {
                     color: "gray",
                   },
                   // outerRadius: 100,
-                  cx: 140,
+                  // cx: pieDataCount <= 14 ? 240 : 160,
+                  cx: 330,
                   // cy: 100,
                 },
               ]}
               width={
-                pieDataCount >= 10 ? (pieDataCount >= 18 ? 550 : 480) : 360
+                // pieDataCount >= 10 ? (pieDataCount >= 18 ? 550 : 480) : 360
+                500
               }
-              height={300}
+              height={330}
               slotProps={{
                 legend: {
                   // direction: "row",
-                  // position: { vertical: "bottom", horizontal: "middle" },
+                  position: { horizontal: "left" },
                   padding: 0,
                   labelStyle: {
                     fontSize: 12,
@@ -140,7 +142,12 @@ export default function Dashboard() {
                 },
               }}
             />
-            <Typography fontSize={24} color={Colors.primary} mt={2}>
+            <Typography
+              fontSize={20}
+              color={Colors.primary}
+              mt={2}
+              fontWeight={"bold"}
+            >
               Top Movies by Genre
             </Typography>
           </Box>
@@ -148,10 +155,10 @@ export default function Dashboard() {
           <Box
             sx={{
               padding: "1rem",
-              ml: 5,
+              ml: 2.5,
               border: "1px solid #D3D3D3",
               borderRadius: 2,
-              maxHeight: 450,
+              maxHeight: 500,
             }}
           >
             <Box sx={{ display: "flex", justifyContent: "space-around" }}>
@@ -163,8 +170,11 @@ export default function Dashboard() {
                   setBarChartCount(event.target.value);
                 }}
                 onKeyDown={handleKeyDown}
+                size="small"
               />
-              <p>{`Maximum Count ${purchasedMovieCount}`}</p>
+              <p
+                style={{ fontSize: 14 }}
+              >{`Maximum Count ${purchasedMovieCount}`}</p>
             </Box>
             <BarChart
               xAxis={[
@@ -184,12 +194,18 @@ export default function Dashboard() {
                 },
               ]}
               width={
-                pieDataCount >= 10 ? (pieDataCount >= 18 ? 400 : 480) : 600
+                // pieDataCount >= 10 ? (pieDataCount >= 18 ? 400 : 480) : 600
+                480
               }
-              height={310}
+              height={350}
               colors={colors}
             />
-            <Typography fontSize={24} color={Colors.primary} mt={2}>
+            <Typography
+              fontSize={20}
+              color={Colors.primary}
+              mt={2}
+              fontWeight={"bold"}
+            >
               Top Purchased Movies
             </Typography>
           </Box>

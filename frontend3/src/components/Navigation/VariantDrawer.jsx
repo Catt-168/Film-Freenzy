@@ -262,10 +262,14 @@ export default function VariantDrawer() {
           <Tooltip title="Rest Password Notifications">
             <Badge
               badgeContent={notiCount}
-              color={"secondary"}
-              sx={{ ml: 2, cursor: "pointer" }}
+              sx={{
+                ml: 2,
+                cursor: "pointer",
+                "& .MuiBadge-badge": {
+                  background: Colors.yellow,
+                },
+              }}
               onClick={() => {
-                console.log("RED");
                 setOpenNotiBox(true);
               }}
             >

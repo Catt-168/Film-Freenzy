@@ -423,6 +423,7 @@ export default function MovieCreateForm() {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
+        ml: "18%",
       }}
     >
       {user.isAdmin ? <AdminNavigation /> : <UserNavigation />}
