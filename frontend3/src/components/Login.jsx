@@ -55,6 +55,7 @@ function SingUp({ onChangeSignup }) {
     confirmPassword: "",
   });
   const [showPassword, setShowPassword] = useState(false);
+  const [showPassword2, setShowPassword2] = useState(false);
   const { vertical, horizontal, open } = snackState;
 
   const handleSubmit = async () => {
@@ -225,8 +226,8 @@ function SingUp({ onChangeSignup }) {
         onChange={handleChange}
         error={error?.confirmPassword?.length !== 0}
         helperText={error?.confirmPassword}
-        showPassword={showPassword}
-        onShow={handleShowPassword}
+        showPassword={showPassword2}
+        onShow={() => setShowPassword2((prev) => !prev)}
         onMouseDown={handleMouseDownPassword}
       />
       <GenericButton
@@ -258,6 +259,7 @@ function Login({ onChangeLogin }) {
   const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
+  const [showPassword2, setShowPassword2] = useState(false);
   const [user, setUser] = useState({
     email: "",
     password: "",

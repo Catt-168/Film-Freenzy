@@ -2,11 +2,12 @@ import React, { useEffect, useState } from "react";
 import { SERVER } from "../../../constants";
 import restClient from "../../../helpers/restClient";
 import CustomTable from "../CustomTable";
-import { Box, Button } from "@mui/material";
+import { Box, Button, Grid } from "@mui/material";
 import AdminNavigation from "../../Navigation/AdminNavigation";
 import UserNavigation from "../../Navigation/UserNavigation";
 import { useNavigate } from "react-router-dom";
 import GenericButton from "../../Core/GenericButton";
+import { Colors } from "../../../helpers/constants";
 
 export default function AdminGeners() {
   const [genres, setGenres] = useState([]);
@@ -21,18 +22,44 @@ export default function AdminGeners() {
   useEffect(() => {
     getUsers();
   }, []);
-  const tableHeaders = genres.length !== 0 ? Object.keys(genres[0]) : [];
-  tableHeaders[2] = "Action";
+
+  console.log(genres);
+
   return (
     <Box sx={{ display: "flex" }}>
       {user.isAdmin ? <AdminNavigation /> : <UserNavigation />}
-      <Box sx={{ mt: 7, flexGrow: 1, padding: "2rem" }}>
+      <Box sx={{ mt: 6.5, flexGrow: 1, padding: "1.3rem" }}>
         <GenericButton
           onClick={() => navigate(`/admin/genres/create`)}
-          sx={{ marginBottom: 3, mr: "100%" }}
+          sx={{ marginBottom: 1.5, ml: "88%" }}
           text={"Create"}
         />
-        <CustomTable tableHeaders={tableHeaders} items={genres} type="genres" />
+        <Grid container>
+          {genres.map((item) => (
+            <Grid
+              item
+              key={item._id}
+              xl={6}
+              sm={12}
+              md={3.82}
+              sx={{
+                background: Colors.primary,
+                height: 60,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: 2,
+                color: Colors.textWhite,
+                fontWeight: "bold",
+                fontSize: 17,
+                mr: 2,
+                mb: 2,
+              }}
+            >
+              {item.name}
+            </Grid>
+          ))}
+        </Grid>
       </Box>
     </Box>
   );

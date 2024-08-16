@@ -43,7 +43,7 @@ export default function Rentals() {
   return (
     <Box>
       {user.isAdmin ? <AdminNavigation /> : <UserNavigation />}
-      <Box mt={7} sx={{ padding: "2rem", minHeight: "72.8vh" }}>
+      <Box mt={5} sx={{ padding: "2rem", minHeight: "72.8vh" }}>
         {rentals.length !== 0 ? (
           <CustomTable
             tableHeaders={tableHeaders}
@@ -63,7 +63,6 @@ export default function Rentals() {
           </Box>
         )}
       </Box>
-
       <Footer />
     </Box>
   );

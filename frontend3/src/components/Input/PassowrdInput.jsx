@@ -36,7 +36,7 @@ export default function PasswordInput(props) {
           <InputAdornment sx={{ position: "absolute", right: 15 }}>
             <IconButton
               aria-label="toggle password visibility"
-              onClick={onShow}
+              onClick={() => onShow()}
               onMouseDown={onMouseDown}
               edge="end"
             >
