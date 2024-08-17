@@ -4,18 +4,25 @@ const bcrypt = require("bcryptjs");
 
 exports.getAllUsers = async (req, res) => {
   try {
-    const { pageSize, page } = req.query;
+    const { pageSize, page, filterKeyWord } = req.query;
     const skip = (page - 1) * pageSize;
-    const users = await User.find({}, "-__v -password")
+
+    let filter = {};
+
+    if (filterKeyWord.length !== 0) {
+      if (filterKeyWord === "All") {
+      } else filter.isAdmin = filterKeyWord === "Admins";
+    }
+
+    const users = await User.find(filter, "-__v -password")
       .limit(pageSize)
       .skip(skip);
-    const totalItems = await User.countDocuments();
+    const totalItems = await User.countDocuments(filter);
     const totalPages =
       totalItems % pageSize === 0
         ? totalItems / pageSize
         : totalItems / pageSize + 1;
 
-    console.log("USER COUNT", totalItems);
     const metaData = {
       currentPage: parseInt(page),
       totalPages: parseInt(totalPages),
