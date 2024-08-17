@@ -7,8 +7,12 @@ import {
   Alert,
   Box,
   Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
   Modal,
   Pagination,
+  Select,
   Typography,
 } from "@mui/material";
 import AdminNavigation from "../../Navigation/AdminNavigation";
@@ -84,12 +88,13 @@ export default function AdminUsers() {
   const [showPassword1, setShowPassword1] = useState(false);
   const [showPassword2, setShowPassword2] = useState(false);
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [filter, setFilter] = useState("All");
   const [adminStatus, setAdminStatus] = useState(0);
   const user = JSON.parse(localStorage.getItem("user"));
 
-  async function getUsers(page) {
+  async function getUsers(page, filter) {
     const { data } = await restClient.get(
-      `${SERVER}/users?page=${page}&pageSize=${PAGE_SIZE}`
+      `${SERVER}/users?page=${page}&pageSize=${PAGE_SIZE}&filterKeyWord=${filter}`
     );
 
     setUsers(data.users);
@@ -97,12 +102,12 @@ export default function AdminUsers() {
   }
 
   useEffect(() => {
-    getUsers(page);
+    getUsers(page, filter);
   }, []);
 
   async function handlePaginate(e, value) {
     setPage(value);
-    getUsers(value);
+    getUsers(value, filter);
   }
 
   function handleChange(e) {
@@ -111,6 +116,39 @@ export default function AdminUsers() {
       key: e.target.name,
       value: e.target.value,
     });
+  }
+
+  function handleFilter(e) {
+    const { value } = e.target;
+    setFilter(value);
+    setPage(1);
+    getUsers(1, value);
+  }
+
+  async function createAdmin() {
+    const admin = {
+      name: state.name,
+      email: state.email,
+      password: state.password,
+      isAdmin: true,
+      dob: new Date(),
+    };
+    try {
+      await restClient.post(`${SERVER}/users`, admin);
+      setAdminStatus(200);
+      setTimeout(() => {
+        setAdminStatus(0);
+        dispatch({
+          type: "RESET",
+        });
+      }, 3000);
+    } catch (e) {
+      dispatch({
+        type: "SET_ERROR",
+        key: "email",
+        value: e.response.data.message,
+      });
+    }
   }
 
   function handleSubmit(e) {
@@ -178,32 +216,6 @@ export default function AdminUsers() {
     }
   }
 
-  async function createAdmin() {
-    const admin = {
-      name: state.name,
-      email: state.email,
-      password: state.password,
-      isAdmin: true,
-      dob: new Date(),
-    };
-    try {
-      await restClient.post(`${SERVER}/users`, admin);
-      setAdminStatus(200);
-      setTimeout(() => {
-        setAdminStatus(0);
-        dispatch({
-          type: "RESET",
-        });
-      }, 3000);
-    } catch (e) {
-      dispatch({
-        type: "SET_ERROR",
-        key: "email",
-        value: e.response.data.message,
-      });
-    }
-  }
-
   const tableHeaders = users.length !== 0 ? Object.keys(users[0]) : [];
   tableHeaders[0] = "Username";
   tableHeaders[1] = "Email";
@@ -219,11 +231,35 @@ export default function AdminUsers() {
     <Box sx={{ display: "flex" }}>
       {user.isAdmin ? <AdminNavigation /> : <UserNavigation />}
       <Box sx={{ mt: 6.5, flexGrow: 1, padding: "1.3rem" }}>
-        <GenericButton
-          onClick={() => setOpen(true)}
-          sx={{ marginBottom: 2, ml: "91.5%" }}
-          text="Create"
-        />
+        <Box
+          sx={{
+            display: "flex",
+            width: "100%",
+            justifyContent: "flex-end",
+            gap: 2,
+          }}
+        >
+          <FormControl size="small">
+            <InputLabel id="demo-simple-select-label">User</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={filter}
+              label="Age"
+              onChange={handleFilter}
+              sx={{ "& .MuiSelect-select ": { height: 10 } }}
+            >
+              <MenuItem value={"All"}>All</MenuItem>
+              <MenuItem value={"Admins"}>Admins</MenuItem>
+              <MenuItem value={"Users"}>Users</MenuItem>
+            </Select>
+          </FormControl>
+          <GenericButton
+            onClick={() => setOpen(true)}
+            sx={{ marginBottom: 2 }}
+            text="Create"
+          />
+        </Box>
         <Box sx={{ maxWidth: "100%" }}>
           <CustomTable tableHeaders={tableHeaders} items={users} type="users" />
         </Box>
