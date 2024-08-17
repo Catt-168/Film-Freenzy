@@ -33,8 +33,8 @@ export default function AdminMovies() {
   }
 
   useEffect(() => {
-    getMovies(page);
-  }, [page]);
+    getMovies();
+  }, []);
 
   async function handlePaginate(e, value) {
     setPage(value);
@@ -92,7 +92,7 @@ export default function AdminMovies() {
         >
           <Pagination
             page={page}
-            count={Math.ceil(metaData.totalItems / PAGE_SIZE)}
+            count={metaData.totalPages}
             onChange={handlePaginate}
             shape="rounded"
             color={"BlueSapphire"}
