@@ -268,12 +268,12 @@ function AdminRentalsTableBody({ items }) {
           <TableCell size="large" align="left">
             <Link to={`/admin/movies/${row.movie._id}`}>{row.movie.title}</Link>
           </TableCell>
-          <TableCell>
+          {/* <TableCell>
             {generateExpireDate(row.dateOut, row.rentalDate)}
-          </TableCell>
+          </TableCell> */}
           <TableCell>{row.rentalFee}</TableCell>
           <TableCell>{new Date(row.dateOut).toDateString()}</TableCell>
-          <TableCell>{row.movie.price}</TableCell>
+          {/* <TableCell>{row.movie.price}</TableCell> */}
         </TableRow>
       ))}
     </TableBody>
