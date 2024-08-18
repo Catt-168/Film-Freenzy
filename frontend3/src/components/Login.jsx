@@ -195,7 +195,13 @@ function SingUp({ onChangeSignup }) {
         error={error?.name?.length !== 0}
         helperText={error?.name}
       />
-      <DateInput value={user.dob} onChange={handleChange} />
+      <DateInput
+        value={user.dob}
+        onChange={handleChange}
+        label="BirthDate"
+        name="dob"
+        fullHeight
+      />
 
       <TextInput
         type="email"

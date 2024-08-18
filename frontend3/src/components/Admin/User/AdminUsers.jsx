@@ -226,7 +226,7 @@ export default function AdminUsers() {
 
   tableHeaders.splice(2, 1);
   tableHeaders.pop();
-  console.log(tableHeaders);
+
   return (
     <Box sx={{ display: "flex" }}>
       {user.isAdmin ? <AdminNavigation /> : <UserNavigation />}

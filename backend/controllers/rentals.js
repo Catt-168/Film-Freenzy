@@ -4,26 +4,37 @@ const Movie = require("../models/movie");
 const { ObjectId } = require("mongodb");
 
 exports.getRentals = async (req, res) => {
-  let { movieId, customerId } = req.query;
+  let { movieId, customerId, startDate = null, endDate = null } = req.query;
   const movie = movieId ? new ObjectId(movieId) : null;
   const customer = customerId ? new ObjectId(customerId) : null;
   let query = {};
   let filteredRental = [];
 
-  if (!movie && !customer) {
-    const rental = await Rental.find();
-    if (!rental) res.status(404).json({ message: "No Rental Movies Exist" });
-    return res.send(rental);
+  if (startDate) {
+    query.dateOut = { $gte: new Date(startDate) };
   }
-  if (customer) {
-    query = { "customer._id": customer };
-  } else if (movie) {
-    query = { "movie._id": movie };
+  if (endDate) {
+    query.dateOut.$lte = new Date(endDate);
   }
-  filteredRental = await Rental.find(query, "-__v");
-  return filteredRental.length > 0
-    ? res.send(filteredRental)
-    : res.json({ message: "No Rental Movies Exist" });
+
+  try {
+    if (!movie && !customer) {
+      const rental = await Rental.find(query);
+      if (!rental) res.status(404).json({ message: "No Rental Movies Exist" });
+      return res.send(rental);
+    }
+    if (customer) {
+      query = { "customer._id": customer };
+    } else if (movie) {
+      query = { "movie._id": movie };
+    }
+    filteredRental = await Rental.find(query, "-__v");
+    return filteredRental.length > 0
+      ? res.send(filteredRental)
+      : res.json({ message: "No Rental Movies Exist" });
+  } catch (e) {
+    res.status(500).json({ message: e.message });
+  }
 };
 
 exports.getRentalDetails = async (req, res) => {
