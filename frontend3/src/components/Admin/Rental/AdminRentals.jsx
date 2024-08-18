@@ -5,6 +5,8 @@ import {
   Pagination,
   Select,
 } from "@mui/material";
+import ReplayIcon from "@mui/icons-material/Replay";
+import SearchIcon from "@mui/icons-material/Search";
 import React, { useEffect, useState } from "react";
 import AdminNavigation from "../../Navigation/AdminNavigation";
 import CustomTable from "../CustomTable";
@@ -13,6 +15,7 @@ import { SERVER } from "../../../constants";
 import DateInput from "../../Input/DateInput";
 import GenericButton from "../../Core/GenericButton";
 import dayjs from "dayjs";
+import { Colors } from "../../../helpers/constants";
 
 const PAGE_SIZE = 12;
 
@@ -104,18 +107,34 @@ export default function AdminRentals() {
             label="To"
             name="endDate"
           />
-          <GenericButton
+          {/* <GenericButton
             onClick={handleFilter}
             text="Search"
             sx={{ height: 38, mt: 1 }}
-          />
+          /> */}
           <GenericButton
+            onClick={handleFilter}
+            sx={{ height: 38, mt: 1 }}
+            text={<SearchIcon size={60} />}
+            tooltipTitle="Filter"
+          />
+          {/* <GenericButton
             onClick={() => {
               window.location.reload();
             }}
             text="Reset"
             isError
             sx={{ height: 38, mt: 1 }}
+          /> */}
+          <GenericButton
+            hoverColor={Colors.yellow}
+            sx={{ height: 38, mt: 1 }}
+            onClick={() => {
+              window.location.reload();
+            }}
+            text={<ReplayIcon size={60} color={"BlueSapphire.white"} />}
+            isError={true}
+            tooltipTitle="Reset"
           />
         </Box>
 

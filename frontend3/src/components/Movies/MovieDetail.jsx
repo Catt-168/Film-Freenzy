@@ -8,7 +8,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import { SERVER } from "../../constants";
 import { Colors } from "../../helpers/constants";
 import restClient from "../../helpers/restClient";
-import { capitalizeFirstLetter } from "../../helpers/textHelper";
+import {
+  capitalizeFirstLetter,
+  capitalizeFirstLetterinSentence,
+  convertMinutesToHoursAndMinutes,
+} from "../../helpers/textHelper";
 import GenericButton from "../Core/GenericButton";
 import GenericChip from "../Core/GenericChip";
 import LoadingSpinner from "../Core/LoadingSpinner";
@@ -17,6 +21,8 @@ import useAuth from "../hooks/useAuth";
 import AdminNavigation from "../Navigation/AdminNavigation";
 import UserNavigation from "../Navigation/UserNavigation";
 import PaymentForm from "../Payment/PaymentForm";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 
 export default function MovieDetail() {
   const { id } = useParams();
@@ -117,6 +123,7 @@ export default function MovieDetail() {
       );
       return navigate("/login");
     }
+    if (user.isAdmin) return navigate(`/admin/movies/${movie._id}/update`);
     return setShowPaymentModal(true);
     // isUpdate ? updateRent() : createRent();
   }
@@ -127,6 +134,10 @@ export default function MovieDetail() {
     }
     return text.substring(0, maxLength) + "...";
   }
+
+  const { hours, remainingMinutes } = convertMinutesToHoursAndMinutes(
+    movie.length
+  );
 
   const isLoading = status === "loading";
   const isSuccess = status === "success";
@@ -153,204 +164,289 @@ export default function MovieDetail() {
               }
             />
           </Typography>
-          <Paper
-            sx={{
-              display: "flex",
-              width: "60%",
-              ml: "20%",
-              gap: 5,
-              padding: 2,
-            }}
-            elevation={6}
-          >
-            <Box
+          <Box sx={{ display: "flex", justifyContent: "center" }}>
+            <Paper
               sx={{
                 display: "flex",
-                flexDirection: "column",
-                alignItems: "flex-start",
-                justifyItems: "center",
+                width: user?.isAdmin ? "90%" : "70%",
+                ml: user?.isAdmin ? "19%" : 0,
+
+                gap: 5,
+                padding: 2,
               }}
+              elevation={6}
             >
-              <Typography
-                variant="h4"
-                component="div"
-                sx={{ mt: 1, mb: 1, fontSize: 27, color: Colors.primary }}
-              >
-                {movie.title}
-              </Typography>
               <Box
                 sx={{
                   display: "flex",
-                  justifyContent: "flex-start",
-                  alignItems: "center",
-                  paddingLeft: 2,
-                  background: "#f5f5f5",
-                  maxWidth: "100%",
-                  borderRadius: 1,
-                  mb: 1,
+                  flexDirection: "column",
+                  alignItems: "flex-start",
+                  justifyItems: "center",
                 }}
               >
-                <CalendarMonthIcon />
-                <p
-                  style={{
-                    fontSize: 15,
+                <Typography
+                  variant="h4"
+                  component="div"
+                  sx={{
+                    mt: 1,
+                    mb: 1,
+                    fontSize: 27,
+                    color: Colors.primary,
                     fontWeight: 600,
-                    fontFamily: "Arial",
-                    marginLeft: 2,
-                    marginRight: 2,
                   }}
                 >
-                  {movie.releasedYear}
-                </p>
-                <Divider
-                  orientation="vertical"
-                  variant="middle"
-                  flexItem
-                  sx={{ ml: 1, mr: 1 }}
-                />
-                <StarOutlineIcon />
-                <p
-                  style={{
-                    fontSize: 15,
-                    fontWeight: 600,
-                    fontFamily: "Arial",
-                    ml: 1,
-                    mr: 1,
+                  {movie.title}
+                </Typography>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    paddingLeft: 2,
+                    background: "#f5f5f5",
+                    width: "100%",
+                    borderRadius: 1,
+                    mb: 1,
                   }}
                 >
-                  {movie.rating} / 5
-                </p>
-                <Divider
-                  orientation="vertical"
-                  variant="middle"
-                  flexItem
-                  sx={{ marginLeft: 2, marginRight: 1 }}
-                />
-                {movie.genre.map((g) => (
-                  <GenericChip label={g.name} sx={{ mr: 1 }} key={g._id} />
-                ))}
-              </Box>
-              {/* <Box mb={3}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "flex-start",
+                      alignItems: "center",
+                    }}
+                  >
+                    <CalendarMonthIcon sx={{ mr: 1 }} />
+                    <p
+                      style={{
+                        fontSize: 15,
+                        fontWeight: 600,
+                        fontFamily: "Arial",
+                        marginLeft: 2,
+                        marginRight: 2,
+                      }}
+                    >
+                      {movie.releasedYear}
+                    </p>
+                    <Divider
+                      orientation="vertical"
+                      variant="middle"
+                      flexItem
+                      sx={{ ml: 1, mr: 1 }}
+                    />
+                    <StarOutlineIcon sx={{ mr: 1 }} />
+                    <p
+                      style={{
+                        fontSize: 15,
+                        fontWeight: 600,
+                        fontFamily: "Arial",
+                        ml: 1,
+                        mr: 1,
+                      }}
+                    >
+                      {movie.rating} / 5
+                    </p>
+                    <Divider
+                      orientation="vertical"
+                      variant="middle"
+                      flexItem
+                      sx={{ marginLeft: 2, marginRight: 1 }}
+                    />
+                    {/* {movie.genre.map((g) => (
+                    <GenericChip label={g.name} sx={{ mr: 1 }} key={g._id} />
+                  ))} */}
+                    <AccessTimeIcon />
+                    <Typography
+                      variant="body1"
+                      gutterBottom
+                      sx={{ mt: 0.5, ml: 1, fontWeight: "bold" }}
+                    >
+                      {hours} hr {remainingMinutes} minutes
+                    </Typography>
+                  </Box>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "flex-end",
+
+                      background: Colors.yellow,
+                      padding: 1.2,
+                      borderRadius: 2,
+                    }}
+                  >
+                    {/* <AttachMoneyIcon /> */}
+                    <Typography
+                      variant="body1"
+                      color="text.secondary"
+                      sx={{
+                        mt: 0.1,
+                        color: Colors.textBlack,
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {movie.price} MMK
+                    </Typography>
+                  </Box>
+                </Box>
+                {/* <Box mb={3}>
                 {movie.genre.map((g) => (
                   <GenericChip label={g.name} sx={{ mr: 1 }} key={g._id} />
                 ))}
               </Box> */}
-              <Typography
-                variant="body1"
-                color="text.secondary"
-                sx={{ textAlign: "left" }}
-              >
-                {trimText(movie.description, 140)}
-                {/* {movie.description} */}
-              </Typography>
-              <Divider sx={{ width: "100%", mt: 1, mb: 1 }} />
-              {/* <GenericButton
+                <Typography
+                  variant="body1"
+                  color="text.secondary"
+                  sx={{
+                    textAlign: "left",
+                    fontSize: 15,
+                    color: Colors.textBlack,
+                  }}
+                >
+                  {/* {trimText(movie.description, 140)} */}
+                  {capitalizeFirstLetterinSentence(movie.description)}
+                </Typography>
+                <Divider sx={{ width: "100%", mt: 1, mb: 1 }} />
+                {/* <GenericButton
                 startIcon={<PlayArrowIcon />}
                 sx={{ mb: 1, mt: 1 }}
                 onClick={() => window.open(movie.trailerLink)}
                 disabled={movie?.trailerLink?.length === 0}
                 text="Watch Trailer"
               /> */}
-              <Box
-                sx={{
-                  width: "100%",
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Box>
-                  <Typography
-                    variant="body1"
-                    sx={{ fontWeight: 600, mr: 2.5 }}
-                    gutterBottom
-                  >
-                    Duration
-                  </Typography>
-                  <Typography variant="body1" gutterBottom>
-                    {movie.length} minutes
-                  </Typography>
-                </Box>
-                <Divider
-                  orientation="vertical"
-                  variant="middle"
-                  flexItem
-                  sx={{ ml: 1, mr: 1 }}
-                />
-                <Box>
-                  <Typography
-                    variant="body1"
-                    sx={{ fontWeight: 600 }}
-                    gutterBottom
-                  >
-                    Price
-                  </Typography>
-                  <Typography variant="body1" gutterBottom>
-                    {movie.price}
-                  </Typography>
-                </Box>
-              </Box>
-              <Divider sx={{ width: "100%", mb: 1, mt: 1 }} />
-              <Typography variant="body1" sx={{ fontWeight: 600 }} gutterBottom>
-                Cast
-              </Typography>
-              <Typography
-                variant="body1"
-                color="text.secondary"
-                sx={{ textAlign: "left" }}
-              >
-                {movie.actor.map((item) => item.name).join(", ")}
-              </Typography>
-              <Divider sx={{ width: "100%", mb: 1, mt: 1 }} />
 
-              <Typography variant="body1" sx={{ fontWeight: 600 }} gutterBottom>
-                Language
-              </Typography>
-              <Typography variant="body1" gutterBottom>
-                {movie.language.map((g) => (
-                  <GenericChip
-                    label={capitalizeFirstLetter(g.language)}
-                    sx={{ mr: 1 }}
-                    key={g._id}
+                {/* <Box
+                  sx={{
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Box>
+                    <Typography
+                      variant="body1"
+                      sx={{ fontWeight: 600, mr: 2.5 }}
+                      gutterBottom
+                    >
+                      Duration
+                    </Typography>
+                    <Typography variant="body1" gutterBottom>
+                      {movie.length} minutes
+                    </Typography>
+                  </Box>
+                  <Divider
+                    orientation="vertical"
+                    variant="middle"
+                    flexItem
+                    sx={{ ml: 1, mr: 1 }}
                   />
-                ))}
-              </Typography>
-              <Divider sx={{ width: "100%", mb: 1, mt: 1 }} />
-              {/* <Typography variant="body2" sx={{ fontWeight: 600 }} gutterBottom>
+                  <Box>
+                    <Typography
+                      variant="body1"
+                      sx={{ fontWeight: 600 }}
+                      gutterBottom
+                    >
+                      Price
+                    </Typography>
+                    <Typography variant="body1" gutterBottom>
+                      {movie.price}
+                    </Typography>
+                  </Box>
+                </Box> */}
+                <Typography
+                  variant="body1"
+                  sx={{ fontWeight: 600 }}
+                  gutterBottom
+                >
+                  Genre
+                </Typography>
+                <Typography
+                  variant="body1"
+                  color="text.secondary"
+                  sx={{ textAlign: "left" }}
+                >
+                  {movie.genre.map((item) => item.name).join(", ")}
+                </Typography>
+                <Divider sx={{ width: "100%", mb: 1, mt: 1 }} />
+                <Typography
+                  variant="body1"
+                  sx={{ fontWeight: 600 }}
+                  gutterBottom
+                >
+                  Cast
+                </Typography>
+                <Typography
+                  variant="body1"
+                  color="text.secondary"
+                  sx={{ textAlign: "left" }}
+                >
+                  {movie.actor.map((item) => item.name).join(", ")}
+                </Typography>
+                <Divider sx={{ width: "100%", mb: 1, mt: 1 }} />
+
+                <Typography
+                  variant="body1"
+                  sx={{ fontWeight: 600 }}
+                  gutterBottom
+                >
+                  Language
+                </Typography>
+                <Typography variant="body1" gutterBottom color="text.secondary">
+                  {/* {movie.language.map((g) => (
+                    <GenericChip
+                      label={capitalizeFirstLetter(g.language)}
+                      sx={{ mr: 1 }}
+                      key={g._id}
+                    />
+                  ))} */}
+                  {movie.language
+                    .map((item) => capitalizeFirstLetter(item.language))
+                    .join(", ")}
+                </Typography>
+                <Divider sx={{ width: "100%", mb: 1, mt: 1 }} />
+                {/* <Typography variant="body2" sx={{ fontWeight: 600 }} gutterBottom>
               Stock: {movie.numberInStock}
             </Typography> */}
 
-              {/*  */}
-            </Box>
-            <Box
-              sx={{
-                width: "50%",
-                display: "flex",
-                flexDirection: "column",
-                justifyItems: "center",
-                pt: 2,
-                pl: 4,
-              }}
-            >
-              <img
-                src={`../../../public/${movie.image.name}`}
-                alt="Movie Image"
-                style={{ height: 300, objectFit: "cover" }}
-              />
+                {/*  */}
+              </Box>
+              <Box
+                sx={{
+                  width: "50%",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyItems: "center",
+                  pt: 2,
+                  pl: 4,
+                }}
+              >
+                <img
+                  src={`../../../public/${movie.image.name}`}
+                  alt="Movie Image"
+                  style={{ height: 300, objectFit: "cover", width: "auto" }}
+                />
 
-              <GenericButton
-                sx={{ mt: 1, height: 35 }}
-                onClick={handleRent}
-                disabled={isUpdate}
-                text={isDisabled ? <LoadingSpinner size={25} /> : "BUY"}
-              />
-              <GenericButton
-                startIcon={<PlayArrowIcon />}
-                sx={{ mb: 1, mt: 1 }}
-                onClick={() => window.open(movie.trailerLink)}
-                disabled={movie?.trailerLink?.length === 0}
-                text="Watch Trailer"
-              />
-              {/* <TextField
+                <GenericButton
+                  sx={{ mt: 1, height: 35 }}
+                  onClick={handleRent}
+                  disabled={isUpdate}
+                  text={
+                    isDisabled ? (
+                      <LoadingSpinner size={25} />
+                    ) : user?.isAdmin ? (
+                      "Edit"
+                    ) : (
+                      "BUY"
+                    )
+                  }
+                />
+                <GenericButton
+                  startIcon={<PlayArrowIcon />}
+                  sx={{ mb: 1, mt: 1 }}
+                  onClick={() => window.open(movie.trailerLink)}
+                  disabled={movie?.trailerLink?.length === 0}
+                  text="Watch Trailer"
+                />
+                {/* <TextField
               type={"number"}
               margin="normal"
               required
@@ -363,8 +459,9 @@ export default function MovieDetail() {
               value={rentDate}
               onChange={(e) => setRentDate(e.target.value)}
             /> */}
-            </Box>
-          </Paper>
+              </Box>
+            </Paper>
+          </Box>
           {showPaymentModal && (
             <PaymentForm
               visible={showPaymentModal}
@@ -373,7 +470,13 @@ export default function MovieDetail() {
             />
           )}
         </Box>
-        <Box sx={{ bottom: -25, position: "relative" }}>
+        <Box
+          sx={{
+            bottom: -25,
+            position: "relative",
+            display: user?.isAdmin ? "none" : "",
+          }}
+        >
           <Footer />
         </Box>
       </Box>
