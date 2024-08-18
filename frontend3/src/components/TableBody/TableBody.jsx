@@ -51,7 +51,8 @@ function UserTableBody({ items }) {
           sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
         >
           <TableCell component="th" scope="row">
-            <Link to={`/admin/users/${row._id}`}>{row.name}</Link>
+            {/* <Link to={`/admin/users/${row._id}`}>{row.name}</Link> */}
+            {row.name}
           </TableCell>
           <TableCell>{row.email}</TableCell>
           {/* <TableCell>{row.password}</TableCell> */}
@@ -127,7 +128,10 @@ function MoviesTableBody({ items }) {
             }}
           >
             <Tooltip title="Edit">
-              <Link to={`/admin/movies/${row._id}/update`} style={{ textDecoration: 'none' }}>
+              <Link
+                to={`/admin/movies/${row._id}/update`}
+                style={{ textDecoration: "none" }}
+              >
                 <EditIcon style={{ color: Colors.primary }} fontSize="small" />
               </Link>
             </Tooltip>

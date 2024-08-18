@@ -42,7 +42,7 @@ function App() {
             element={<AdminMovieDetails />}
             path="/admin/movies/:id/update"
           />
-          <Route element={<AdminMovieCard />} path="/admin/movies/:id" />
+          <Route element={<MovieDetail />} path="/admin/movies/:id" />
           <Route element={<AdminGenersCreate />} path="admin/genres/create" />
           <Route element={<AdminGenersCreate />} path="admin/genres/:id" />
           <Route

@@ -40,6 +40,7 @@ export default function Rentals() {
   tableHeaders.splice(4, 2);
 
   tableHeaders[2] = "Purchased Date";
+  tableHeaders[3] = "Price";
   return (
     <Box>
       {user.isAdmin ? <AdminNavigation /> : <UserNavigation />}

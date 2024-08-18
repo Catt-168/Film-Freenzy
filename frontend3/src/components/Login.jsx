@@ -280,12 +280,13 @@ function Login({ onChangeLogin }) {
       const { data } = await axios.post(SERVER, user);
       localStorageSetter(data.token, data.user);
       const prevUrl = localStorage.getItem("prevUrl") || "";
-      if (prevUrl.length !== 0) {
+      if (prevUrl.length !== 0 && !data.user.isAdmin) {
         navigate(`../${prevUrl}`);
         return localStorage.removeItem("prevUrl");
       }
       localStorage.setItem("active", data.user.isAdmin ? 0 : 1);
       localStorage.setItem("navigation", String(true));
+      localStorage.removeItem("prevUrl");
       navigate(data.user.isAdmin ? "/admin/dashboard" : "/movies");
     } catch (e) {
       setError({
