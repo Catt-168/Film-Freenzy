@@ -1,9 +1,18 @@
-import { Box, Pagination } from "@mui/material";
+import {
+  Box,
+  FormControl,
+  InputLabel,
+  Pagination,
+  Select,
+} from "@mui/material";
 import React, { useEffect, useState } from "react";
 import AdminNavigation from "../../Navigation/AdminNavigation";
 import CustomTable from "../CustomTable";
 import restClient from "../../../helpers/restClient";
 import { SERVER } from "../../../constants";
+import DateInput from "../../Input/DateInput";
+import GenericButton from "../../Core/GenericButton";
+import dayjs from "dayjs";
 
 const PAGE_SIZE = 12;
 
@@ -11,12 +20,22 @@ export default function AdminRentals() {
   const [rentals, setRentals] = useState([]);
   const [page, setPage] = useState(1); // Track the current page
   const [metaData, setMetaData] = useState({ totalItems: 0 }); // Metadata for total items
+  const [filter, setFilter] = useState({
+    startDate: dayjs("2020-11-29"),
+    endDate: dayjs(),
+  });
 
-  async function getRentals() {
+  async function getRentals(saveCurrentDate = false) {
     try {
-      const { data } = await restClient.get(`${SERVER}/rentals`);
+      const { data } = await restClient.get(
+        `${SERVER}/rentals?startDate=${filter.startDate}&endDate=${filter.endDate}`
+      );
       setRentals(data);
       setMetaData({ totalItems: data.length }); // Set total items in metadata
+      setFilter({
+        ...filter,
+        startDate: saveCurrentDate ? filter.startDate : dayjs(data[0].dateOut),
+      });
     } catch (e) {
       console.log(e.message);
     }
@@ -29,10 +48,12 @@ export default function AdminRentals() {
   let tableHeaders = rentals.length !== 0 ? Object.keys(rentals[0]) : [];
 
   // Filter out the "DateOut" and "__v" columns (consider both cases)
-  tableHeaders = tableHeaders.filter(header => header !== "__v" && header.toLowerCase() !== "rentaldate");
+  tableHeaders = tableHeaders.filter(
+    (header) => header !== "__v" && header.toLowerCase() !== "rentaldate"
+  );
 
   // Optionally, you can rename other headers if necessary
-  tableHeaders = tableHeaders.map(header => {
+  tableHeaders = tableHeaders.map((header) => {
     if (header === "rentalFee") return "Price";
     if (header === "dateOut") return "Purchasesd Date";
     return header;
@@ -48,10 +69,56 @@ export default function AdminRentals() {
     setPage(value);
   };
 
+  function handleChange(e) {
+    const { name, value } = e.target;
+    setFilter({ ...filter, [name]: value });
+  }
+
+  function handleFilter() {
+    getRentals(true, filter.startDate, filter.endDate);
+  }
+
   return (
     <Box sx={{ display: "flex" }}>
       <AdminNavigation />
-      <Box mt={6} flexGrow={1} sx={{ padding: "2rem" }}>
+      <Box mt={6} flexGrow={1} sx={{ padding: "1.2rem" }}>
+        <Box
+          sx={{
+            width: "100%",
+
+            display: "flex",
+            gap: 2,
+            justifyContent: "flex-start",
+            aliginItems: "center",
+          }}
+        >
+          <DateInput
+            value={filter.startDate}
+            onChange={handleChange}
+            label="From"
+            name="startDate"
+          />
+          <DateInput
+            value={filter.endDate}
+            onChange={handleChange}
+            label="To"
+            name="endDate"
+          />
+          <GenericButton
+            onClick={handleFilter}
+            text="Search"
+            sx={{ height: 38, mt: 1 }}
+          />
+          <GenericButton
+            onClick={() => {
+              window.location.reload();
+            }}
+            text="Reset"
+            isError
+            sx={{ height: 38, mt: 1 }}
+          />
+        </Box>
+
         {rentals.length !== 0 ? (
           <>
             <CustomTable
@@ -61,7 +128,6 @@ export default function AdminRentals() {
             />
             <Box
               sx={{
-                mt: 2,
                 display: "flex",
                 justifyContent: "flex-end",
               }}
