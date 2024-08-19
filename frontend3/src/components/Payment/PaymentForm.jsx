@@ -67,13 +67,13 @@ const initialState = {
 };
 
 const cardsLogo = [
-  "amex",
-  "cirrus",
-  "diners",
-  "dankort",
-  "discover",
+  // "amex",
+  // "cirrus",
+  // "diners",
+  // "dankort",
+  // "discover",
   "jcb",
-  "maestro",
+  // "maestro",
   "mastercard",
   "visa",
 ];
@@ -101,7 +101,7 @@ function reducer(state, action) {
 }
 
 const PaymentForm = (props) => {
-  const { visible, onClose, onBuy } = props;
+  const { visible, onClose, onBuy, price } = props;
   const [state, dispatch] = useReducer(reducer, initialState);
   const { user } = useAuth();
   const [selectedPay, setSelectedPay] = useState("");
@@ -171,14 +171,32 @@ const PaymentForm = (props) => {
       ? "Please Enter valid email address"
       : "";
     errors.line1 = isStreetEmpty ? "Please Enter Street" : "";
-    errors.postal_code = isPostalCodeEmpty ? "Please Enter Postal Code" : "";
+    errors.postal_code = isPostalCodeEmpty
+      ? "Please Enter Postal Code"
+      : postal_code.length !== 5
+      ? "Myanmar Postal code must be 5 digits"
+      : "";
     errors.city = isCityEmpty ? "Please Enter City" : "";
     errors.country = isCountryEmpty ? "Please Select Country" : "";
     errors.currency = isCurrencyEmpty ? "Please Select Currency" : "";
     errors.amount = !isAmountValid ? "Please Enter Amount" : "";
-    errors.ccn = isCreditCardEmpty ? "Please Enter Credit Card Info" : "";
-    errors.exp = isExpDateEmpty ? "Please Enter Expire Date" : "";
-    errors.cvc = isCvcEMpty ? "Please Enter Card Verification Code" : "";
+    errors.ccn = isCreditCardEmpty
+      ? "Please Enter Credit Card Info"
+      : ccn.length !== 16
+      ? "Credit Card Number must be 16 digits"
+      : "";
+    errors.exp = isExpDateEmpty
+      ? "Please Enter Expire Date"
+      : exp.length !== 5
+      ? "Expiration length must be 5 characters long"
+      : "";
+    errors.cvc = isCvcEMpty
+      ? "Please Enter Card Verification Code"
+      : cvc.length !== 4
+      ? "CVC must contain 4 digits"
+      : !Number(cvc)
+      ? "CVC all digits must be number"
+      : "";
 
     for (let e in errors) {
       dispatch({
@@ -276,6 +294,34 @@ const PaymentForm = (props) => {
       updateUser();
     }
   }
+
+  useEffect(() => {
+    dispatch({
+      type: "SET_FIELD",
+      key: "amount",
+      value: price,
+    });
+    dispatch({
+      type: "SET_FIELD",
+      key: "firstName",
+      value: user?.name,
+    });
+    dispatch({
+      type: "SET_FIELD",
+      key: "email",
+      value: user?.email,
+    });
+    dispatch({
+      type: "SET_FIELD",
+      key: "country",
+      value: "Myanmar",
+    });
+    dispatch({
+      type: "SET_FIELD",
+      key: "currency",
+      value: "Myanma Kyat",
+    });
+  }, [user]);
 
   return (
     <Modal open={visible} onClose={handleClose}>
@@ -417,7 +463,7 @@ const PaymentForm = (props) => {
               <TextInput
                 id="firstName"
                 label="First Name"
-                value={state.firstname}
+                value={state.firstName}
                 onChange={handleChange}
                 error={state?.errors?.firstName?.length !== 0}
                 helperText={state?.errors?.firstName}
@@ -487,6 +533,7 @@ const PaymentForm = (props) => {
             <Grid item xs={12} md={4} lg={4} sx={{ mt: 2 }}>
               <Autocomplete
                 value={state.country}
+                disabled
                 onChange={(event, newValue) => {
                   dispatch({
                     type: "SET_FIELD",
@@ -522,7 +569,7 @@ const PaymentForm = (props) => {
               xs={12}
               lg={9}
               md={9}
-              sx={{ display: "flex", justifyContent: "space-evenly" }}
+              sx={{ display: "flex", justifyContent: "flex-start", gap: 2 }}
             >
               {cardsLogo.map((card) => (
                 <img src={`/${card}.png`} width="50px" />
@@ -531,6 +578,7 @@ const PaymentForm = (props) => {
             <Grid item xs={12} md={4} lg={4} sx={{ mt: 2 }}>
               <Autocomplete
                 value={state.currency}
+                disabled
                 onChange={(event, newValue) => {
                   dispatch({
                     type: "SET_FIELD",
@@ -566,6 +614,7 @@ const PaymentForm = (props) => {
                 onChange={handleChange}
                 error={state?.errors?.amount?.length !== 0}
                 helperText={state?.errors?.amount}
+                disabled
               />
             </Grid>
             <Grid item xs={12} md={4} lg={4}>

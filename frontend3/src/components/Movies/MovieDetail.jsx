@@ -473,6 +473,7 @@ export default function MovieDetail() {
               visible={showPaymentModal}
               onClose={() => setShowPaymentModal(false)}
               onBuy={createRent}
+              price={movie.price}
             />
           )}
         </Box>

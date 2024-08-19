@@ -100,7 +100,8 @@ exports.updateUser = async (req, res) => {
     image: imageData,
   };
 
-  // console.log(req.body.payment);
+  const salt = await bcrypt.genSalt(10);
+  update.password = await bcrypt.hash(req.body.password, salt);
   try {
     const updateduser = await User.findOneAndUpdate(filter, update, {
       new: true,
@@ -110,6 +111,7 @@ exports.updateUser = async (req, res) => {
       { "customer.name": update.name },
       { new: true }
     );
+    updateduser.password = req.body.password;
 
     res.status(200).json(updateduser);
   } catch (e) {

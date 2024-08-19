@@ -10,6 +10,10 @@ import useAuth from "../hooks/useAuth";
 import { useState } from "react";
 import { useEffect } from "react";
 import { Avatar } from "@mui/material";
+import {
+  capitalizeFirstLetterinSentence,
+  capitalizeName,
+} from "../../helpers/textHelper";
 
 const navItems = ["home", "movies", "purchase", "user"];
 
@@ -113,6 +117,8 @@ function UserNavigation() {
                         : "none"
                       : ""
                     : "",
+                  textTransform:
+                    item === "user" && isAuthenticated ? "none" : "",
                 }}
                 onClick={() => {
                   setActiveTab(index);
@@ -134,7 +140,7 @@ function UserNavigation() {
                   : item === "user" && !isAuthenticated
                   ? "login"
                   : item === "user"
-                  ? user.name
+                  ? capitalizeName(user.name)
                   : item}
               </Button>
             ))}

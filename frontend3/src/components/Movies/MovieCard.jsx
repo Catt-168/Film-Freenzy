@@ -2,7 +2,8 @@ import { Box, CardMedia, Typography } from "@mui/material";
 import React, { useState } from "react";
 import GenericChip from "../Core/GenericChip";
 
-export default function MovieCard({ item, handleClick }) {
+export default function MovieCard(props) {
+  const { item, handleClick, removeGenre = false } = props;
   const [isVisible, setIsVisible] = useState(false);
   return (
     <Box
@@ -41,7 +42,13 @@ export default function MovieCard({ item, handleClick }) {
             "linear-gradient(0deg,rgba(29,29,29,.7) 0,rgba(29,29,29,.7) 70%,rgba(29,29,29,0) 100%)",
         }}
       >
-        <Box sx={{ position: "relative", top: -10 }}>
+        <Box
+          sx={{
+            position: "relative",
+            top: -10,
+            opacity: !removeGenre ? 1 : 0,
+          }}
+        >
           {item.genre.map((g, index) => (
             <GenericChip
               label={g.name}
@@ -67,63 +74,6 @@ export default function MovieCard({ item, handleClick }) {
           {item.title.length > 20 ? "..." : ""}
         </Typography>
       </Box>
-      <Box></Box>
-      {/* <CardContent>
-        {item.genre.map((g) => (
-          <Chip
-            label={g.name}
-            sx={{ mr: 1 }}
-            key={g._id}
-            color="success"
-            variant="filled"
-          />
-        ))}
-        <Typography
-          variant="h5"
-          component="div"
-          sx={{ mt: 1, mb: 1, height: 80, fontWeight: 600 }}
-        >
-          {capitalizeFirstLetterinSentence(item.title)}
-        </Typography>
-        <Typography
-          variant="body2"
-          color="text.secondary"
-          sx={{ textAlign: "left" }}
-        >
-          {item.description.slice(0, 100)}.....
-        </Typography>
-
-        <Box
-          sx={{
-            mt: 2,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "flex-start",
-          }}
-        >
-          <Typography variant="body2" sx={{ fontWeight: 600 }} gutterBottom>
-            Rating:
-            <Rating
-              name="read-only"
-              value={item.rating}
-              readOnly
-              size="small"
-              sx={{ position: "absolute" }}
-            />
-          </Typography>
-
-          <Typography variant="body2" sx={{ fontWeight: 600 }} gutterBottom>
-            Fee: {item.price}$
-          </Typography>
-        </Box>
-        <Button
-          variant="contained"
-          sx={{ width: "100%", mt: 1.5 }}
-          onClick={() => handleClick(item._id)}
-        >
-          Go To Details
-        </Button>
-      </CardContent> */}
     </Box>
   );
 }
