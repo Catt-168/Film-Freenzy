@@ -4,6 +4,7 @@ import {
   InputLabel,
   Pagination,
   Select,
+  Typography,
 } from "@mui/material";
 import ReplayIcon from "@mui/icons-material/Replay";
 import SearchIcon from "@mui/icons-material/Search";
@@ -15,7 +16,8 @@ import { SERVER } from "../../../constants";
 import DateInput from "../../Input/DateInput";
 import GenericButton from "../../Core/GenericButton";
 import dayjs from "dayjs";
-import { Colors } from "../../../helpers/constants";
+import { Colors, STATUS_TYPE } from "../../../helpers/constants";
+import LoadingSpinner from "../../Core/LoadingSpinner";
 
 const PAGE_SIZE = 12;
 
@@ -27,8 +29,11 @@ export default function AdminRentals() {
     startDate: dayjs("2020-11-29"),
     endDate: dayjs(),
   });
+  const [status, setStatus] = useState(STATUS_TYPE.loading);
+  const [total, setTotal] = useState(0);
 
   async function getRentals(saveCurrentDate = false) {
+    setStatus(STATUS_TYPE.loading);
     try {
       const { data } = await restClient.get(
         `${SERVER}/rentals?startDate=${filter.startDate}&endDate=${filter.endDate}`
@@ -39,8 +44,16 @@ export default function AdminRentals() {
         ...filter,
         startDate: saveCurrentDate ? filter.startDate : dayjs(data[0].dateOut),
       });
+      const fees = data.map((item) => item.rentalFee);
+      setTotal(
+        fees.reduce((acc, current) => {
+          return acc + current;
+        })
+      );
     } catch (e) {
       console.log(e.message);
+    } finally {
+      setStatus(STATUS_TYPE.success);
     }
   }
 
@@ -81,6 +94,9 @@ export default function AdminRentals() {
     getRentals(true, filter.startDate, filter.endDate);
   }
 
+  const isLoading = status === STATUS_TYPE.loading;
+
+  console.log("TOTAL", total);
   return (
     <Box sx={{ display: "flex" }}>
       <AdminNavigation />
@@ -136,6 +152,21 @@ export default function AdminRentals() {
             isError={true}
             tooltipTitle="Reset"
           />
+          <Typography
+            component="body1"
+            color="black"
+            sx={{
+              mt: 1,
+              background: Colors.yellow,
+              paddingTop: 1,
+              paddingLeft: 1,
+              paddingRight: 1,
+              borderRadius: 2,
+              height: 40,
+            }}
+          >
+            Total Price: {total} MMK
+          </Typography>
         </Box>
 
         {rentals.length !== 0 ? (
@@ -162,7 +193,9 @@ export default function AdminRentals() {
             </Box>
           </>
         ) : (
-          <h1>No Rentals</h1>
+          <div>
+            {isLoading ? <LoadingSpinner /> : <h1>No PURCHASED MOVIES</h1>}
+          </div>
         )}
       </Box>
     </Box>

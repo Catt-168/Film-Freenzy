@@ -57,8 +57,10 @@ function UserTableBody({ items }) {
           <TableCell>{row.email}</TableCell>
           {/* <TableCell>{row.password}</TableCell> */}
           {/* <TableCell>{row.isAdmin ? "true" : "false"}</TableCell>{" "} */}
-          <TableCell>{new Date(row.dob).toLocaleDateString("en-GB")}</TableCell>
           <TableCell>
+            {row.dob ? new Date(row.dob).toLocaleDateString("en-GB") : "null"}
+          </TableCell>
+          {/* <TableCell>
             <Button
               color="error"
               variant="contained"
@@ -67,7 +69,7 @@ function UserTableBody({ items }) {
             >
               Delete
             </Button>
-          </TableCell>
+          </TableCell> */}
           <TableCell
             sx={{
               color: !!row.payment ? Colors.primary : "",

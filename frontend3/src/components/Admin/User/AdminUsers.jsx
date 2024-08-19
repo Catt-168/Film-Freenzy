@@ -131,7 +131,7 @@ export default function AdminUsers() {
       email: state.email,
       password: state.password,
       isAdmin: true,
-      dob: new Date(),
+      dob: null,
     };
     try {
       await restClient.post(`${SERVER}/users`, admin);
@@ -221,10 +221,11 @@ export default function AdminUsers() {
   tableHeaders[1] = "Email";
 
   tableHeaders[3] = "DOB";
-  tableHeaders[4] = "Action";
-  tableHeaders[5] = "Is Credit?";
+  // tableHeaders[4] = "Action";
+  tableHeaders[4] = "Is Credit?";
 
   tableHeaders.splice(2, 1);
+  tableHeaders.pop();
   tableHeaders.pop();
 
   return (

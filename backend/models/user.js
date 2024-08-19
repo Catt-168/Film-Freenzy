@@ -24,7 +24,6 @@ const userSchema = new Schema({
   },
   dob: {
     type: Date,
-    required: true,
   },
   isAdmin: {
     type: Boolean,
