@@ -20,3 +20,13 @@ export function convertMinutesToHoursAndMinutes(minutes) {
 
   return { hours, remainingMinutes };
 }
+
+export function capitalizeName(str) {
+  return str
+    .toLowerCase()
+    .split(" ")
+    .map((word) => {
+      return word.charAt(0).toUpperCase() + word.slice(1);
+    })
+    .join(" ");
+}

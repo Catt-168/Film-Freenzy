@@ -1,9 +1,12 @@
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Divider, Grid, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import UserNavigation from "../Navigation/UserNavigation";
 import useAuth from "../hooks/useAuth";
+import StarOutlineIcon from "@mui/icons-material/StarOutline";
 import { Colors, STATUS_TYPE } from "../../helpers/constants";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import GenericButton from "../Core/GenericButton";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import restClient from "../../helpers/restClient";
 import { SERVER } from "../../constants";
@@ -16,6 +19,7 @@ import { Carousel } from "react-responsive-carousel";
 import LoadingSpinner from "../Core/LoadingSpinner";
 import Footer from "../Footer/Footer";
 import { useNavigate } from "react-router-dom";
+import { convertMinutesToHoursAndMinutes } from "../../helpers/textHelper";
 
 const settings = {
   dots: false,
@@ -90,6 +94,10 @@ export default function Home() {
     navigate(`/movies/${id}`, { state: { id } });
   }
 
+  const { hours, remainingMinutes } = convertMinutesToHoursAndMinutes(
+    topMovie.length
+  );
+
   const isLoading = status === STATUS_TYPE.loading;
   const isSuccess = status === STATUS_TYPE.success;
 
@@ -120,10 +128,107 @@ export default function Home() {
               <Typography
                 variant="h2"
                 gutterBottom
-                sx={{ marginTop: 5, fontSize: "78px", color: Colors.textWhite }}
+                sx={{
+                  fontSize: "58px",
+                  color: Colors.textWhite,
+                  textAlign: "left",
+                  ml: "21%",
+                }}
               >
                 {topMovie?.title}
               </Typography>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  paddingLeft: 2,
+                  background: "#f5f5f5",
+                  width: "60%",
+                  borderRadius: 2,
+                  mb: 1,
+                  ml: "21%",
+                }}
+              >
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "flex-start",
+                    alignItems: "center",
+                  }}
+                >
+                  <CalendarMonthIcon sx={{ mr: 1 }} />
+                  <p
+                    style={{
+                      fontSize: 15,
+                      fontWeight: 600,
+                      fontFamily: "Arial",
+                      marginLeft: 2,
+                      marginRight: 2,
+                    }}
+                  >
+                    {topMovie.releasedYear}
+                  </p>
+                  <Divider
+                    orientation="vertical"
+                    variant="middle"
+                    flexItem
+                    sx={{ ml: 1, mr: 1 }}
+                  />
+                  <StarOutlineIcon sx={{ mr: 1 }} />
+                  <p
+                    style={{
+                      fontSize: 15,
+                      fontWeight: 600,
+                      fontFamily: "Arial",
+                      ml: 1,
+                      mr: 1,
+                    }}
+                  >
+                    {topMovie.rating} / 5
+                  </p>
+                  <Divider
+                    orientation="vertical"
+                    variant="middle"
+                    flexItem
+                    sx={{ marginLeft: 2, marginRight: 1 }}
+                  />
+                  {/* {movie.genre.map((g) => (
+                    <GenericChip label={g.name} sx={{ mr: 1 }} key={g._id} />
+                  ))} */}
+                  <AccessTimeIcon />
+                  <Typography
+                    variant="body1"
+                    gutterBottom
+                    sx={{ mt: 0.5, ml: 1, fontWeight: "bold" }}
+                  >
+                    {hours} hr {remainingMinutes} minutes
+                  </Typography>
+                </Box>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "flex-end",
+
+                    background: Colors.yellow,
+                    padding: 1.4,
+                    borderRadius: 2,
+                  }}
+                >
+                  {/* <AttachMoneyIcon /> */}
+                  <Typography
+                    variant="body1"
+                    color="text.secondary"
+                    sx={{
+                      mt: 0.1,
+                      color: Colors.textBlack,
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {topMovie.price} MMK
+                  </Typography>
+                </Box>
+              </Box>
               <Typography
                 variant="subtitle1"
                 gutterBottom
@@ -133,6 +238,7 @@ export default function Home() {
                   width: "60%",
                   textAlign: "left",
                   color: Colors.textWhite,
+                  fontSize: 16,
                 }}
               >
                 {topMovie?.description}
@@ -140,7 +246,7 @@ export default function Home() {
               <GenericButton
                 startIcon={<PlayArrowIcon />}
                 text="Watch Now"
-                sx={{ background: Colors.yellow, mt: 10, ml: "45%" }}
+                sx={{ background: Colors.yellow, mt: 10, ml: "50%" }}
                 onClick={() => {
                   handleClick(topMovie._id);
                 }}
@@ -181,7 +287,11 @@ export default function Home() {
                 <Slider {...settings}>
                   {popularMovies.map((item, index) => (
                     <Box sx={{ mt: 10 }}>
-                      <MovieCard item={item} handleClick={handleClick} />
+                      <MovieCard
+                        item={item}
+                        handleClick={handleClick}
+                        removeGenre={true}
+                      />
                     </Box>
                   ))}
                 </Slider>
@@ -215,7 +325,11 @@ export default function Home() {
                 <Slider {...settings}>
                   {newRelasedMovies.map((item, index) => (
                     <Box sx={{ mt: 10 }}>
-                      <MovieCard item={item} handleClick={handleClick} />
+                      <MovieCard
+                        item={item}
+                        handleClick={handleClick}
+                        removeGenre={true}
+                      />
                     </Box>
                   ))}
                 </Slider>
