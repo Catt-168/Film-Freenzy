@@ -138,12 +138,18 @@ export default function UserEditForm() {
 
   // console.log(user.file);
   return (
-    <Box>
+    <Box
+      sx={{
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
       {localUser.isAdmin ? <AdminNavigation /> : <UserNavigation />}
       <Container
         component="main"
         maxWidth="sm"
-        sx={{ padding: "1.3rem 2rem 0 2rem" }}
+        sx={{ padding: "1.3rem 2rem 0 2rem", flexGrow: 1 }}
       >
         <Box
           sx={{
@@ -278,9 +284,7 @@ export default function UserEditForm() {
           </Box>
         </Box>
       </Container>
-      <Box sx={{ bottom: -88, position: "relative" }}>
-        <Footer />
-      </Box>
+      <Footer sx={{ mt: "auto" }} />
     </Box>
   );
 }
