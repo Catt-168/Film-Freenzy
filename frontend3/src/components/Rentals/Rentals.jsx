@@ -42,7 +42,13 @@ export default function Rentals() {
   tableHeaders[2] = "Purchased Date";
   tableHeaders[3] = "Price";
   return (
-    <Box>
+    <Box
+      sx={{
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
       {user.isAdmin ? <AdminNavigation /> : <UserNavigation />}
       <Box mt={5} sx={{ padding: "2rem", minHeight: "72.8vh" }}>
         {rentals.length !== 0 ? (
@@ -60,11 +66,11 @@ export default function Rentals() {
               alignItems: "center",
             }}
           >
-            <p>You has not rented any movies</p>
+            <p>You has not Purchased any movies</p>
           </Box>
         )}
       </Box>
-      <Footer />
+      <Footer sx={{ mt: "auto" }} />
     </Box>
   );
 }
