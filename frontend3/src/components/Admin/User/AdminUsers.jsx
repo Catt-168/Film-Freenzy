@@ -79,7 +79,7 @@ function reducer(state, action) {
   }
 }
 
-const PAGE_SIZE = 5;
+const PAGE_SIZE = 11;
 export default function AdminUsers() {
   const [users, setUsers] = useState([]);
   const [page, setPage] = useState(1);
@@ -231,7 +231,7 @@ export default function AdminUsers() {
   return (
     <Box sx={{ display: "flex" }}>
       {user.isAdmin ? <AdminNavigation /> : <UserNavigation />}
-      <Box sx={{ mt: 6.5, flexGrow: 1, padding: "1.3rem" }}>
+      <Box sx={{ mt: 6.5, flexGrow: 1, padding: "1.6rem" }}>
         <Box
           sx={{
             display: "flex",
@@ -266,7 +266,7 @@ export default function AdminUsers() {
         </Box>
         <Box
           sx={{
-            mt: 4,
+            mt: 2,
             display: "flex",
             justifyContent: "flex-end",
           }}

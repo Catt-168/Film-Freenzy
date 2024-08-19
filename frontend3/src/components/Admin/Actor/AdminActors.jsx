@@ -178,12 +178,13 @@ export default function AdminActors() {
   if (isError) return <p>Error!</p>;
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ display: "flex",
+    }}>
       {user.isAdmin ? <AdminNavigation /> : <UserNavigation />}
-      <Box sx={{ mt: 7, padding: "2rem" }}>
+      <Box sx={{ mt: 7, padding: "2rem"}}>
         <GenericButton
           onClick={() => setOpenCreateModal(true)}
-          sx={{ mr: "89.5%" }}
+          sx={{ ml: "89.5%", }}
           text={"Create"}
         />
 

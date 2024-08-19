@@ -148,9 +148,15 @@ export default function MovieDetail() {
   if (isLoading) return <p>Loading</p>;
   if (isSuccess)
     return (
-      <Box sx={{ paddingTop: "1rem" }}>
+      <Box
+      sx={{
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
         {user?.isAdmin ? <AdminNavigation /> : <UserNavigation />}
-        <Box sx={{ padding: "0.6rem" }}>
+        <Box sx={{ padding: "2.4rem" }}>
           <Typography variant="h3" component="div" sx={{ mt: 6, mb: 1 }}>
             {/* {capitalizeFirstLetterinSentence(movie.title)} */}
             <Snackbar
@@ -470,15 +476,7 @@ export default function MovieDetail() {
             />
           )}
         </Box>
-        <Box
-          sx={{
-            bottom: -25,
-            position: "relative",
-            display: user?.isAdmin ? "none" : "",
-          }}
-        >
-          <Footer />
-        </Box>
+        <Footer sx={{ mt: "auto" }} />
       </Box>
     );
 }

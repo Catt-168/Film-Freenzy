@@ -19,7 +19,7 @@ import dayjs from "dayjs";
 import { Colors, STATUS_TYPE } from "../../../helpers/constants";
 import LoadingSpinner from "../../Core/LoadingSpinner";
 
-const PAGE_SIZE = 12;
+const PAGE_SIZE = 11;
 
 export default function AdminRentals() {
   const [rentals, setRentals] = useState([]);
@@ -100,7 +100,7 @@ export default function AdminRentals() {
   return (
     <Box sx={{ display: "flex" }}>
       <AdminNavigation />
-      <Box mt={6} flexGrow={1} sx={{ padding: "1.2rem" }}>
+      <Box mt={6} flexGrow={1} sx={{ padding: "1.6rem" }}>
         <Box
           sx={{
             width: "100%",
@@ -155,17 +155,18 @@ export default function AdminRentals() {
           <Typography
             component="body1"
             color="black"
+            fontWeight="bold"
             sx={{
               mt: 1,
               background: Colors.yellow,
               paddingTop: 1,
-              paddingLeft: 1,
-              paddingRight: 1,
-              borderRadius: 2,
+              paddingLeft: 2,
+              paddingRight: 2,
+              borderRadius: 1,
               height: 40,
             }}
           >
-            Total Price: {total} MMK
+            Total Amount: {total} MMK
           </Typography>
         </Box>
 
@@ -180,6 +181,7 @@ export default function AdminRentals() {
               sx={{
                 display: "flex",
                 justifyContent: "flex-end",
+                mt: 2
               }}
             >
               <Pagination
