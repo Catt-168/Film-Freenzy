@@ -103,38 +103,46 @@ export default function AdminRentals() {
       <Box mt={6} flexGrow={1} sx={{ padding: "1.6rem" }}>
         <Box
           sx={{
-            width: "100%",
-
             display: "flex",
-            gap: 2,
-            justifyContent: "flex-start",
-            aliginItems: "center",
+            justifyContent: "space-between",
+            alignItems: "flex-start",
           }}
         >
-          <DateInput
-            value={filter.startDate}
-            onChange={handleChange}
-            label="From"
-            name="startDate"
-          />
-          <DateInput
-            value={filter.endDate}
-            onChange={handleChange}
-            label="To"
-            name="endDate"
-          />
-          {/* <GenericButton
+          <Box
+            sx={{
+              // width: "100%",
+
+              display: "flex",
+              gap: 2,
+              justifyContent: "flex-start",
+              aliginItems: "center",
+              // background: "black",
+            }}
+          >
+            <DateInput
+              value={filter.startDate}
+              onChange={handleChange}
+              label="From"
+              name="startDate"
+            />
+            <DateInput
+              value={filter.endDate}
+              onChange={handleChange}
+              label="To"
+              name="endDate"
+            />
+            {/* <GenericButton
             onClick={handleFilter}
             text="Search"
             sx={{ height: 38, mt: 1 }}
           /> */}
-          <GenericButton
-            onClick={handleFilter}
-            sx={{ height: 38, mt: 1 }}
-            text={<SearchIcon size={60} />}
-            tooltipTitle="Filter"
-          />
-          {/* <GenericButton
+            <GenericButton
+              onClick={handleFilter}
+              sx={{ height: 38, mt: 1 }}
+              text={<SearchIcon size={60} />}
+              tooltipTitle="Filter"
+            />
+            {/* <GenericButton
             onClick={() => {
               window.location.reload();
             }}
@@ -142,32 +150,39 @@ export default function AdminRentals() {
             isError
             sx={{ height: 38, mt: 1 }}
           /> */}
-          <GenericButton
-            hoverColor={Colors.yellow}
-            sx={{ height: 38, mt: 1 }}
-            onClick={() => {
-              window.location.reload();
-            }}
-            text={<ReplayIcon size={60} color={"BlueSapphire.white"} />}
-            isError={true}
-            tooltipTitle="Reset"
-          />
-          <Typography
-            component="body1"
-            color="black"
-            fontWeight="bold"
+            <GenericButton
+              hoverColor={Colors.yellow}
+              sx={{ height: 38, mt: 1 }}
+              onClick={() => {
+                window.location.reload();
+              }}
+              text={<ReplayIcon size={60} color={"BlueSapphire.white"} />}
+              isError={true}
+              tooltipTitle="Reset"
+            />
+          </Box>
+          <Box
             sx={{
-              mt: 1,
               background: Colors.yellow,
+              mt: 1,
               paddingTop: 1,
               paddingLeft: 2,
               paddingRight: 2,
               borderRadius: 1,
               height: 40,
+              display: "flex",
+              justifyContent: "center",
             }}
           >
-            Total Amount: {total} MMK
-          </Typography>
+            <Typography
+              component="body1"
+              color="black"
+              fontWeight="bold"
+              sx={{}}
+            >
+              Total Amount: {total} MMK
+            </Typography>
+          </Box>
         </Box>
 
         {rentals.length !== 0 ? (
@@ -181,7 +196,7 @@ export default function AdminRentals() {
               sx={{
                 display: "flex",
                 justifyContent: "flex-end",
-                mt: 2
+                mt: 2,
               }}
             >
               <Pagination

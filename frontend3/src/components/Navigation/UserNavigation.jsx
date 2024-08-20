@@ -51,6 +51,7 @@ function UserNavigation() {
     localStorage.removeItem("jwtToken");
     localStorage.removeItem("user");
     localStorage.removeItem("page");
+    localStorage.removeItem("filter");
     navigate(isAuthenticated ? "/movies" : "/login", { replace: true });
     isAuthenticated ? window.location.reload() : null;
   }
