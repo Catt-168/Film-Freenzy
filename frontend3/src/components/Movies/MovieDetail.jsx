@@ -149,14 +149,14 @@ export default function MovieDetail() {
   if (isSuccess)
     return (
       <Box
-      sx={{
-        minHeight: "100vh",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
+        sx={{
+          minHeight: "100vh",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
         {user?.isAdmin ? <AdminNavigation /> : <UserNavigation />}
-        <Box sx={{ padding: "2.4rem" }}>
+        <Box sx={{ padding: "1.5rem" }}>
           <Typography variant="h3" component="div" sx={{ mt: 6, mb: 1 }}>
             {/* {capitalizeFirstLetterinSentence(movie.title)} */}
             <Snackbar
