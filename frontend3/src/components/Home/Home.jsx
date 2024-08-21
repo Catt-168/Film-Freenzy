@@ -1,4 +1,12 @@
-import { Box, Divider, Grid, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Container,
+  Divider,
+  Grid,
+  TextField,
+  Typography,
+} from "@mui/material";
 import React, { useEffect, useState } from "react";
 import UserNavigation from "../Navigation/UserNavigation";
 import useAuth from "../hooks/useAuth";
@@ -19,6 +27,10 @@ import { Carousel } from "react-responsive-carousel";
 import LoadingSpinner from "../Core/LoadingSpinner";
 import Footer from "../Footer/Footer";
 import { useNavigate } from "react-router-dom";
+import EmailIcon from "@mui/icons-material/Email";
+import PhoneIcon from "@mui/icons-material/Phone";
+
+import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { convertMinutesToHoursAndMinutes } from "../../helpers/textHelper";
 
 const settings = {
@@ -46,6 +58,17 @@ const settings = {
     },
   ],
 };
+
+const containerStyle = {
+  width: "100%",
+  height: "400px",
+};
+
+const center = {
+  lat: -3.745,
+  lng: -38.523,
+};
+
 export default function Home() {
   const { isAuthenticated, user } = useAuth();
   const [popularMovies, setPopularMovies] = useState([]);
@@ -53,6 +76,11 @@ export default function Home() {
   const [topMovie, setTopMovie] = useState({});
   const navigate = useNavigate();
   const [status, setStatus] = useState(STATUS_TYPE.idle);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    message: "",
+  });
 
   const fetchPopularMovies = async () => {
     try {
@@ -97,6 +125,11 @@ export default function Home() {
   const { hours, remainingMinutes } = convertMinutesToHoursAndMinutes(
     topMovie.length
   );
+
+  function handleChange(e) {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  }
+  function handleSubmit() {}
 
   const isLoading = status === STATUS_TYPE.loading;
   const isSuccess = status === STATUS_TYPE.success;
@@ -336,27 +369,122 @@ export default function Home() {
               </Box>
             ) : null}
           </Box>
-          <Grid container sx={{ width: "100%", height: "auto" }}>
+          <Grid container sx={{ overflowX: "hidden" }}>
             <Grid
               item
               xs={12}
               lg={6}
               md={6}
-              sx={{ background: Colors.primary, width: "100%", height: 340 }}
+              sx={{
+                background: Colors.primary,
+                width: "100%",
+                height: 340,
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
             >
-              <h2 style={{ fontSize: "21px", color: Colors.textWhite }}>
+              <h2
+                style={{
+                  fontSize: "21px",
+                  color: Colors.textWhite,
+                  fontFamily: "Arial",
+                }}
+              >
                 Visit our website
               </h2>
-              <h1 style={{ fontSize: "46px", color: Colors.textWhite }}>
+              <h1
+                style={{
+                  fontSize: "46px",
+                  color: Colors.textWhite,
+                  fontFamily: "Arial",
+                }}
+              >
                 Watch Anywhere
               </h1>
-              <p style={{ fontSize: "18px", color: Colors.textWhite }}>
+              <p
+                style={{
+                  fontSize: "18px",
+                  color: Colors.textWhite,
+                  fontFamily: "Arial",
+                }}
+              >
                 Visit our webiste and enjoy high-quality movies and TV shows
                 anywhere.
               </p>
             </Grid>
             <Grid item xs={12} lg={6} md={6} sx={{}}>
               <img src={"/hardBG.png"} />
+            </Grid>
+          </Grid>
+          <Grid container sx={{ width: "100%" }}>
+            <Typography
+              variant="h3"
+              gutterBottom
+              sx={{
+                color: Colors.primary,
+                fontSize: 42,
+                fontWeight: 700,
+                textAlign: "center",
+                width: "100%",
+              }}
+            >
+              Get in Touch
+            </Typography>
+
+            <Grid md={6} lg={6}>
+              <Box sx={{ p: 4 }}>
+                <Typography variant="h5" sx={{ color: Colors.primary }}>
+                  Send a Message
+                </Typography>
+                <form onSubmit={handleSubmit}>
+                  <TextField
+                    fullWidth
+                    label="Name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    sx={{ mt: 1, mb: 1 }}
+                  />
+                  <TextField
+                    fullWidth
+                    label="Email"
+                    name="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    sx={{ mt: 1, mb: 1 }}
+                  />
+                  <TextField
+                    fullWidth
+                    label="Message"
+                    multiline
+                    rows={4}
+                    name="message"
+                    value={formData.message}
+                    onChange={handleChange}
+                    sx={{ mt: 1, mb: 1 }}
+                  />
+                  <GenericButton
+                    text="Send"
+                    onClick={() => {}}
+                    sx={{ mt: 1, mb: 1 }}
+                  />
+                </form>
+              </Box>
+            </Grid>
+            <Grid md={6} lg={6}>
+              <Box sx={{ p: 4 }}>
+                <Typography variant="h5" sx={{ color: Colors.primary }}>
+                  Our Location
+                </Typography>
+                <img
+                  src={`jMapJS.png`}
+                  alt="NO MAP"
+                  style={{ objectFit: "cover", width: 450 }}
+                />
+              </Box>
             </Grid>
           </Grid>
         </Box>

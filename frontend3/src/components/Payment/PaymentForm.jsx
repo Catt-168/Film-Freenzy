@@ -412,7 +412,7 @@ const PaymentForm = (props) => {
               lg={12}
               sx={{ display: "flex", justifyContent: "center" }}
             >
-              <img src={`/kpayqr2.jpg`} height={300} />
+              <img src={`/kpayqr3.jpg`} height={300} />
             </Grid>
           </Grid>
         )}
