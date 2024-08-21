@@ -336,26 +336,52 @@ export default function Home() {
               </Box>
             ) : null}
           </Box>
-          <Grid container sx={{ width: "100%", height: "auto" }}>
+          <Grid container sx={{ overflowX: "hidden", width: "102%" }}>
             <Grid
               item
               xs={12}
-              lg={6}
-              md={6}
-              sx={{ background: Colors.primary, width: "100%", height: 340 }}
+              lg={7}
+              md={7}
+              sx={{
+                background: Colors.primary,
+                width: "100%",
+                height: 340,
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
             >
-              <h2 style={{ fontSize: "21px", color: Colors.textWhite }}>
+              <h2
+                style={{
+                  fontSize: "21px",
+                  color: Colors.textWhite,
+                  fontFamily: "Arial",
+                }}
+              >
                 Visit our website
               </h2>
-              <h1 style={{ fontSize: "46px", color: Colors.textWhite }}>
+              <h1
+                style={{
+                  fontSize: "46px",
+                  color: Colors.textWhite,
+                  fontFamily: "Arial",
+                }}
+              >
                 Watch Anywhere
               </h1>
-              <p style={{ fontSize: "18px", color: Colors.textWhite }}>
+              <p
+                style={{
+                  fontSize: "18px",
+                  color: Colors.textWhite,
+                  fontFamily: "Arial",
+                }}
+              >
                 Visit our webiste and enjoy high-quality movies and TV shows
                 anywhere.
               </p>
             </Grid>
-            <Grid item xs={12} lg={6} md={6} sx={{}}>
+            <Grid item xs={12} lg={4} md={4} sx={{}}>
               <img src={"/hardBG.png"} />
             </Grid>
           </Grid>
