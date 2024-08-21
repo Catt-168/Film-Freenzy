@@ -445,7 +445,7 @@ export default function Home() {
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
-                    sx={{ mt: 1, mb: 1 }}
+                    sx={{ mt: 1, mb: 1, width: "80%" }}
                   />
                   <TextField
                     fullWidth
@@ -454,7 +454,7 @@ export default function Home() {
                     type="email"
                     value={formData.email}
                     onChange={handleChange}
-                    sx={{ mt: 1, mb: 1 }}
+                    sx={{ mt: 1, mb: 1, width: "80%" }}
                   />
                   <TextField
                     fullWidth
@@ -464,14 +464,18 @@ export default function Home() {
                     name="message"
                     value={formData.message}
                     onChange={handleChange}
-                    sx={{ mt: 1, mb: 1 }}
-                  />
-                  <GenericButton
-                    text="Send"
-                    onClick={() => {}}
-                    sx={{ mt: 1, mb: 1 }}
+                    sx={{ mt: 1, mb: 1, width: "80%" }}
                   />
                 </form>
+                <GenericButton
+                  text="Send"
+                  onClick={() => {
+                    setTimeout(() => {
+                      window.location.reload();
+                    }, 500);
+                  }}
+                  sx={{ mt: 1, mb: 1 }}
+                />
               </Box>
             </Grid>
             <Grid md={6} lg={6}>
