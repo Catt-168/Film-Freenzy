@@ -1,21 +1,17 @@
+import { Avatar } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import * as React from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Colors, DEFAULT_ACTIV_TAB } from "../../helpers/constants";
+import { capitalizeName } from "../../helpers/textHelper";
 import useAuth from "../hooks/useAuth";
-import { useState } from "react";
-import { useEffect } from "react";
-import { Avatar } from "@mui/material";
-import {
-  capitalizeFirstLetterinSentence,
-  capitalizeName,
-} from "../../helpers/textHelper";
 
-const navItems = ["home", "movies", "purchase", "user"];
+const navItems = ["home", "movies", "purchase", "user", "about me"];
 
 const defaultState = [
   { id: 0, hover: false },
@@ -153,7 +149,7 @@ function UserNavigation() {
           style={{
             position: "absolute",
             marginTop: 60,
-            right: 0,
+            right: 70,
             backgroundColor: "#f9f9f9",
             minWidth: 160,
             boxShadow: "0px 8px 16px 0px rgba(0, 0, 0, 0.2)",
