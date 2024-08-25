@@ -22,6 +22,7 @@ import ProtectedRoute from "./components/Routes/ProtectedRoute";
 import UserEditForm from "./components/UserEditForm";
 import Home from "./components/Home/Home";
 import Dashboard from "./components/Admin/Dashboard/Dashboard";
+import AboutUs from "./components/About/AboutUs";
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
           </Route>
           <Route element={<Rentals />} path="/purchase" />
           <Route element={<UserEditForm />} path="/edit" />
+          <Route element={<AboutUs />} path="/about me" />
         </Route>
         <Route element={<AdminRoute />}>
           <Route element={<MovieCreateForm />} path="admin/movies/create" />
