@@ -74,7 +74,7 @@ function SingUp({ onChangeSignup }) {
           navigate(`../${prevUrl}`);
           return localStorage.removeItem("prevUrl");
         }
-        navigate(prevUrl.length !== 0 ? prevUrl : "/movies");
+        navigate(prevUrl.length !== 0 ? prevUrl : "/home");
       }, 1000);
     } catch (e) {
       setError({
@@ -284,10 +284,10 @@ function Login({ onChangeLogin }) {
         navigate(`../${prevUrl}`);
         return localStorage.removeItem("prevUrl");
       }
-      localStorage.setItem("active", data.user.isAdmin ? 0 : 1);
+      localStorage.setItem("active", 0);
       localStorage.setItem("navigation", String(true));
       localStorage.removeItem("prevUrl");
-      navigate(data.user.isAdmin ? "/admin/dashboard" : "/movies");
+      navigate(data.user.isAdmin ? "/admin/dashboard" : "/home");
     } catch (e) {
       setError({
         email: e.response.data.message,

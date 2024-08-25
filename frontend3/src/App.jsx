@@ -36,7 +36,7 @@ function App() {
           </Route>
           <Route element={<Rentals />} path="/purchase" />
           <Route element={<UserEditForm />} path="/edit" />
-          <Route element={<AboutUs />} path="/about me" />
+          <Route element={<AboutUs />} path="/about us" />
         </Route>
         <Route element={<AdminRoute />}>
           <Route element={<MovieCreateForm />} path="admin/movies/create" />

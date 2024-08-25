@@ -24,4 +24,4 @@ export const Colors = {
   grey: "#707070",
 };
 
-export const DEFAULT_ACTIV_TAB = 1;
+export const DEFAULT_ACTIV_TAB = 0;

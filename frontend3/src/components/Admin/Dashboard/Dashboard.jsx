@@ -1,4 +1,4 @@
-import { Box, Slider, TextField, Typography } from "@mui/material";
+import { Box, Grid, Slider, TextField, Typography } from "@mui/material";
 import { BarChart } from "@mui/x-charts/BarChart";
 import { PieChart } from "@mui/x-charts/PieChart";
 import * as React from "react";
@@ -13,6 +13,8 @@ const PIE_SLIDER_MIN = 10;
 
 export default function Dashboard() {
   const { user, isAdmin } = useAuth();
+
+  const [summary, setSummary] = useState({});
 
   const [pieData, setPieData] = useState([]);
   const [pieDataCount, setPieDataCount] = useState(10);
@@ -29,7 +31,9 @@ export default function Dashboard() {
     const response = await restClient.get(
       `${SERVER}/dashboard/getPieChartData`
     );
+
     setPieData(response.data.pieData);
+    setSummary(response.data.summary);
   }
 
   async function fetchBarChartData() {
@@ -71,25 +75,118 @@ export default function Dashboard() {
       fetchBarChartData();
     }
   };
-  console.log(customerX);
+
   return (
     <Box sx={{ display: "flex", height: "100vh" }}>
       <AdminNavigation />
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 5 }}>
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
         <Box
           sx={{
-            mt: 10.5,
             display: "flex",
-
-            // flexDirection: "column",
-            // flexWrap: "nowrap",
-
-            // width: "70%",
+            ml: 2.5,
+            flexDirection: "row",
+            mt: 9.5,
+            justifyContent: "flex-start",
+            alignItems: "flex-start",
           }}
         >
           <Box
             sx={{
-              padding: "1rem",
+              width: 200,
+            }}
+          >
+            <Typography
+              id="input-item-number"
+              gutterBottom
+              sx={{
+                background: Colors.primary,
+                height: 40,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: 2,
+                color: Colors.textWhite,
+                fontWeight: "bold",
+                fontSize: 17,
+                mr: 2,
+              }}
+            >
+              {summary?.movies}
+            </Typography>
+            Total Movies
+          </Box>
+          <Box sx={{ width: 200 }}>
+            <Typography
+              id="input-item-number"
+              gutterBottom
+              sx={{
+                background: Colors.primary,
+                height: 40,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: 2,
+                color: Colors.textWhite,
+                fontWeight: "bold",
+                fontSize: 17,
+                mr: 2,
+              }}
+            >
+              {summary?.genre}
+            </Typography>
+            Total Genres
+          </Box>
+          <Box sx={{ width: 200 }}>
+            <Typography
+              id="input-item-number"
+              gutterBottom
+              sx={{
+                background: Colors.primary,
+                height: 40,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: 2,
+                color: Colors.textWhite,
+                fontWeight: "bold",
+                fontSize: 17,
+                mr: 2,
+              }}
+            >
+              {summary?.language}
+            </Typography>
+            Total Languages
+          </Box>
+          <Box sx={{ width: 200 }}>
+            <Typography
+              id="input-item-number"
+              gutterBottom
+              sx={{
+                background: Colors.primary,
+                height: 40,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: 2,
+                color: Colors.textWhite,
+                fontWeight: "bold",
+                fontSize: 17,
+                mr: 2,
+              }}
+            >
+              {summary?.rentals}
+            </Typography>
+            Purchase Movies
+          </Box>
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+          }}
+        >
+          <Box
+            sx={{
+              padding: "0.5rem 1rem 0.5rem 1rem",
               ml: 2.5,
               border: "1px solid #D3D3D3",
               borderRadius: 2,
@@ -104,7 +201,7 @@ export default function Dashboard() {
               onChange={(e, newValue) => setPieDataCount(newValue)}
               valueLabelDisplay="auto"
               min={PIE_SLIDER_MIN}
-              max={pieData.length}
+              max={pieData.length - 1}
               aria-labelledby="input-item-number"
             />
             <PieChart

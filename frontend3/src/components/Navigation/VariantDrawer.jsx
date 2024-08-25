@@ -54,6 +54,7 @@ import {
 import GenericButton from "../Core/GenericButton";
 import LoadingSpinner from "../Core/LoadingSpinner";
 import CloseIcon from "@mui/icons-material/Close";
+import useAuth from "../hooks/useAuth";
 
 const drawerWidth = 240;
 const navItems = [
@@ -149,6 +150,7 @@ const Drawer = styled(MuiDrawer, {
 
 export default function VariantDrawer() {
   const theme = useTheme();
+  const { user } = useAuth();
   const [open, setOpen] = React.useState(
     localStorage.getItem("navigation") === "true"
   );
@@ -167,7 +169,7 @@ export default function VariantDrawer() {
     localStorage.removeItem("jwtToken");
     localStorage.removeItem("user");
     localStorage.removeItem("navigation");
-    navigate("/movies");
+    navigate("/home");
   };
 
   const handleDrawerOpen = () => {
@@ -257,7 +259,7 @@ export default function VariantDrawer() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-            Admin Site - Admin Name
+            Admin Site - {user?.name}
           </Typography>
           <Tooltip title="Rest Password Notifications">
             <Badge
