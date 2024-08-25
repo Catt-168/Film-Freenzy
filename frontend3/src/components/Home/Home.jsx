@@ -143,7 +143,6 @@ export default function Home() {
         <Box
           sx={{
             paddingTop: "0.5rem",
-            paddingRight: "2rem",
           }}
         >
           <Grid
@@ -158,29 +157,16 @@ export default function Home() {
               md={9}
               sx={{ background: Colors.primary, width: "100%", mt: 2 }}
             >
-              <Typography
-                variant="h2"
-                gutterBottom
-                sx={{
-                  fontSize: "58px",
-                  color: Colors.textWhite,
-                  textAlign: "left",
-                  ml: "21%",
-                }}
-              >
-                {topMovie?.title}
-              </Typography>
               <Box
                 sx={{
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
                   paddingLeft: 2,
-                  background: "#f5f5f5",
                   width: "60%",
                   borderRadius: 2,
                   mb: 1,
-                  ml: "21%",
+                  ml: "19.5%",
                 }}
               >
                 <Box
@@ -190,7 +176,7 @@ export default function Home() {
                     alignItems: "center",
                   }}
                 >
-                  <CalendarMonthIcon sx={{ mr: 1 }} />
+                  <CalendarMonthIcon sx={{color: Colors.textWhite, mr: 1 }} />
                   <p
                     style={{
                       fontSize: 15,
@@ -198,6 +184,7 @@ export default function Home() {
                       fontFamily: "Arial",
                       marginLeft: 2,
                       marginRight: 2,
+                      color: Colors.textWhite,
                     }}
                   >
                     {topMovie.releasedYear}
@@ -208,7 +195,7 @@ export default function Home() {
                     flexItem
                     sx={{ ml: 1, mr: 1 }}
                   />
-                  <StarOutlineIcon sx={{ mr: 1 }} />
+                  <StarOutlineIcon sx={{color: Colors.textWhite, mr: 1 }} />
                   <p
                     style={{
                       fontSize: 15,
@@ -216,6 +203,7 @@ export default function Home() {
                       fontFamily: "Arial",
                       ml: 1,
                       mr: 1,
+                      color: Colors.textWhite,
                     }}
                   >
                     {topMovie.rating} / 5
@@ -229,39 +217,29 @@ export default function Home() {
                   {/* {movie.genre.map((g) => (
                     <GenericChip label={g.name} sx={{ mr: 1 }} key={g._id} />
                   ))} */}
-                  <AccessTimeIcon />
+                  <AccessTimeIcon sx={{color: Colors.textWhite }}/>
                   <Typography
                     variant="body1"
                     gutterBottom
-                    sx={{ mt: 0.5, ml: 1, fontWeight: "bold" }}
+                    sx={{ mt: 0.5, ml: 1, color: Colors.textWhite, fontWeight: "bold" }}
                   >
                     {hours} hr {remainingMinutes} minutes
                   </Typography>
                 </Box>
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "flex-end",
-
-                    background: Colors.yellow,
-                    padding: 1.4,
-                    borderRadius: 2,
-                  }}
-                >
-                  {/* <AttachMoneyIcon /> */}
-                  <Typography
-                    variant="body1"
-                    color="text.secondary"
-                    sx={{
-                      mt: 0.1,
-                      color: Colors.textBlack,
-                      fontWeight: "bold",
-                    }}
-                  >
-                    {topMovie.price} MMK
-                  </Typography>
-                </Box>
               </Box>
+              <Typography
+                variant="h2"
+                gutterBottom
+                sx={{
+                  fontSize: "58px",
+                  color: Colors.textWhite,
+                  textAlign: "left",
+                  ml: "21%",
+                }}
+              >
+                {topMovie?.title}
+              </Typography>
+
               <Typography
                 variant="subtitle1"
                 gutterBottom
@@ -370,6 +348,9 @@ export default function Home() {
             ) : null}
           </Box>
           <Grid container sx={{ overflowX: "hidden" }}>
+          <Grid item xs={12} lg={6} md={6} sx={{}}>
+              <img src={"/hardBG.png"} />
+            </Grid>
             <Grid
               item
               xs={12}
@@ -414,9 +395,7 @@ export default function Home() {
                 anywhere.
               </p>
             </Grid>
-            <Grid item xs={12} lg={6} md={6} sx={{}}>
-              <img src={"/hardBG.png"} />
-            </Grid>
+
           </Grid>
           <Grid container sx={{ width: "100%" }}>
             <Typography
@@ -435,7 +414,7 @@ export default function Home() {
 
             <Grid md={6} lg={6}>
               <Box sx={{ p: 4 }}>
-                <Typography variant="h5" sx={{ color: Colors.primary }}>
+                <Typography variant="h5" sx={{ color: Colors.primary, fontWeight: 700 }}>
                   Send a Message
                 </Typography>
                 <form onSubmit={handleSubmit}>
@@ -480,7 +459,7 @@ export default function Home() {
             </Grid>
             <Grid md={6} lg={6}>
               <Box sx={{ p: 4 }}>
-                <Typography variant="h5" sx={{ color: Colors.primary }}>
+                <Typography variant="h5" sx={{ color: Colors.primary, fontWeight: 700  }}>
                   Our Location
                 </Typography>
                 <img
