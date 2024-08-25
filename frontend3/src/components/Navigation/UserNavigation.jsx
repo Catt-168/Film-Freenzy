@@ -48,7 +48,7 @@ function UserNavigation() {
     localStorage.removeItem("user");
     localStorage.removeItem("page");
     localStorage.removeItem("filter");
-    navigate(isAuthenticated ? "/movies" : "/login", { replace: true });
+    navigate(isAuthenticated ? "/home" : "/login", { replace: true });
     isAuthenticated ? window.location.reload() : null;
   }
 
@@ -149,7 +149,7 @@ function UserNavigation() {
           style={{
             position: "absolute",
             marginTop: 60,
-            right: 70,
+            right: 10,
             backgroundColor: "#f9f9f9",
             minWidth: 160,
             boxShadow: "0px 8px 16px 0px rgba(0, 0, 0, 0.2)",

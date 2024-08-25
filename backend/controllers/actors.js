@@ -87,7 +87,9 @@ exports.deleteActor = async (req, res) => {
     if (movie.length !== 0) {
       return res
         .status(409)
-        .json({ message: "Action cannot be performed due to dependencies" });
+        .json({
+          message: "Actors who exist in current movies can not be deleted",
+        });
     }
     await Actor.deleteOne(actor);
     res.status(204).json({ message: "Successfully Deleted" });
