@@ -11,7 +11,7 @@ import { Colors, DEFAULT_ACTIV_TAB } from "../../helpers/constants";
 import { capitalizeName } from "../../helpers/textHelper";
 import useAuth from "../hooks/useAuth";
 
-const navItems = ["home", "movies", "purchase", "user", "about me"];
+const navItems = ["home", "movies", "purchase", , "about us", "user"];
 
 const defaultState = [
   { id: 0, hover: false },
