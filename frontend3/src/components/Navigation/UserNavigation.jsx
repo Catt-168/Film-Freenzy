@@ -101,7 +101,7 @@ function UserNavigation() {
                   color: "#fff",
                   fontWeight:
                     activeTab === null
-                      ? index === 1
+                      ? index === 0
                         ? "bold"
                         : ""
                       : activeTab === index
