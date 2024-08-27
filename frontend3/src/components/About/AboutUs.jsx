@@ -1,128 +1,68 @@
-// src/AboutMe.js
 import React from "react";
-import {
-  Container,
-  Typography,
-  Grid,
-  Card,
-  CardContent,
-  Avatar,
-  Box,
-} from "@mui/material";
+import { Typography, Grid, Box } from "@mui/material";
 import UserNavigation from "../Navigation/UserNavigation";
 import Footer from "../Footer/Footer";
 import { Colors } from "../../helpers/constants";
 
-const hobbies = [
-  {
-    name: "Photography",
-    description: "I love capturing moments and creating memories.",
-  },
-  {
-    name: "Reading",
-    description: "I enjoy reading books on various topics, especially fiction.",
-  },
-];
-
 function AboutMe() {
   return (
-    <Box>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        minHeight: "100vh"
+      }}
+    >
       <UserNavigation />
-      {/* <Box
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        marginTop={12}
-        mx={38}
+
+      <Box
+        component="main"
+        sx={{flexGrow: 1, mt: 12}}
       >
-        <Avatar
-          alt="Thin Kabyar Oo"
-          src={`/me.png`}
-          sx={{ width: 150, height: 150, mb: 2 }}
-        />
-        <Typography variant="h4" align="center" gutterBottom>
-          Thin Kabyar Oo
-        </Typography>
-        <Typography variant="body1" align="center" paragraph>
-          Hi, I'm Kabyar, a passionate developer with a love for coding,
-          technology, and creative problem-solving. With a background in
-          computer science, I enjoy building innovative solutions that make a
-          difference.
-        </Typography>
+        <Grid container spacing={4} >
+          {/* Centering the image in the grid */}
+          <Grid
+            item
+            xs={12}
+            md={6}
+            lg={6}
+            style={{ display: "flex", justifyContent: "center", alignItems: "center" }}
+          >
+            <img
+              src={"/hardBG.png"}
+              style={{ height: 423, maxWidth: "100%" }}
+              alt="Background"
+            />
+          </Grid>
+
+          {/* Text content */}
+          <Grid
+            item
+            xs={12}
+            md={6}
+            lg={6}
+            sx={{ textAlign: "left", padding: 2 }}
+          >
+            <Typography
+              fontSize={27}
+              sx={{ color: Colors.primary, mb: 2, fontWeight: "bold" }}
+            >
+              About Us
+            </Typography>
+            <Typography
+              fontSize={15}
+              sx={{ color: "#707070" }}
+            >
+            Our Online Movie Management System is a harmonious blend of technology and passion, crafted to elevate your cinematic journey. Imagine a digital sanctuary where your cherished films are meticulously organized, effortlessly accessible, and beautifully displayed. With every click, our system unveils a world of endless possibilities, allowing you to explore, discover, and revel in the art of cinema. Each feature is thoughtfully designed to cater to your unique tastes, ensuring that your movie collection is as dynamic and vibrant as the stories it holds.
+            </Typography>
+            <Typography
+              fontSize={15}
+              sx={{ color: "#707070", mt: 2 }}
+            >
+            Immerse yourself in a platform designed to celebrate storytelling and the magic of cinema. Whether curating your personal collection or discovering new favorites, our system offers a seamless journey through creativity and emotion. Let us be your guide in this enchanting adventure, where every film is a gateway to unforgettable experiences.            </Typography>
+          </Grid>
+        </Grid>
       </Box>
-
-      <Typography
-        variant="h5"
-        align="center"
-        gutterBottom
-        sx={{ mt: 1, mb: 1 }}
-      >
-        My Hobbies
-      </Typography>
-
-      <Box sx={{ display: "flex", justifyContent: "center", gap: 2, mb: 3.9 }}>
-        {hobbies.map((hobby, index) => (
-          <Box key={index}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6" component="div">
-                  {hobby.name}
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
-                  {hobby.description}
-                </Typography>
-              </CardContent>
-            </Card>
-          </Box>
-        ))}
-      </Box> */}
-      <Grid container mt={12} spacing={4}>
-        <Grid
-          item
-          xs={12}
-          md={6}
-          lg={6}
-          justifyContent={"center"}
-          alignItems={"center"}
-        >
-          <Typography
-            fontSize={27}
-            sx={{ color: Colors.primary, mb: 2, fontWeight: "bold" }}
-          >
-            About Us
-          </Typography>
-          <Typography
-            fontSize={15}
-            textAlign={"center"}
-            sx={{ color: "#707070", padding: 3 }}
-          >
-            Duis aute irure dolor in reprehenderit in voluptate velit esse
-            cillum dolore eu fugiat nulla pariatur.
-          </Typography>
-          <Typography
-            fontSize={15}
-            textAlign={"center"}
-            sx={{ color: "#707070", padding: 3 }}
-          >
-            Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
-            nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur.
-          </Typography>
-        </Grid>
-        <Grid
-          item
-          xs={12}
-          md={6}
-          lg={6}
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-          }}
-        >
-          <img src={"/hardBG.png"} style={{ height: 423 }} />
-        </Grid>
-      </Grid>
 
       <Footer />
     </Box>
