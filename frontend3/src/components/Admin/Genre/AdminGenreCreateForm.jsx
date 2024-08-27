@@ -1,14 +1,13 @@
 import { Typography } from "@mui/material";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { SERVER } from "../../../constants";
 import restClient from "../../../helpers/restClient";
+import GenericButton from "../../Core/GenericButton";
 import TextInput from "../../Input/TextInput";
 import AdminNavigation from "../../Navigation/AdminNavigation";
 import UserNavigation from "../../Navigation/UserNavigation";
-import GenericButton from "../../Core/GenericButton";
 
 export default function AdminGenreCreateForm() {
   const [genre, setGenre] = useState("");
@@ -77,7 +76,7 @@ export default function AdminGenreCreateForm() {
           ml: "25%",
         }}
       >
-        <Typography component="h1" variant="h5" color="black">
+        <Typography component="h1" variant="h5" sx={{ fontWeight: "bold" }}>
           Genre Create Form
         </Typography>
         <TextInput
