@@ -86,7 +86,7 @@ export default function Dashboard() {
             ml: 2.5,
             flexDirection: "row",
             mt: 9.5,
-            justifyContent: "flex-start",
+            justifyContent: "space-between",
             alignItems: "flex-start",
           }}
         >
