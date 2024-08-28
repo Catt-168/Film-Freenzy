@@ -167,7 +167,7 @@ function MoviesTableBody({ items }) {
           <TableCell size="medium">{row.rating}</TableCell>
 
           <TableCell size="medium">{row.releasedYear}</TableCell>
-          <TableCell size="medium">{row.length}</TableCell>
+          <TableCell size="medium">{row.price}</TableCell>
           <TableCell size="medium">{generateLanguages(row.language)}</TableCell>
           {/* <TableCell>{row.price}</TableCell> */}
           {/* <TableCell>

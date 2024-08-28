@@ -56,7 +56,7 @@ const movieSchema = new Schema({
         name: {
           type: String,
           required: true,
-          minlength: 5,
+          minlength: 3,
           maxlength: 50,
         },
       }),
