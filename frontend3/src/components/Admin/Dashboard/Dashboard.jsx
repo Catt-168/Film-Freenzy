@@ -1,4 +1,4 @@
-import { Box, Grid, Slider, TextField, Typography } from "@mui/material";
+import { Box, Slider, TextField, Typography } from "@mui/material";
 import { BarChart } from "@mui/x-charts/BarChart";
 import { PieChart } from "@mui/x-charts/PieChart";
 import * as React from "react";
@@ -106,84 +106,82 @@ export default function Dashboard() {
               id="input-item-number"
               gutterBottom
               sx={{
-                background: Colors.yellow,
+                background: Colors.primary,
                 height: 40,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 borderRadius: 2,
-                color: Colors.textBlack,
+                color: Colors.textWhite,
                 fontWeight: "bold",
                 fontSize: 17,
                 mr: 2,
               }}
             >
-              {summary?.movies}
+              Movies : {summary?.movies}
             </Typography>
-            Total Movies
+
           </Box>
           <Box sx={{ width: 200 }}>
             <Typography
               id="input-item-number"
               gutterBottom
               sx={{
-                background: Colors.yellow,
+                background: Colors.primary,
                 height: 40,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 borderRadius: 2,
-                color: Colors.textBlack,
+                color: Colors.textWhite,
                 fontWeight: "bold",
                 fontSize: 17,
                 mr: 2,
               }}
             >
-              {summary?.genre}
+              Genres : {summary?.genre}
             </Typography>
-            Total Genres
           </Box>
           <Box sx={{ width: 200 }}>
             <Typography
               id="input-item-number"
               gutterBottom
               sx={{
-                background: Colors.yellow,
+                background: Colors.primary,
                 height: 40,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 borderRadius: 2,
-                color: Colors.textBlack,
+                color: Colors.textWhite,
                 fontWeight: "bold",
                 fontSize: 17,
                 mr: 2,
               }}
             >
-              {summary?.language}
+             Languages : {summary?.language}
             </Typography>
-            Total Languages
+
           </Box>
           <Box sx={{ width: 200 }}>
             <Typography
               id="input-item-number"
               gutterBottom
               sx={{
-                background: Colors.yellow,
+                background: Colors.primary,
                 height: 40,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 borderRadius: 2,
-                color: Colors.textBlack,
+                color: Colors.textWhite,
                 fontWeight: "bold",
                 fontSize: 17,
                 mr: 2,
               }}
             >
-              {summary?.users}
+              Users : {summary?.users}
             </Typography>
-            Register User Count
           </Box>
         </Box>
         <Box
