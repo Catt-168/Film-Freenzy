@@ -235,6 +235,7 @@ export default function MovieCreateForm() {
         return alert(JSON.parse(e.request.response).message);
       }
       alert("Please Fill all the values");
+      console.log(e);
     }
   }
 
