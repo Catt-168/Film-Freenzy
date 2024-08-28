@@ -99,13 +99,13 @@ export default function Dashboard() {
               id="input-item-number"
               gutterBottom
               sx={{
-                background: Colors.primary,
+                background: Colors.yellow,
                 height: 40,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 borderRadius: 2,
-                color: Colors.textWhite,
+                color: Colors.textBlack,
                 fontWeight: "bold",
                 fontSize: 17,
                 mr: 2,
@@ -120,13 +120,13 @@ export default function Dashboard() {
               id="input-item-number"
               gutterBottom
               sx={{
-                background: Colors.primary,
+                background: Colors.yellow,
                 height: 40,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 borderRadius: 2,
-                color: Colors.textWhite,
+                color: Colors.textBlack,
                 fontWeight: "bold",
                 fontSize: 17,
                 mr: 2,
@@ -141,13 +141,13 @@ export default function Dashboard() {
               id="input-item-number"
               gutterBottom
               sx={{
-                background: Colors.primary,
+                background: Colors.yellow,
                 height: 40,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 borderRadius: 2,
-                color: Colors.textWhite,
+                color: Colors.textBlack,
                 fontWeight: "bold",
                 fontSize: 17,
                 mr: 2,
@@ -162,21 +162,21 @@ export default function Dashboard() {
               id="input-item-number"
               gutterBottom
               sx={{
-                background: Colors.primary,
+                background: Colors.yellow,
                 height: 40,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 borderRadius: 2,
-                color: Colors.textWhite,
+                color: Colors.textBlack,
                 fontWeight: "bold",
                 fontSize: 17,
                 mr: 2,
               }}
             >
-              {summary?.rentals}
+              {summary?.users}
             </Typography>
-            Purchase Movies
+            Register User Count
           </Box>
         </Box>
         <Box
