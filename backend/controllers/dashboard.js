@@ -2,6 +2,7 @@ const Genre = require("../models/genre");
 const Movie = require("../models/movie");
 const Rental = require("../models/rental");
 const Language = require("../models/language");
+const User = require("../models/user");
 
 exports.getPieChartData = async (req, res) => {
   try {
@@ -15,15 +16,16 @@ exports.getPieChartData = async (req, res) => {
       pieData.push({ id: i + 1, value: data.length, label: genre?.name });
     }
     const movies = await Movie.find();
-    const rentals = await Rental.find();
+    // const rentals = await Rental.find();
     const genre = await Genre.find();
     const language = await Language.find();
+    const user = await User.find({ isAdmin: false });
 
     const summary = {
       movies: movies.length,
-      rentals: rentals.length,
       genre: genre.length,
       language: language.length,
+      users: user.length,
     };
 
     res.json({ pieData: pieData, summary }).status(200);
