@@ -63,11 +63,17 @@ exports.getMoviesByReleaseDate = async (req, res) => {
 
 exports.getHighestPurchasedUsers = async (req, res) => {
   try {
+    const { count } = req.params;
     const rentals = await Rental.find({}, "customer -_id");
     const sec = rentals.map((item) => item.customer.name);
     const customers = countDuplicates(sec);
-    const top3Customers = getTop(customers, 20);
-    res.json({ customers: top3Customers }).status(200);
+    const top3Customers = getTop(customers, count);
+    res
+      .json({
+        customers: top3Customers,
+        totalCount: Object.keys(customers).length,
+      })
+      .status(200);
   } catch (e) {
     res.status(500).json({ message: e.message });
   }

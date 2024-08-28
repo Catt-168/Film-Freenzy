@@ -9,7 +9,7 @@ router.get(
   dashboardController.getMoviesByReleaseDate
 );
 router.get(
-  "/getHighestPurchasedUsers",
+  "/getHighestPurchasedUsers/:count",
   dashboardController.getHighestPurchasedUsers
 );
 

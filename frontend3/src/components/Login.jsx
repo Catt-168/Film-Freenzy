@@ -69,6 +69,7 @@ function SingUp({ onChangeSignup }) {
         password: "",
       });
       const prevUrl = localStorage.getItem("prevUrl") || "";
+      localStorage.removeItem("page");
       setTimeout(() => {
         if (prevUrl.length !== 0) {
           navigate(`../${prevUrl}`);
@@ -287,6 +288,7 @@ function Login({ onChangeLogin }) {
       localStorage.setItem("active", 0);
       localStorage.setItem("navigation", String(true));
       localStorage.removeItem("prevUrl");
+      localStorage.removeItem("page");
       navigate(data.user.isAdmin ? "/admin/dashboard" : "/home");
     } catch (e) {
       setError({
