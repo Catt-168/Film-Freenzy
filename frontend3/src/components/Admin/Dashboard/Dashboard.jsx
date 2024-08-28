@@ -21,6 +21,8 @@ export default function Dashboard() {
 
   const [purchasedMovieCount, setPurchasedMovieCount] = useState(0); // tpm limit
   const [barChartCount, setBarChartCount] = useState(10); // bar chart count for backend tpm
+  const [secBarChartCount, setSecBarChartCount] = useState(10);
+  const [userCount, setUserCount] = useState(0);
   const [bcX, setBcX] = useState([]); // x-axis
   const [bcY, setBcY] = useState([]); // y-axis
 
@@ -48,16 +50,21 @@ export default function Dashboard() {
   }
 
   async function fetchHighestCustomerData() {
-    const response = await restClient.get(
-      `${SERVER}/dashboard/getHighestPurchasedUsers`
-    );
-
-    setCustomerX(
-      response.data.customers.map((item) => {
-        return item[0];
-      })
-    );
-    setCustomerY(response.data.customers.map((item) => item[1]));
+    try {
+      const response = await restClient.get(
+        `${SERVER}/dashboard/getHighestPurchasedUsers/${secBarChartCount}`
+      );
+      console.log("customer", response.data);
+      setUserCount(response.data.totalCount);
+      setCustomerX(
+        response.data.customers.map((item) => {
+          return item[0];
+        })
+      );
+      setCustomerY(response.data.customers.map((item) => item[1]));
+    } catch (e) {
+      console.log("e", e.response.data);
+    }
   }
 
   useEffect(() => {
@@ -77,7 +84,7 @@ export default function Dashboard() {
   };
 
   return (
-    <Box sx={{ display: "flex", height: "100vh" }}>
+    <Box sx={{ display: "flex" }}>
       <AdminNavigation />
       <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
         <Box
@@ -294,7 +301,7 @@ export default function Dashboard() {
                 // pieDataCount >= 10 ? (pieDataCount >= 18 ? 400 : 480) : 600
                 480
               }
-              height={350}
+              height={335}
               colors={colors}
             />
             <Typography
@@ -311,23 +318,29 @@ export default function Dashboard() {
           <Box
             sx={{
               padding: "1rem",
-              ml: 5,
+              ml: 2.5,
+              mt: 1.5,
               border: "1px solid #D3D3D3",
               borderRadius: 2,
               maxHeight: 450,
+              mb: 2,
             }}
           >
             <Box sx={{ display: "flex", justifyContent: "space-around" }}>
-              {/* <TextField
+              <TextField
                 id="outlined-controlled"
                 label={"Bar Chart Count"}
-                value={barChartCount}
+                value={secBarChartCount}
                 onChange={(event) => {
-                  setBarChartCount(event.target.value);
+                  setSecBarChartCount(event.target.value);
                 }}
-                onKeyDown={handleKeyDown}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") {
+                    fetchHighestCustomerData();
+                  }
+                }}
               />
-              <p>{`Maximum Count ${purchasedMovieCount}`}</p> */}
+              <p>{`Maximum Count ${userCount}`}</p>
             </Box>
             <BarChart
               xAxis={[
@@ -351,7 +364,12 @@ export default function Dashboard() {
               height={310}
               colors={colors}
             />
-            <Typography fontSize={24} color={Colors.primary} mt={2}>
+            <Typography
+              fontSize={20}
+              color={Colors.primary}
+              mt={2}
+              fontWeight={"bold"}
+            >
               Highest Purchased Customers
             </Typography>
           </Box>
