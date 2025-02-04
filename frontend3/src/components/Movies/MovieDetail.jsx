@@ -5,7 +5,7 @@ import { Divider, Paper, Snackbar, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { SERVER } from "../../constants";
+import { RECOMMENDTAION_SERVER, SERVER } from "../../constants";
 import { Colors } from "../../helpers/constants";
 import restClient from "../../helpers/restClient";
 import {
@@ -23,6 +23,7 @@ import UserNavigation from "../Navigation/UserNavigation";
 import PaymentForm from "../Payment/PaymentForm";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import RecommendedMovieCard from "./RecommendedMovieCard";
 
 export default function MovieDetail() {
   const { id } = useParams();
@@ -37,11 +38,27 @@ export default function MovieDetail() {
   const user = JSON.parse(localStorage.getItem("user"));
   const { isAuthenticated } = useAuth();
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [recommendedMovies, setRecommendedMovies] = useState([]);
+
+  function shuffleMovies(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1)); // Random index
+      [array[i], array[j]] = [array[j], array[i]]; // Swap elements
+    }
+    return array;
+  }
 
   async function getMovieDetails() {
     try {
       const response = await restClient.get(`${SERVER}/movies/${id}`);
       setMovie(response.data);
+      restClient
+        .get(`${RECOMMENDTAION_SERVER}?movie_name=${response.data.title}`)
+        .then((response) => {
+          setRecommendedMovies(shuffleMovies(response.data).slice(0, 3));
+        })
+        .catch((e) => console.log("ERROR FETCHING RECOMMENDTAION", e));
+
       setStatus((prev) => "success");
     } catch (e) {
       console.log(e);
@@ -476,6 +493,14 @@ export default function MovieDetail() {
               price={movie.price}
             />
           )}
+        </Box>
+        <Box sx={{ marginLeft: 25 }}>
+          <h1 style={{ textAlign: "left" }}>Recommended Movies</h1>
+          <Box sx={{ display: "flex", gap: 5, flexWrap: "wrap" }}>
+            {recommendedMovies.map((item) => (
+              <RecommendedMovieCard item={{ title: item, img: null }} />
+            ))}
+          </Box>
         </Box>
         <Footer sx={{ mt: "auto" }} />
       </Box>

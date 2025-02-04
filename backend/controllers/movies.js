@@ -272,7 +272,8 @@ exports.deleteMovie = async (req, res) => {
         .status(409)
         .json({ message: "Action cannot be performed due to dependencies" });
     await Image.findOneAndDelete({ name: movie.image.name });
-    await Movie.deleteOne(movie);
+    await Movie.findByIdAndDelete(id);
+
     res.status(204).json({ message: "Successfully Deleted" });
   } catch (e) {
     res.status(400).json({ message: e.message });

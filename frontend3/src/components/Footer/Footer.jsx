@@ -17,7 +17,7 @@ export default function Footer() {
             align="center"
             style={{ width: "100%" }}
           >
-            © 2024 Film Freenzy. All rights reserved.
+            © {new Date().getFullYear()} Film Freenzy. All rights reserved.
           </Typography>
         </Toolbar>
       </Container>
