@@ -144,6 +144,8 @@ export default function MovieDetail() {
   const isIdle = status === "idle";
   const isDisabled = disabled;
 
+  
+
   if (isIdle) return <p>Please Wait! Server is Loading</p>;
   if (isLoading) return <p>Loading</p>;
   if (isSuccess)

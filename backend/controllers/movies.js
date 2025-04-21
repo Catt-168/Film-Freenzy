@@ -8,8 +8,8 @@ const Actor = require("../models/actor");
 exports.getAllMovies = async (req, res) => {
   try {
     const {
-      pageSize,
-      page,
+      pageSize=10,
+      page=1,
       genre = "",
       language = "",
       rating = "",

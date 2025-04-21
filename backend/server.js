@@ -11,6 +11,7 @@ const actorRouter = require("./routers/actors");
 const dashboardRouter = require("./routers/dashboard");
 const forgotPasswordRouter = require("./routers/forgotPassword");
 
+require('dotenv').config();
 require("./db");
 
 const app = express();
@@ -35,7 +36,7 @@ app.use("/", authRouter);
 
 const start = async () => {
   try {
-    app.listen(3000, () => console.log(`Server started on port 3000`));
+    app.listen(3001, () => console.log(`Server started on port 3001`));
   } catch (error) {
     console.error(error);
     process.exit(1);
