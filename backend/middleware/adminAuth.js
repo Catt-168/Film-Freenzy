@@ -11,7 +11,7 @@ module.exports = function (req, res, next) {
     // below line decode the token through config key
     const decodedPayLoad = jwt.verify(token, "shhhhh");
     req.user = decodedPayLoad;
-    if (!decodedPayLoad.isAdmin) res.status(401).send("You can't come here");
+    if (!decodedPayLoad.isAdmin) return res.status(401).send("You can't come here");
     //give permission to enter in api and can get access
     next();
   } catch (ex) {

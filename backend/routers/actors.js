@@ -1,6 +1,8 @@
 const express = require("express");
 const actorController = require("../controllers/actors");
 const multer = require("multer");
+const adminAuth = require("../middleware/adminAuth");
+
 const router = express.Router();
 
 const storage = multer.diskStorage({
@@ -13,9 +15,9 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-router.get("/", actorController.getActors);
+router.get("/", adminAuth, actorController.getActors);
 router.post("/", upload.single("file"), actorController.createActor);
 router.put("/:id", upload.single("file"), actorController.updateActor);
-router.delete("/:id", actorController.deleteActor);
+router.delete("/:id", adminAuth, actorController.deleteActor);
 
 module.exports = router;
