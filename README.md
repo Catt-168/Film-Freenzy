@@ -164,6 +164,15 @@ Here’s a summary of available routes and their required authorization.
 2. Install dependencies:
    ```bash
    npm install
-3. Run Server:
+3. Go to backend directory:
+   ```bash
+   cd backend
+4. Run Server:
    ```bash
    npm run devStart
+5. Go to frontend directory:
+   ```bash
+   cd frontend3
+6. Run Client:
+   ```bash
+   npm run dev
