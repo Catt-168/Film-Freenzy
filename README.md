@@ -40,10 +40,11 @@ The application contains the following models:
 | **Rental**       | Tracks rentals for customers                    |
 | **ForgotPassword** | Handles forgot-password reset links            |
 
----
 Each model validates data with **Mongoose** and supports:
 - Nested sub-schemas for images, actors, genres, etc.
 - CRUD routes via Express controllers
+
+---
 
 ## 📂 Routes Overview
 
