@@ -161,18 +161,21 @@ Here’s a summary of available routes and their required authorization.
    ```bash
    git clone git@github.com:Catt-168/Film-Freenzy.git
    cd Film-Freenzy
-2. Install dependencies:
-   ```bash
-   npm install
-3. Go to backend directory:
+2. Go to backend directory:
    ```bash
    cd backend
+3. Install dependencies for server:
+   ```bash
+   npm install
 4. Run Server:
    ```bash
    npm run devStart
 5. Go to frontend directory:
    ```bash
    cd frontend3
-6. Run Client:
+6. Install dependencies for client:
+   ```bash
+   npm install   
+7. Run Client:
    ```bash
    npm run dev
