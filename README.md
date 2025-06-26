@@ -9,6 +9,7 @@ This is a **MERN stack application** that lets customers rent movies. It provide
 - Admin dashboards and analytics
 - JWT-based authentication and role-based authorization
 - Redis caching for performance optimization
+- Fully containerized with **Docker Compose**
 
 ---
 
@@ -40,6 +41,9 @@ The application contains the following models:
 | **ForgotPassword** | Handles forgot-password reset links            |
 
 ---
+Each model validates data with **Mongoose** and supports:
+- Nested sub-schemas for images, actors, genres, etc.
+- CRUD routes via Express controllers
 
 ## 📂 Routes Overview
 
@@ -179,3 +183,9 @@ Here’s a summary of available routes and their required authorization.
 7. Run Client:
    ```bash
    npm run dev
+   
+### Docker Build
+1. Run the command
+   ```bash
+   docker-compose up --build
+###
