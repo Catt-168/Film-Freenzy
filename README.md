@@ -159,5 +159,11 @@ Here’s a summary of available routes and their required authorization.
 ### 🔧 Installation
 1. Clone the repo:
    ```bash
-   git clone https://github.com/your-username/movie-rental-mern.git
-   cd movie-rental-mern
+   git clone git@github.com:Catt-168/Film-Freenzy.git
+   cd Film-Freenzy
+2. Install dependencies:
+   ```bash
+   npm install
+3. Run Server:
+   ```bash
+   npm run devStart
