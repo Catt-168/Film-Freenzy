@@ -1,4 +1,4 @@
-# 🎬 Movie Rental Application (MERN Stack)
+# 🎬 Film-Freenzy Movie Rental Application (MERN Stack)
 
 This is a **MERN stack application** that lets customers rent movies. It provides full-featured RESTful APIs built with **Express.js** and **MongoDB (Mongoose)**. The app supports:
 - User management (CRUD)
